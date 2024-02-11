@@ -1,1 +1,1 @@
-This is a stock sentiment analysis 
+This is a stock sentiment analysis project
