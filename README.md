@@ -16,5 +16,5 @@ Resources:
 
 ## Installation
 
-_TODO_ 🫠
+- run `poetry install` in the ssa folder 
 
