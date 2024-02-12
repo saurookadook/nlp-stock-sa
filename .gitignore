@@ -5,3 +5,9 @@
 node_modules/
 
 .env
+
+./scrapper/scrapper/.__pycache__
+
+
+ssa/scrapper/scrapper/__pycache__
+ssa/scrapper/scrapper/spiders/__pycache__
