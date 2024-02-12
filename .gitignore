@@ -1,0 +1,7 @@
+.vscode/
+
+.poetry-cache
+
+node_modules/
+
+.env
