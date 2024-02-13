@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./ssa/.poetry-cache/virtualenvs/ssa-8ttJgVzC-py3.11/lib/python3.11/site-packages"
+    ]
+}

@@ -1,7 +1,7 @@
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
-from scrapper.spiders.news_spider import NewsSpider
+from scraper.spiders.news_spider import NewsSpider
 
 def main():
     process = CrawlerProcess(get_project_settings())
