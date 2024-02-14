@@ -6,6 +6,7 @@ services:
     command: sh -C "echo start"
     depends_on:
       - client
+      # - haproxy
       - server
       - ssa
 
