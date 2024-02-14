@@ -1,9 +1,14 @@
+# IDEs
 .vscode/
 
+# Python
 .poetry-cache
 
-node_modules/
+# Node
+dist
+node_modules
 
+# Common
 .env
 
 ./scrapper/scrapper/.__pycache__
