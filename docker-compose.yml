@@ -43,23 +43,23 @@ services:
       dockerfile: app/client/Dockerfile
       target: client-dev
 
-  haproxy:
-    build:
-      context: docker/haproxy
-      dockerfile: haproxy.dockerfile
-    image: booboo/nlp-stock-ssa-haproxy # this is probably incorrect :)
-    depends_on:
-      - client
-      - server
-    networks:
-      default:
-        aliases:
-          nlp-stock-ssa.com
-    ports:
-      - 80:80
-      - 443:443
-    environment:
-      EXAMPLE: woof
+  # haproxy:
+  #   build:
+  #     context: docker/haproxy
+  #     dockerfile: haproxy.dockerfile
+  #   image: booboo/nlp-stock-ssa-haproxy # this is probably incorrect :)
+  #   depends_on:
+  #     - client
+  #     - server
+  #   networks:
+  #     default:
+  #       aliases:
+  #         - nlp-stock-ssa.com
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   environment:
+  #     EXAMPLE: woof
 
   server:
     depends_on:
