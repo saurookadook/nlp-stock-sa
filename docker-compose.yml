@@ -1,0 +1,94 @@
+version: "3.7"
+
+services:
+  all:
+    image: alpine
+    command: sh -C "echo start"
+    depends_on:
+      - client
+      - server
+      - ssa
+
+  database:
+    image: postgres:12 # higher than this?
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - 5432:5432
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+
+  client:
+    env_file: .env
+    environment:
+      EXAMPLE: woof
+    build:
+      context: .
+      dockerfile: app/client/Dockerfile
+      target: client-dev
+    ports:
+      - 9229:9229
+    volumes:
+    - ./client:/opts/nlp-stock-ssa
+    - /opt/nlp-stock-ssa/node_modules
+    # - ~/.aws:/home/nlpstockssaapp/.aws:ro
+
+  client-test:
+    env_file: .env
+    environment:
+      ENV: test
+    build:
+      context: .
+      dockerfile: app/client/Dockerfile
+      target: client-dev
+
+  haproxy:
+    build:
+      context: docker/haproxy
+      dockerfile: haproxy.dockerfile
+    image: booboo/nlp-stock-ssa-haproxy # this is probably incorrect :)
+    depends_on:
+      - client
+      - server
+    networks:
+      default:
+        aliases:
+          nlp-stock-ssa.com
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      EXAMPLE: woof
+
+  server:
+    depends_on:
+      - database
+    env_file: .env
+    environment:
+      EXAMPLE: woof
+    build:
+      context: .
+      dockerfile: app/server/Dockerfile
+      target: server-dev
+    volumes:
+    - ./server:/opts/nlp-stock-ssa
+    # - ~/.aws:/home/nlpstockssaapp/.aws:ro
+
+  ssa:
+    depends_on:
+      - database
+    env_file: .env
+    environment:
+      - EXAMPLE: woof
+    build:
+      context: .
+      dockerfile: ssa/Dockerfile
+      target: ssa-dev
+    ports:
+      - 3001:3001
+    volumes:
+      - ./server:/opts/nlp-stock-ssa
+      # - ~/.aws:/home/nlpstockssaapp/.aws:ro
+
+volumes:
+  db_volumes:
