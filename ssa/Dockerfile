@@ -1,7 +1,7 @@
 ARG venv=/opt/.venv
 
 # TODO: need to double check image :]
-FROM harbor.vnerd.com/proxy/library/python:3.10.14-slim-buster AS install-base
+FROM python:3.10.13-slim-bullseye AS install-base
 ARG YOUR_ENV
 ARG venv
 WORKDIR /opt/nlp-stock-sa/ssa
@@ -9,8 +9,8 @@ ENV PATH="/root/.poetry/bin:$PATH"
 ENV VIRTUAL_ENV=$venv
 ENV PYTHONUNBUFFERED 1
 ENV FORCE_COLOR 1
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    libcurl14-openssl-dev libssl-dev build-essential vim nano \
+RUN apt-get update
+RUN apt-get install --no-install-recommends -y libssl-dev build-essential vim nano \
     && python -m venv $venv \
     && pip install poetry==1.7.1
 
@@ -21,10 +21,10 @@ RUN poetry install --no-root --no-interaction
 RUN useradd --uid 2000 nlpstockssaapp
 RUN chown -R nlpstockssaapp:nlpstockssaapp /opt/.venv
 
-FROM harbor.vnerd.com/proxy/library/python:3.10.14-slim-buster AS dev-base
+FROM python:3.10.13-slim-bullseye AS dev-base
 ENV PYTHONUNBUFFERED 1
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    libcurl14-openssl-dev libssl-dev vim nano
+RUN apt-get update
+RUN apt-get install --no-install-recommends -y libssl-dev vim nano
 RUN mkdir -p /var/log/nlp-stock-sa/ssa
 RUN useradd --uid 2000 nlpstockssaapp
 USER nlpstockssaapp
@@ -44,9 +44,9 @@ RUN poetry install --no-root --no-interaction --no-dev
 RUN useradd --uid 2000 nlpstockssaapp
 RUN chown -R nlpstockssaapp:nlpstockssaapp /opt/.venv
 
-FROM harbor.vnerd.com/proxy/library/python:3.10.14-slim-buster AS release-base
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    libcurl14-openssl-dev libssl-dev vim nano
+FROM python:3.10.13-slim-bullseye AS release-base
+RUN apt-get update
+RUN apt-get install --no-install-recommends -y libssl-dev vim nano
 RUN useradd --uid 2000 nlpstockssaapp
 RUN mkdir -p /var/log/nlp-stock-sa/ssa
 RUN chown -R nlpstockssaapp:nlpstockssaapp /var/log/nlp-stock-ssa/ssa
