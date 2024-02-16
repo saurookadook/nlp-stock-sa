@@ -1,5 +1,5 @@
 {
-    "name": "server",
+    "name": "express-server",
     "packageManager": "yarn@4.1.0",
     "main": "index.ts",
     "scripts": {
