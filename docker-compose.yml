@@ -30,8 +30,8 @@ services:
     ports:
       - 9229:9229
     volumes:
-    - ./client:/opts/nlp-stock-ssa
-    - /opt/nlp-stock-ssa/node_modules
+    - ./client:/opts/nlp-stock-ssa/client
+    - /opt/nlp-stock-ssa/client/node_modules
     # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
   client-test:
@@ -61,7 +61,7 @@ services:
   #   environment:
   #     EXAMPLE: woof
 
-  server:
+  express-server:
     depends_on:
       - database
     env_file: .env
@@ -69,10 +69,10 @@ services:
       EXAMPLE: woof
     build:
       context: .
-      dockerfile: app/server/Dockerfile
-      target: server-dev
+      dockerfile: app/express-server/Dockerfile
+      target: express-server-dev
     volumes:
-    - ./server:/opts/nlp-stock-ssa
+    - ./express-server:/opts/nlp-stock-ssa/express-server
     # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
   ssa:
@@ -88,7 +88,7 @@ services:
     ports:
       - 3001:3001
     volumes:
-      - ./server:/opts/nlp-stock-ssa
+      - ./ssa:/opts/nlp-stock-ssa
       # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
 volumes:
