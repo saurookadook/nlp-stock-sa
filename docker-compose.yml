@@ -61,7 +61,7 @@ services:
   #   environment:
   #     EXAMPLE: woof
 
-  express-server:
+  server:
     depends_on:
       - database
     env_file: .env
@@ -69,10 +69,10 @@ services:
       EXAMPLE: woof
     build:
       context: .
-      dockerfile: app/express-server/Dockerfile
-      target: express-server-dev
+      dockerfile: app/server/Dockerfile
+      target: server-dev
     volumes:
-    - ./express-server:/opts/nlp-stock-ssa/express-server
+    - ./server:/opts/nlp-stock-ssa/server
     # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
   ssa:
