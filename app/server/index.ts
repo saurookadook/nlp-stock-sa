@@ -1,5 +1,5 @@
-import express, { NextFunction, Request, RequestHandler, Response } from "express";
-import cors from "cors";
+import express, { NextFunction, Request, RequestHandler, Response } from 'express';
+import cors from 'cors';
 
 const path = require('path');
 const app = express();
