@@ -7,7 +7,7 @@ import scrapy
 
 
 class ScraperItem(scrapy.Item):
-    title = scrapy.Field()
-    content = scrapy.Field()
+    Sentence = scrapy.Field()
     hrefs = scrapy.Field()
+    GroupId = scrapy.Field()
     pass
