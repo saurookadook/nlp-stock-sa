@@ -8,6 +8,7 @@
 from itemadapter import ItemAdapter
 
 
-class ScrapperPipeline:
+class DataMinerPipeline:
     def process_item(self, item, spider):
+        print("DATAMINER PIPELINE EXECUTION")
         return item

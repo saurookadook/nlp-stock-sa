@@ -1,7 +1,7 @@
 from pathlib import Path
 import uuid
 import scrapy
-from scraper.items import ScraperItem
+from data_miner.items import ScraperItem
 from bs4 import BeautifulSoup
 import re
 from nltk.tokenize import word_tokenize
