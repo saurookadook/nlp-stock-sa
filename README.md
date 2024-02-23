@@ -11,10 +11,14 @@ Resources:
 
 ## Requirements
 
-- Python 3.10 
-- Poetry 1.7.1 
+- Python 3.10
+- Poetry 1.7.1
+- Node 18.19.0
+- Yarn 4.1.0
+
+<!-- TODO: include download links :] -->
 
 ## Installation
 
-- run `poetry install` in the ssa folder 
+- run `poetry install` in the ssa folder
 
