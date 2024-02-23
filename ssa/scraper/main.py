@@ -5,18 +5,20 @@ from scraper.spiders.news_spider import NewsSpider
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
-# def sentiment_analyzer(item): 
+# def sentiment_analyzer(item):
 #     analyzer = SentimentIntensityAnalyzer()
-#     text = item['content']  
+#     text = item['content']
 #     scores = analyzer.polarity_scores(text)
 #     print(scores)
 
+
 def post_process(items):
-  clean_items = [...] # post-process 
-  print("LOADING TO DB")
+    clean_items = [...]  # post-process
+    print("LOADING TO DB")
+
+
 #   load_to_db(clean_items)
 
-    
 
 def main():
     process = CrawlerProcess(get_project_settings())
