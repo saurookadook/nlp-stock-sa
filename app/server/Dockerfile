@@ -4,7 +4,7 @@ COPY ./app/server/package.json package.json
 COPY ./app/server/.yarn .yarn
 COPY ./app/server/yarn.lock yarn.lock
 # or is it --cache-folder?
-RUN yarn install --cache-dir .yarn
+RUN yarn install
 
 FROM node:18-bullseye AS server-dev
 ENV NODE_ENV development

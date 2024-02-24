@@ -3,8 +3,7 @@ ENV NODE_ENV development
 COPY ./app/client/package.json package.json
 COPY ./app/client/.yarn .yarn
 COPY ./app/client/yarn.lock yarn.lock
-# or is it --cache-folder?
-RUN yarn install --cache-dir .yarn
+RUN yarn install
 
 FROM node:18-bullseye AS client-dev
 ENV NODE_ENV development
