@@ -13,10 +13,10 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-class NewsSpider(scrapy.Spider):
+class BloombergSpider(scrapy.Spider):
     name = "news"
     custom_settings = {
-        'USER_AGENT': 'ScrapyBot',
+        'USER_AGENT' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
         'DOWNLOAD_DELAY': 2 
         }
     group_id = uuid.uuid4()
@@ -54,19 +54,19 @@ class NewsSpider(scrapy.Spider):
     
     def start_requests(self):
         urls = [
-            "https://finance.yahoo.com"
+            "https://www.bloomberg.com/markets"
         ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
 
-    def parse_yahoo_sub_links(self, response): 
+    def parse_bloomberg_sub_links(self, response): 
         '''
         - parse yahoo sub links only
         - runs methods to pre-process data for nlp models
         - yields item
         '''
-        links_to_include = ['finance','https']
+        links_to_include = ['https']
     
         links = response.css('a::attr(href)').getall()
         for link in links:
