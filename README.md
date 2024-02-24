@@ -11,14 +11,47 @@ Resources:
 
 ## Requirements
 
+- Docker
 - Python 3.10
 - Poetry 1.7.1
 - Node 18.19.0
 - Yarn 4.1.0
+- PostgreSQL 16.2.0
 
 <!-- TODO: include download links :] -->
 
 ## Installation
 
 - run `poetry install` in the ssa folder
+
+
+## Installing Required Software
+
+### Docker
+
+_TODO_ 🫠
+
+### PostgreSQL
+
+```sh
+$ brew install postgresql@16
+```
+
+### Python
+
+_TODO_ 🫠
+
+### Poetry
+
+_TODO_ 🫠
+
+### Node
+
+_TODO_ 🫠
+
+### Yarn
+
+_TODO_ 🫠
+
+
 
