@@ -49,7 +49,7 @@ RUN apt-get update
 RUN apt-get install --no-install-recommends -y libssl-dev vim nano
 RUN useradd --uid 2000 nlpstockssaapp
 RUN mkdir -p /var/log/nlp-stock-sa/ssa
-RUN chown -R nlpstockssaapp:nlpstockssaapp /var/log/nlp-stock-ssa/ssa
+RUN chown -R nlpstockssaapp:nlpstockssaapp /var/log/nlp-stock-sa/ssa
 USER nlpstockssaapp
 ARG venv
 WORKDIR /opt/nlp-stock-sa/ssa

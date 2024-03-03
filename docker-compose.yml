@@ -31,8 +31,8 @@ services:
     ports:
       - 9229:9229
     volumes:
-    - ./client:/opts/nlp-stock-ssa/client
-    - /opt/nlp-stock-ssa/client/node_modules
+    - ./client:/opts/nlp-stock-sa/client
+    - /opt/nlp-stock-sa/client/node_modules
     # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
   client-test:
@@ -48,14 +48,14 @@ services:
   #   build:
   #     context: docker/haproxy
   #     dockerfile: haproxy.dockerfile
-  #   image: booboo/nlp-stock-ssa-haproxy # this is probably incorrect :)
+  #   image: booboo/nlp-stock-sa-haproxy # this is probably incorrect :)
   #   depends_on:
   #     - client
   #     - server
   #   networks:
   #     default:
   #       aliases:
-  #         - nlp-stock-ssa.com
+  #         - nlp-stock-sa.com
   #   ports:
   #     - 80:80
   #     - 443:443
@@ -73,7 +73,7 @@ services:
       dockerfile: app/server/Dockerfile
       target: server-dev
     volumes:
-    - ./server:/opts/nlp-stock-ssa/server
+    - ./server:/opts/nlp-stock-sa/server
     # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
   ssa:
@@ -89,7 +89,7 @@ services:
     ports:
       - 3001:3001
     volumes:
-      - ./ssa:/opts/nlp-stock-ssa
+      - ./ssa:/opts/nlp-stock-sa
       # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
 volumes:
