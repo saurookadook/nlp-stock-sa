@@ -11,7 +11,8 @@ services:
       - ssa
 
   database:
-    image: postgres:16.2-bullseye
+    image: postgres:16.2-bullseye # higher than this?
+    env_file: .env
     environment:
       POSTGRES_PASSWORD: example
     ports:
