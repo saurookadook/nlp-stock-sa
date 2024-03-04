@@ -15,6 +15,7 @@ alembic = "^1.13.1"
 fastapi = "^0.110.0"
 python-dotenv = "^1.0.1"
 uvicorn = {extras = ["standard"], version = "^0.27.1"}
+sqlalchemy = "^2.0.27"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -23,6 +24,7 @@ pytest-sugar = "^1.0.0"
 rich = "^13.7.0"
 black = "^24.2.0"
 flake8 = "^7.0.0"
+factory-boy = "^3.3.0"
 
 [build-system]
 requires = ["poetry-core"]
