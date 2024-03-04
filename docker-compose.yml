@@ -11,7 +11,8 @@ services:
       - ssa
 
   database:
-    image: postgres:14.11-bullseye # higher than this?
+    image: postgres:16.2-bullseye # higher than this?
+    env_file: .env
     environment:
       POSTGRES_PASSWORD: example
     ports:
@@ -30,9 +31,9 @@ services:
     ports:
       - 9229:9229
     volumes:
-    - ./client:/opts/nlp-stock-ssa/client
-    - /opt/nlp-stock-ssa/client/node_modules
-    # - ~/.aws:/home/nlpstockssaapp/.aws:ro
+      - ./client:/opts/nlp-stock-sa/client
+      - /opt/nlp-stock-sa/client/node_modules
+      # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
   client-test:
     env_file: .env
@@ -47,14 +48,14 @@ services:
   #   build:
   #     context: docker/haproxy
   #     dockerfile: haproxy.dockerfile
-  #   image: booboo/nlp-stock-ssa-haproxy # this is probably incorrect :)
+  #   image: booboo/nlp-stock-sa-haproxy # this is probably incorrect :)
   #   depends_on:
   #     - client
   #     - server
   #   networks:
   #     default:
   #       aliases:
-  #         - nlp-stock-ssa.com
+  #         - nlp-stock-sa.com
   #   ports:
   #     - 80:80
   #     - 443:443
@@ -72,8 +73,8 @@ services:
       dockerfile: app/server/Dockerfile
       target: server-dev
     volumes:
-    - ./server:/opts/nlp-stock-ssa/server
-    # - ~/.aws:/home/nlpstockssaapp/.aws:ro
+      - ./server:/opts/nlp-stock-sa/server
+      # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
   ssa:
     depends_on:
@@ -88,7 +89,7 @@ services:
     ports:
       - 3001:3001
     volumes:
-      - ./ssa:/opts/nlp-stock-ssa
+      - ./ssa:/opts/nlp-stock-sa
       # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
 volumes:

@@ -4,21 +4,21 @@ COPY ./app/server/package.json package.json
 COPY ./app/server/.yarn .yarn
 COPY ./app/server/yarn.lock yarn.lock
 # or is it --cache-folder?
-RUN yarn install --cache-dir .yarn
+RUN yarn install
 
 FROM node:18-bullseye AS server-dev
 ENV NODE_ENV development
 RUN useradd --uid 2000 nlpstockssaapp -m
 # TODO: is it necessary for the target paths to indicate that these things are for the server?
-RUN mkdir -p /var/log/nlp-stock-ssa/server
-RUN chown -R nlpstockssaapp:nlpstockssaapp /var/log/nlp-stock-ssa/server
-RUN mkdir -p /opt/nlp-stock-ssa/server/logs
-RUN chown -R nlpstockssaapp:nlpstockssaapp /opt/nlp-stock-ssa/server/logs
-RUN mkdir -p /opt/nlp-stock-ssa/server/node_modules
-RUN chown -R nlpstockssaapp:nlpstockssaapp /opt/nlp-stock-ssa/server/node_modules
+RUN mkdir -p /var/log/nlp-stock-sa/server
+RUN chown -R nlpstockssaapp:nlpstockssaapp /var/log/nlp-stock-sa/server
+RUN mkdir -p /opt/nlp-stock-sa/server/logs
+RUN chown -R nlpstockssaapp:nlpstockssaapp /opt/nlp-stock-sa/server/logs
+RUN mkdir -p /opt/nlp-stock-sa/server/node_modules
+RUN chown -R nlpstockssaapp:nlpstockssaapp /opt/nlp-stock-sa/server/node_modules
 USER nlpstockssaapp
-WORKDIR /opt/nlp-stock-ssa/server
-COPY --from=server-packages-dev /node_modules /opt/nlp-stock-ssa/server/node_modules
+WORKDIR /opt/nlp-stock-sa/server
+COPY --from=server-packages-dev /node_modules /opt/nlp-stock-sa/server/node_modules
 CMD yarn serve
 
 FROM server-dev AS server-test
@@ -33,10 +33,10 @@ RUN yarn install --production=false
 FROM node:18-bullseye AS server-release
 ENV NODE_ENV production
 RUN useradd --uid 2000 nlpstockssaapp -m
-RUN mkdir -p /var/log/nlp-stock-ssa/server
-RUN chown -R nlpstockssaapp:nlpstockssaapp /var/log/nlp-stock-ssa/server
-WORKDIR /opt/nlp-stock-ssa/server
-COPY --from=server-packages-release /node_modules /opt/nlp-stock-ssa/server/node_modules
+RUN mkdir -p /var/log/nlp-stock-sa/server
+RUN chown -R nlpstockssaapp:nlpstockssaapp /var/log/nlp-stock-sa/server
+WORKDIR /opt/nlp-stock-sa/server
+COPY --from=server-packages-release /node_modules /opt/nlp-stock-sa/server/node_modules
 COPY . .
 RUN yarn build
 USER nlpstockssaapp

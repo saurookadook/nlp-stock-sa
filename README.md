@@ -11,14 +11,78 @@ Resources:
 
 ## Requirements
 
+- Docker
 - Python 3.10
 - Poetry 1.7.1
 - Node 18.19.0
 - Yarn 4.1.0
+- PostgreSQL 16.2.0
 
 <!-- TODO: include download links :] -->
 
 ## Installation
 
-- run `poetry install` in the ssa folder
+Add following to `/etc/hosts`
+
+```
+127.0.0.1 nlp-stock-sa.com database
+```
+
+> **NOTE: For M1 only**
+>
+> ```sh
+> export DOCKER_DEFAULT_PLATFORM=linux/amd64
+> ```
+
+```sh
+$ brew install nvm yarn python@3.10.4 postgresql@16
+# For M1 Mac only
+$ /opt/homebrew/bin/createuser -s postgres
+$ curl -sSL https://install.python-poetry.org | python 3 -
+$ nvm install $(cat .nvmrc) && nvm use
+```
+
+### Bare `.env`
+
+```
+HOST="0.0.0.0"
+PORT=3000
+LOG_LEVEL=INFO
+POETRY_CACHE_DIR=ssa/.poetry-cache
+
+POSTGRES_DB=the_money_maker
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=example
+```
+
+
+## Installing Required Software
+
+### Docker
+
+_TODO_ 🫠
+
+### PostgreSQL
+
+```sh
+$ brew install postgresql@16
+```
+
+### Python
+
+_TODO_ 🫠
+
+### Poetry
+
+_TODO_ 🫠
+
+### Node
+
+_TODO_ 🫠
+
+### Yarn
+
+_TODO_ 🫠
+
+
 
