@@ -18,16 +18,16 @@ FROM install-base AS install-dev
 COPY ssa/pytest.ini ssa/pyproject.toml ssa/poetry.lock ssa/.poetry-cache ./
 RUN poetry config cache-dir .poetry-cache
 RUN poetry install --no-root --no-interaction
-RUN useradd --uid 2000 nlpstockssaapp
-RUN chown -R nlpstockssaapp:nlpstockssaapp /opt/.venv
+RUN useradd --uid 2000 nlpstocksaapp
+RUN chown -R nlpstocksaapp:nlpstocksaapp /opt/.venv
 
 FROM python:3.10.13-slim-bullseye AS dev-base
 ENV PYTHONUNBUFFERED 1
 RUN apt-get update
 RUN apt-get install --no-install-recommends -y libssl-dev vim nano
 RUN mkdir -p /var/log/nlp-stock-sa/ssa
-RUN useradd --uid 2000 nlpstockssaapp
-USER nlpstockssaapp
+RUN useradd --uid 2000 nlpstocksaapp
+USER nlpstocksaapp
 ARG venv
 WORKDIR /opt/nlp-stock-sa/ssa
 ENV PATH="$venv/bin:$PATH"
@@ -41,16 +41,16 @@ CMD poetry run ssa/scraper/main.py
 FROM install-base AS install-release
 COPY ssa/pyproject.toml ssa/poetry.lock ./
 RUN poetry install --no-root --no-interaction --no-dev
-RUN useradd --uid 2000 nlpstockssaapp
-RUN chown -R nlpstockssaapp:nlpstockssaapp /opt/.venv
+RUN useradd --uid 2000 nlpstocksaapp
+RUN chown -R nlpstocksaapp:nlpstocksaapp /opt/.venv
 
 FROM python:3.10.13-slim-bullseye AS release-base
 RUN apt-get update
 RUN apt-get install --no-install-recommends -y libssl-dev vim nano
-RUN useradd --uid 2000 nlpstockssaapp
+RUN useradd --uid 2000 nlpstocksaapp
 RUN mkdir -p /var/log/nlp-stock-sa/ssa
-RUN chown -R nlpstockssaapp:nlpstockssaapp /var/log/nlp-stock-sa/ssa
-USER nlpstockssaapp
+RUN chown -R nlpstocksaapp:nlpstocksaapp /var/log/nlp-stock-sa/ssa
+USER nlpstocksaapp
 ARG venv
 WORKDIR /opt/nlp-stock-sa/ssa
 ENV PATH="$venv/bin:$PATH"

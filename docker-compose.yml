@@ -33,7 +33,7 @@ services:
     volumes:
       - ./client:/opts/nlp-stock-sa/client
       - /opt/nlp-stock-sa/client/node_modules
-      # - ~/.aws:/home/nlpstockssaapp/.aws:ro
+      # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
   client-test:
     env_file: .env
@@ -74,7 +74,7 @@ services:
       target: server-dev
     volumes:
       - ./server:/opts/nlp-stock-sa/server
-      # - ~/.aws:/home/nlpstockssaapp/.aws:ro
+      # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
   ssa:
     depends_on:
@@ -90,7 +90,7 @@ services:
       - 3001:3001
     volumes:
       - ./ssa:/opts/nlp-stock-sa
-      # - ~/.aws:/home/nlpstockssaapp/.aws:ro
+      # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
 volumes:
   db_volume:
