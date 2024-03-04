@@ -66,6 +66,7 @@ _TODO_ 🫠
 
 ```sh
 $ brew install postgresql@16
+$ brew services stop postgresql@16 # <= need to stop server started by Homebrew as it'll interfere with our container
 ```
 
 ### Python
