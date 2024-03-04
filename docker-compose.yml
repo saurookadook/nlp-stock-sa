@@ -31,9 +31,9 @@ services:
     ports:
       - 9229:9229
     volumes:
-    - ./client:/opts/nlp-stock-sa/client
-    - /opt/nlp-stock-sa/client/node_modules
-    # - ~/.aws:/home/nlpstockssaapp/.aws:ro
+      - ./client:/opts/nlp-stock-sa/client
+      - /opt/nlp-stock-sa/client/node_modules
+      # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
   client-test:
     env_file: .env
@@ -73,8 +73,8 @@ services:
       dockerfile: app/server/Dockerfile
       target: server-dev
     volumes:
-    - ./server:/opts/nlp-stock-sa/server
-    # - ~/.aws:/home/nlpstockssaapp/.aws:ro
+      - ./server:/opts/nlp-stock-sa/server
+      # - ~/.aws:/home/nlpstockssaapp/.aws:ro
 
   ssa:
     depends_on:
