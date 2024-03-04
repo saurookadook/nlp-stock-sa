@@ -35,6 +35,11 @@ ENV PATH="$venv/bin:$PATH"
 ENV PYTHONPATH="ssa/:$PYTHONPATH"
 COPY --from=install-dev /opt/.venv /opt/.venv
 
+FROM dev-base AS api-dev
+ARG HOST
+ARG PORT
+CMD uvicorn api.app:app --host $HOST --port $PORT --reload
+
 FROM dev-base AS ssa-dev
 CMD poetry run ssa/scraper/main.py
 
@@ -61,4 +66,10 @@ COPY --from=install-release /opt/nlp-stock-sa/ssa/ ./
 COPY ssa/scraper ./scraper
 # TODO: might need something like this for DB migrations after we set up the database
 # COPY ssa/alembic.ini ./
+
+FROM release-base AS api
+ARG HOST
+ARG PORT
+CMD uvicorn api.app:app --host $HOST --port $PORT
+# ^ may need to change this command
 
