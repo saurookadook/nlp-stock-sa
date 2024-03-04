@@ -7,8 +7,8 @@ DO $body$
 BEGIN
     IF NOT EXISTS (
         SELECT *
-        FROM pg_catalog.pg_user
-        WHERE username = 'app')
+        FROM pg_user
+        WHERE usename = 'app')
         THEN
         CREATE USER app WITH INHERIT LOGIN PASSWORD 'app';
     END IF;
@@ -16,3 +16,4 @@ END
 $body$;
 
 GRANT ALL ON SCHEMA public TO app;
+
