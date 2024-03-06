@@ -3,6 +3,7 @@
 
 # Python
 .poetry-cache
+__pycache__
 
 # Node
 .yarn/*

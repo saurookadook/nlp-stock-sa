@@ -40,7 +40,7 @@ FROM dev-base AS server-dev
 ARG HOST
 ARG PORT
 RUN echo pwd
-CMD poetry run uvicorn api.app:app --host $HOST --port $PORT --reload
+CMD uvicorn server.api.app:app --host $HOST --port $PORT --reload
 
 FROM dev-base AS ssa-dev
 CMD poetry run server/ssa/scraper/main.py
