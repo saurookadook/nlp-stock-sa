@@ -10,6 +10,8 @@ from pydantic import BaseModel
 logger = logging.getLogger(__name__)
 
 config = dict(csrf_secret="TMP")
+logger.info(f"{('='*40)} server.app::config {('='*40)}")
+logger.info(dir(config))
 
 
 @asynccontextmanager
@@ -22,7 +24,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 class CsrfSettings(BaseModel):
-    secret_key: str = config.csrf_secret
+    secret_key: str = config["csrf_secret"]
     csrf_header_name: str = "csrf-token"
 
 
@@ -34,3 +36,9 @@ def get_csrf_config():
 @app.exception_handler(CsrfProtectError)
 def csrf_protect_exception_handler(request: Request, exc: CsrfProtectError):
     return JSONResponse(status_code=403, content={"detail": exc.message})
+
+
+@app.get("/")
+async def read_root():
+    # return JSONResponse(status_code=200, content={"message": "Hello, world!"})
+    return {"message": "Hello, world!"}
