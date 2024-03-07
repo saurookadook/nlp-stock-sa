@@ -39,8 +39,7 @@ COPY --from=install-dev /opt/.venv /opt/.venv
 FROM dev-base AS server-dev
 ARG HOST
 ARG PORT
-RUN echo pwd
-CMD uvicorn server.api.app:app --host $HOST --port $PORT --reload
+CMD ["uvicorn", "server.api.app:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]
 
 FROM dev-base AS ssa-dev
 CMD poetry run server/ssa/scraper/main.py

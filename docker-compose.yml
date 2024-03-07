@@ -72,6 +72,8 @@ services:
       context: .
       dockerfile: server/Dockerfile
       target: server-dev
+    ports:
+      - "3000:3000"
     volumes:
       - ./server:/opt/nlp-stock-sa/server
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
@@ -87,7 +89,7 @@ services:
       dockerfile: server/Dockerfile
       target: ssa-dev
     ports:
-      - 3001:3001
+      - "3001:3001"
     volumes:
       - ./ssa:/opt/nlp-stock-sa/ssa
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
