@@ -6,8 +6,8 @@ from sqlalchemy.sql import func
 from db import Base, ArrowDate
 
 
-class SentimentAnalysisDB(Base):
-    __tablename__ = "sentiment_analyses"
+class UserDB(Base):
+    __tablename__ = "users"
 
     id = Column(postgresql.UUID(as_uuid=True), primary_key=True, nullable=False)
     username = Column(String(length=255), nullable=False, unique=True)
