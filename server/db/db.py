@@ -67,3 +67,20 @@ def ArrowDate(*args, **kwargs):
     if "timezone" not in kwargs:
         kwargs["timezone"] = True
     return ArrowDateClass(*args, **kwargs)
+
+
+def db_session():
+    """FastAPI dependency to get database session
+
+    Yields:
+        Session: open database session
+    """
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
