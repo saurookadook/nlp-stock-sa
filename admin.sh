@@ -27,7 +27,11 @@ dbIsNotReady() {
 
 isDbReady() {
     # docker-compose up -d database 1> /dev/null &
+    echo ""
+    echo "======================================================================================"
     echo "Starting ready loop..."
+    echo "======================================================================================"
+    echo ""
     while dbIsNotReady; do
     # while ! pg_isready -h database >/dev/null 2>&1; do
         echo "Waiting for database to be ready..."
@@ -44,9 +48,11 @@ dbExists() {
 
 createDatabase() {
     if [[ $* == "-d" ]]; then # drop flag included
+        echo ""
         echo "======================================================================================"
         echo "Dropping $DATABASE_NAME database..."
         echo "======================================================================================"
+        echo ""
         psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
     fi
 
@@ -65,9 +71,11 @@ initDatabase() {
     isDbReady
 
     if dbExists; then
+        echo ""
         echo "======================================================================================"
         echo "$DATABASE_NAME already exists :]"
         echo "======================================================================================"
+        echo ""
     else
         echo "======================================================================================"
         echo "Creating $DATABASE_NAME database..."
@@ -80,13 +88,17 @@ initTestDatabase() {
     isDbReady
 
     if dbExists; then
+        echo ""
         echo "======================================================================================"
         echo "$TEST_DATABASE_NAME already exists :]"
         echo "======================================================================================"
+        echo ""
     else
+        echo ""
         echo "======================================================================================"
         echo "Creating $TEST_DATABASE_NAME database..."
         echo "======================================================================================"
+        echo ""
         createTestDatabase
     fi
 }
@@ -107,38 +119,52 @@ cleanDocker() {
 
 scriptController() {
     if [ "$1" == "db" ]; then
+        echo ""
         echo "======================================================================================"
         echo "db case"
         echo "======================================================================================"
+        echo ""
         if [ "$2" == "init" ]; then
+            echo ""
             echo "======================================================================================"
             echo "Initializing $DATABASE_NAME database..."
             echo "======================================================================================"
+            echo ""
             initDatabase
         elif [ "$2" == "create" ]; then
+            echo ""
             echo "======================================================================================"
             echo "Creating $DATABASE_NAME database..."
             echo "======================================================================================"
+            echo ""
             createDatabase
         elif [ "$2" == "init-test" ]; then
+            echo ""
             echo "======================================================================================"
             echo "Initializing $TEST_DATABASE_NAME database..."
             echo "======================================================================================"
+            echo ""
             initTestDatabase
         elif [ "$2" == "create-test" ]; then
+            echo ""
             echo "======================================================================================"
             echo "Creating $TEST_DATABASE_NAME database..."
             echo "======================================================================================"
+            echo ""
             createTestDatabase
         fi
     elif [ "$1" == "db-check" ]; then
+        echo ""
         echo "======================================================================================"
         echo "Checking if $DATABASE_NAME exists... $(dbExists)"
         echo "======================================================================================"
+        echo ""
     elif [ "$1" == "clean" ]; then
+        echo ""
         echo "======================================================================================"
         echo "clean case"
         echo "======================================================================================"
+        echo ""
         if [ "$2" == "docker" ]; then
             cleanDocker
         fi

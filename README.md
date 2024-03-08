@@ -93,39 +93,45 @@ _TODO_ 🫠
 Run current database migrations:
 
 ```sh
-$ docker run server alembic upgrade head
+$ docker-compose run --rm server alembic upgrade head
 ```
 
 Reset to base version
 
 ```sh
-$ docker run server alembic downgrade
+$ docker-compose run --rm server alembic downgrade
 ```
 
 Run revisions:
 
 ```sh
-$ docker run server alembic revision -m "some migration message"
+$ docker-compose run --rm server alembic revision -m "some migration message"
 ```
 
 Autogenerate revisions:
 
 ```sh
-$ docker run server alembic revision --autogenerate -m "some migration message"
+$ docker-compose run --rm server alembic revision --autogenerate -m "some migration message"
 ```
 
 ## Tests
 
 ### Server
 
+Run current database migrations for test database:
+
+```sh
+$ docker-compose run -e DATABASE_NAME=test_the_money_maker server alembic upgrade head
+```
+
 Run tests with:
 
 ```sh
-$ docker run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server python -m pytest -s --import-mode=append
+$ docker-compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server python -m pytest -s --import-mode=append
 ```
 
 Or run in watch mode:
 
 ```sh
-$ docker run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server pytest-watch
+$ docker-compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server pytest-watch
 ```
