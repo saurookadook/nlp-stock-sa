@@ -7,10 +7,10 @@ from models import *
 
 
 config = dict(
-    database_user="TMP",
-    database_password="TMP",
-    database_host="TMP",
-    database_port="TMP",
+    database_user="postgres",
+    database_password="example",
+    database_host="database",
+    database_port="5432",
     database_name="the_money_maker",
 )
 
