@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from alembic import op
 from typing import Sequence, Union
 
-from db import ArrowDateClass
+import db
 from migrations.alembic_utilities import create_pg_enum, drop_pg_enum
 from models.sentiment_analysis import SentimentEnum
 
@@ -38,13 +38,13 @@ def upgrade() -> None:
         sa.Column("source_group_id", sa.UUID(), nullable=False),
         sa.Column(
             "created_at",
-            ArrowDateClass(timezone=True),
+            db.db.ArrowDateClass(timezone=True),
             server_default=sa.text("now()"),
             nullable=False,
         ),
         sa.Column(
             "updated_at",
-            ArrowDateClass(timezone=True),
+            db.db.ArrowDateClass(timezone=True),
             server_default=sa.text("now()"),
             nullable=False,
         ),
@@ -59,13 +59,13 @@ def upgrade() -> None:
         sa.Column("last_name", sa.String(length=255), nullable=False),
         sa.Column(
             "created_at",
-            ArrowDateClass(timezone=True),
+            db.db.ArrowDateClass(timezone=True),
             server_default=sa.text("now()"),
             nullable=False,
         ),
         sa.Column(
             "updated_at",
-            ArrowDateClass(timezone=True),
+            db.db.ArrowDateClass(timezone=True),
             server_default=sa.text("now()"),
             nullable=False,
         ),

@@ -3,12 +3,16 @@ from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy import MetaData
 from typing import Dict, Iterable, Optional
 
+from db import Base
+
 
 def create_pg_enum(type_name: str, enum_options: Iterable[str]):
     alembic_connection = op.get_bind()
 
     enum = ENUM(
-        *enum_options, name=type_name, metadata=MetaData(bind=alembic_connection)
+        *enum_options,
+        name=type_name,
+        metadata=Base.metadata,
     )
     enum.create(alembic_connection)
     return enum
@@ -18,7 +22,9 @@ def drop_pg_enum(type_name: str, enum_options: Iterable[str]):
     alembic_connection = op.get_bind()
 
     enum = ENUM(
-        *enum_options, name=type_name, metadata=MetaData(bind=alembic_connection)
+        *enum_options,
+        name=type_name,
+        metadata=Base.metadata,
     )
     enum.drop(alembic_connection)
 
