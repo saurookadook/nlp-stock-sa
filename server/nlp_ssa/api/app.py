@@ -4,14 +4,17 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi_csrf_protect import CsrfProtect
 from fastapi_csrf_protect.exceptions import CsrfProtectError
+from sqlalchemy import insert
 from pydantic import BaseModel
+from uuid import uuid4
+
+from db import Session as db_session
+from models.user import UserDB, UserFacade
 
 
 logger = logging.getLogger(__name__)
 
 config = dict(csrf_secret="TMP")
-logger.warning(f"{('='*40)} server.app::config {('='*40)}")
-logger.warning(dir(config))
 
 
 @asynccontextmanager
@@ -36,6 +39,32 @@ def get_csrf_config():
 @app.exception_handler(CsrfProtectError)
 def csrf_protect_exception_handler(request: Request, exc: CsrfProtectError):
     return JSONResponse(status_code=403, content={"detail": exc.message})
+
+
+@app.get("/api/users/test")
+async def read_users_test():
+    user_facade = UserFacade(db_session=db_session)
+
+    try:
+        logger.warning(f"{'='*40} getting user {'='*40}")
+        user = user_facade.get_one_by_username(username="gordis-goobis")
+    except UserFacade.NoResultFound:
+        logger.warning(f"{'='*40} creating user {'='*40}")
+        users = db_session.scalars(
+            insert(UserDB).returning(UserDB),
+            [
+                {
+                    "id": uuid4(),
+                    "username": "gordis-goobis",
+                    "first_name": "Gordo",
+                    "last_name": "Ovalle-Maskiell",
+                }
+            ],
+        )
+        db_session.commit()
+        user = users.first()
+
+    return {"user": user}
 
 
 @app.get("/api/health-check")
