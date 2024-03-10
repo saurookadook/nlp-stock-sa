@@ -27,6 +27,7 @@ node_modules
 
 # Common
 .env
+.DS_Store
 
 ./scraper/scraper/.__pycache__
 
