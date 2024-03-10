@@ -8,19 +8,20 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 # TODO: move this elsewhere lol
-config = dict(
-    database_user="TMP",
-    database_password="TMP",
-    database_host="TMP",
-    database_port="TMP",
-    database_name="TMP",
-    log_sql="TMP",
+env_config = dict(
+    database_user="postgres",
+    database_password="example",
+    database_host="database",
+    database_port="5432",
+    database_name="the_money_maker",
+    log_sql=True,
 )
 
 engine = create_engine(
-    f"postgresql+psycorp2://{config.database_user}:{config.database_password}"
-    f"@{config.database_host}:{config.database_port}/{config.database_name}",
-    echo=config.log_sql,
+    f"postgresql+psycopg2://{env_config['database_user']}:{env_config['database_password']}"
+    # f"postgresql://{env_config['database_user']}:{env_config['database_password']}"
+    f"@{env_config['database_host']}:{env_config['database_port']}/{env_config['database_name']}",
+    echo=env_config["log_sql"],
     max_overflow=30,
     connect_args={"options": "-c timezone=utc"},
     future=True,
