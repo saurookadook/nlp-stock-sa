@@ -57,6 +57,7 @@ createDatabase() {
     fi
 
     psql $PSQL_CONNECTION -f "db/init_db.sql"
+    docker-compose run --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
 createTestDatabase() {
@@ -65,22 +66,35 @@ createTestDatabase() {
     fi
 
     psql $PSQL_CONNECTION -f "db/init_test_db.sql"
+    docker-compose run -e "DATABASE_NAME=test_the_money_maker" --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
 initDatabase() {
     isDbReady
 
-    if dbExists; then
+
+    if [[ $* == "-d" || ! $(dbExists) ]]; then
+        echo ""
+        echo "======================================================================================"
+        echo "Creating $DATABASE_NAME database..."
+        echo "======================================================================================"
+        echo ""
+        createDatabase
+        # echo ""
+        # echo "======================================================================================"
+        # echo "$DATABASE_NAME already exists :]"
+        # echo "======================================================================================"
+        # echo ""
+    else
         echo ""
         echo "======================================================================================"
         echo "$DATABASE_NAME already exists :]"
         echo "======================================================================================"
         echo ""
-    else
-        echo "======================================================================================"
-        echo "Creating $DATABASE_NAME database..."
-        echo "======================================================================================"
-        createDatabase
+        # echo "======================================================================================"
+        # echo "Creating $DATABASE_NAME database..."
+        # echo "======================================================================================"
+        # createDatabase
     fi
 }
 
@@ -168,6 +182,8 @@ scriptController() {
         if [ "$2" == "docker" ]; then
             cleanDocker
         fi
+    elif [ "$1" == "reset-server" ]; then
+        docker-compose down && docker-compose build database server --no-cache && docker-compose up -d database server
     elif [ "$1" == "test" ]; then
         echo "testing..."
         # for testing individual things :]

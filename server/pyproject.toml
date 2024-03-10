@@ -1,32 +1,36 @@
 [tool.poetry]
-name = "server"
-version = "0.1.0"
+name = "nlp-stock-ssa"
+version = "0.0.0"
 description = ""
 authors = ["Andrea Ovalle <andrea.ovalle1990@gmail.com>", "Andy Maskiell <maskiella@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-scrapy = "^2.11.0"
-bs4 = "^0.0.2"
-nltk = "^3.8.1"
-vadersentiment = "^3.3.2"
 alembic = "^1.13.1"
+arrow = "^1.3.0"
+bs4 = "^0.0.2"
 fastapi = "^0.110.0"
-python-dotenv = "^1.0.1"
-uvicorn = {extras = ["standard"], version = "^0.27.1"}
-sqlalchemy = "^2.0.27"
 fastapi-csrf-protect = "^0.3.3"
+nltk = "^3.8.1"
+python = "^3.10"
+python-dotenv = "^1.0.1"
+scrapy = "^2.11.0"
+sqlalchemy = "^2.0.27"
+uvicorn = {extras = ["standard"], version = "^0.27.1"}
+vadersentiment = "^3.3.2"
+psycopg2-binary = "^2.9.9"
 
 
 [tool.poetry.group.dev.dependencies]
+black = "^24.2.0"
+factory-boy = "^3.3.0"
+flake8 = "^7.0.0"
+pygments = "^2.17.2"
 pytest = "^8.0.1"
 pytest-sugar = "^1.0.0"
-rich = "^13.7.0"
-black = "^24.2.0"
-flake8 = "^7.0.0"
-factory-boy = "^3.3.0"
+pytest-xdist = "^3.5.0"
 requests-mock = "^1.11.0"
+rich = "^13.7.0"
 
 [build-system]
 requires = ["poetry-core"]

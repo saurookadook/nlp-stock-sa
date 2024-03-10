@@ -37,7 +37,8 @@ COPY --from=install-dev /opt/.venv /opt/.venv
 FROM dev-base AS server-dev
 ARG HOST
 ARG PORT
-CMD ["uvicorn", "server.api.app:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]
+# TODO: figure out why $HOST and $PORT aren't getting interpolated correctly
+CMD ["uvicorn", "nlp_ssa.api.app:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]
 
 FROM dev-base AS ssa-dev
 CMD poetry run server/ssa/scraper/main.py
