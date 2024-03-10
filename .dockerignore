@@ -1,0 +1,6 @@
+.github
+.vscode
+.vscode.example
+db/
+docker/
+.mypy_cache/
