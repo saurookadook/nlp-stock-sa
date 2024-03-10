@@ -38,7 +38,6 @@ target_metadata = Base.metadata
 config.set_main_option(
     "sqlalchemy.url",
     f"postgresql+psycopg2://{env_config['database_user']}:{env_config['database_password']}"
-    # f"postgresql://{env_config['database_user']}:{env_config['database_password']}"
     f"@{env_config['database_host']}:{env_config['database_port']}/{env_config['database_name']}",
 )
 
