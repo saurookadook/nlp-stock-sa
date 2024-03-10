@@ -31,9 +31,7 @@ USER nlpssa_app
 ARG venv
 WORKDIR /opt/nlp-stock-sa
 ENV PATH="$venv/bin:$PATH"
-# TODO: not sure about this one :)
-ENV PYTHONPATH="api/:$PYTHONPATH"
-ENV PYTHONPATH="db/:$PYTHONPATH"
+ENV PYTHONPATH="nlp_ssa/:$PYTHONPATH"
 COPY --from=install-dev /opt/.venv /opt/.venv
 
 FROM dev-base AS server-dev
@@ -60,13 +58,11 @@ USER nlpssa_app
 ARG venv
 WORKDIR /opt/nlp-stock-sa/server
 ENV PATH="$venv/bin:$PATH"
-# TODO: not sure about this one :)
-ENV PYTHONPATH="server/:$PYTHONPATH"
+ENV PYTHONPATH="nlp_ssa/:$PYTHONPATH"
 COPY --from=install-release /opt/.venv /opt/.venv
 COPY --from=install-release /opt/nlp-stock-sa/server/ ./
 COPY server/scraper ./server/scraper
-# TODO: might need something like this for DB migrations after we set up the database
-# COPY server/alembic.ini ./
+COPY server/alembic.ini ./
 
 # Maybe server-api? api-server?
 FROM release-base AS server
