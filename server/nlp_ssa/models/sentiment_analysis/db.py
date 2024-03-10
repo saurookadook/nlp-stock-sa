@@ -5,13 +5,7 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.sql import func
 
 from db import Base, ArrowDate
-
-
-class SentimentEnum(enum.Enum):
-
-    POSITIVE = "positive"
-    NEUTRAL = "neutral"
-    NEGATIVE = "negative"
+from models.sentiment_analysis import SentimentEnum
 
 
 SENTIMENT_ENUM = postgresql.ENUM(
