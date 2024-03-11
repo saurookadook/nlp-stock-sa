@@ -2,19 +2,10 @@ from alembic import context
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 
-
+from config import env_config
 from db import Base
 from models import *
 
-
-env_config = dict(
-    database_user="postgres",
-    database_password="example",
-    database_host="database",
-    database_port="5432",
-    database_name="the_money_maker",
-    log_sql=True,
-)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

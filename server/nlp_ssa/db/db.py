@@ -5,17 +5,11 @@ from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
 from sqlalchemy.types import TypeDecorator
 from typing import Any
 
-logger = logging.getLogger(__name__)
+from config import configure_logging, env_config
 
-# TODO: move this elsewhere lol
-env_config = dict(
-    database_user="postgres",
-    database_password="example",
-    database_host="database",
-    database_port="5432",
-    database_name="the_money_maker",
-    log_sql=True,
-)
+
+configure_logging(app_name="nlp_ssa/db")
+logger = logging.getLogger(__name__)
 
 engine = create_engine(
     f"postgresql+psycopg2://{env_config['database_user']}:{env_config['database_password']}"
@@ -36,7 +30,7 @@ Base.metadata.naming_conventions = {
     "pk": "%(table_name)s_pkey",
 }
 
-Session = scoped_session(
+DBSession = scoped_session(
     sessionmaker(autocommit=False, autoflush=False, bind=engine, future=True)
 )
 
@@ -75,7 +69,7 @@ def db_session():
     Yields:
         Session: open database session
     """
-    session = Session()
+    session = DBSession()
     try:
         yield session
         session.commit()

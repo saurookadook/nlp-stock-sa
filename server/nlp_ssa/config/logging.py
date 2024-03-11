@@ -1,14 +1,13 @@
 import logging
 
+from config import env_config
 
-# TODO: make a better global object lol
-config = {"env": "test", "log_level": "NOTSET"}
 
 root_logger = logging.getLogger()
 
 
 def is_prod():
-    return config["env"].lower() == "prod"
+    return env_config["env"].lower() == "prod"
 
 
 def configure_logging(app_name: str):
@@ -32,7 +31,7 @@ def configure_logging(app_name: str):
     )
 
     if not root_handler:
-        root_logger.setLevel(getattr(logging, config["log_level"].upper()))
+        root_logger.setLevel(getattr(logging, env_config["log_level"].upper()))
         console_handler.setFormatter(
             logging.Formatter(
                 "{asctime} [{name}: {lineno}] [{levelname}]: {message}", style="{"

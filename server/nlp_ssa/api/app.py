@@ -8,13 +8,13 @@ from sqlalchemy import insert
 from pydantic import BaseModel
 from uuid import uuid4
 
-from db import Session as db_session
+from config import configure_logging, env_config
+from db import DBSession
 from models.user import UserDB, UserFacade
 
 
+configure_logging(app_name="nlp_ssa/api")
 logger = logging.getLogger(__name__)
-
-config = dict(csrf_secret="TMP")
 
 
 @asynccontextmanager
@@ -27,7 +27,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 class CsrfSettings(BaseModel):
-    secret_key: str = config["csrf_secret"]
+    secret_key: str = env_config["csrf_secret"]
     csrf_header_name: str = "csrf-token"
 
 
@@ -43,14 +43,14 @@ def csrf_protect_exception_handler(request: Request, exc: CsrfProtectError):
 
 @app.get("/api/users/test")
 async def read_users_test():
-    user_facade = UserFacade(db_session=db_session)
+    user_facade = UserFacade(DBSession=DBSession)
 
     try:
         logger.warning(f"{'='*40} getting user {'='*40}")
         user = user_facade.get_one_by_username(username="gordis-goobis")
     except UserFacade.NoResultFound:
         logger.warning(f"{'='*40} creating user {'='*40}")
-        users = db_session.scalars(
+        users = DBSession.scalars(
             insert(UserDB).returning(UserDB),
             [
                 {
@@ -61,7 +61,7 @@ async def read_users_test():
                 }
             ],
         )
-        db_session.commit()
+        DBSession.commit()
         user = users.first()
 
     return {"user": user}
@@ -70,7 +70,7 @@ async def read_users_test():
 @app.get("/api/health-check")
 async def read_health_check():
     # return JSONResponse(status_code=200, content={"message": "Hello, world!"})
-    return {"message": "Hello, world!"}
+    return {"message": "Yaaaaaay, health! Salud!"}
 
 
 @app.get("/")
