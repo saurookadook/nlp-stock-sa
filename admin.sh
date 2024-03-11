@@ -170,12 +170,15 @@ scriptController() {
             echo ""
             createTestDatabase
         fi
-    elif [ "$1" == "db-check" ]; then
-        echo ""
-        echo "======================================================================================"
-        echo "Checking if $DATABASE_NAME exists... $(dbExists)"
-        echo "======================================================================================"
-        echo ""
+    elif [ "$1" == "test" ]; then
+        if [ "$2" == "server" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "Checking if $DATABASE_NAME exists... $(dbExists)"
+            echo "======================================================================================"
+            echo ""
+            docker-compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server python -m pytest -s --import-mode=append $3
+        fi
     elif [ "$1" == "clean" ]; then
         echo ""
         echo "======================================================================================"
