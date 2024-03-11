@@ -2,14 +2,14 @@ import arrow
 import factory
 import uuid
 
-from db import Session
+from db import db_session
 from models.user import UserDB
 
 
 class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = UserDB
-        sqlalchemy_session = Session
+        sqlalchemy_session = db_session
 
     id = factory.LazyFunction(lambda: uuid.uuid4())
     username = factory.Faker("username")

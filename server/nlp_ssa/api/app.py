@@ -13,7 +13,7 @@ from db import db_session
 from models.user import UserDB, UserFacade
 
 
-configure_logging(app_name="nlp_ssa/api")
+configure_logging(app_name="nlp_ssa.api")
 logger = logging.getLogger(__name__)
 
 

@@ -8,7 +8,7 @@ from typing import Any
 from config import configure_logging, env_config
 
 
-configure_logging(app_name="nlp_ssa/db")
+configure_logging(app_name="nlp_ssa.db")
 logger = logging.getLogger(__name__)
 
 engine = create_engine(

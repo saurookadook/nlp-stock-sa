@@ -3,7 +3,6 @@ import pytest
 from sqlalchemy import select, and_
 from unittest import mock
 
-from db import db_session
 from models.user import UserFactory, UserDB
 
 

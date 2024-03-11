@@ -19,22 +19,38 @@ def configure_logging(app_name: str):
         console_handler = RichHandler(
             show_time=False, rich_tracebacks=True, tracebacks_theme="emacs"
         )
-    setattr(console_handler, "_name", "root_handler")
 
-    root_handler = next(
-        iter(
-            filter(
-                lambda x: getattr(x, "_name") == getattr(console_handler, "_name"),
-                root_logger.handlers,
-            )
+    root_logger.setLevel(getattr(logging, env_config["log_level"].upper()))
+    console_handler.setFormatter(
+        logging.Formatter(
+            "{asctime} [{name}: {lineno}] [{levelname}]: {message}", style="{"
         )
     )
+    root_logger.addHandler(console_handler)
 
-    if not root_handler:
-        root_logger.setLevel(getattr(logging, env_config["log_level"].upper()))
-        console_handler.setFormatter(
-            logging.Formatter(
-                "{asctime} [{name}: {lineno}] [{levelname}]: {message}", style="{"
-            )
-        )
-        root_logger.addHandler(root_handler)
+    # from rich import inspect
+
+    # print(f"{'-' * 50} root_logger {'-' * 50}")
+    # print(inspect(root_logger, all=True))
+    # print(f"{'-' * 50} root_logger.handlers {'-' * 50}")
+    # print(inspect(root_logger.handlers, all=True))
+
+    # setattr(console_handler, "_name", "root_handler")
+
+    # root_handler = next(
+    #     iter(
+    #         filter(
+    #             lambda x: getattr(x, "_name") == getattr(console_handler, "_name"),
+    #             root_logger.handlers,
+    #         )
+    #     )
+    # )
+
+    # if not root_handler:
+    #     root_logger.setLevel(getattr(logging, env_config["log_level"].upper()))
+    #     console_handler.setFormatter(
+    #         logging.Formatter(
+    #             "{asctime} [{name}: {lineno}] [{levelname}]: {message}", style="{"
+    #         )
+    #     )
+    #     root_logger.addHandler(root_handler)

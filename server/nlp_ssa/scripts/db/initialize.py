@@ -1,9 +1,9 @@
 import os
 from alembic import command, config
 
-import nlp_ssa.db as db
-from nlp_ssa.db import Base, engine
-from nlp_ssa.models import *
+import db
+from db import Base, engine
+from models import *
 
 
 def initialize_database():

@@ -9,7 +9,6 @@ getDatabaseHost() {
 }
 
 DATABASE_NAME="the_money_maker"
-TEST_DATABASE_NAME="test_the_money_maker"
 # https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS
 PSQL_CONNECTION="postgresql://postgres:example@database"
 LAST_RETURN_STATUS_CODE=$?
@@ -61,6 +60,8 @@ createDatabase() {
 }
 
 createTestDatabase() {
+    DATABASE_NAME="test_the_money_maker"
+
     if [[ $* == "-d" ]]; then # drop flag included
         psql $PSQL_CONNECTION -c DROP DATABASE IF EXISTS $DATABASE_NAME
     fi
@@ -99,18 +100,20 @@ initDatabase() {
 }
 
 initTestDatabase() {
+    DATABASE_NAME="test_the_money_maker"
+
     isDbReady
 
     if dbExists; then
         echo ""
         echo "======================================================================================"
-        echo "$TEST_DATABASE_NAME already exists :]"
+        echo "$DATABASE_NAME already exists :]"
         echo "======================================================================================"
         echo ""
     else
         echo ""
         echo "======================================================================================"
-        echo "Creating $TEST_DATABASE_NAME database..."
+        echo "Creating $DATABASE_NAME database..."
         echo "======================================================================================"
         echo ""
         createTestDatabase
@@ -155,14 +158,14 @@ scriptController() {
         elif [ "$2" == "init-test" ]; then
             echo ""
             echo "======================================================================================"
-            echo "Initializing $TEST_DATABASE_NAME database..."
+            echo "Initializing test_$DATABASE_NAME database..."
             echo "======================================================================================"
             echo ""
             initTestDatabase
         elif [ "$2" == "create-test" ]; then
             echo ""
             echo "======================================================================================"
-            echo "Creating $TEST_DATABASE_NAME database..."
+            echo "Creating test_$DATABASE_NAME database..."
             echo "======================================================================================"
             echo ""
             createTestDatabase

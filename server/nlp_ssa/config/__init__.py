@@ -6,7 +6,7 @@ env_config = dict(
     database_port="5432",
     database_name="the_money_maker",
     env="test",
-    log_level="NOTSET",
+    log_level="DEBUG",
     log_sql=True,
 )
 
