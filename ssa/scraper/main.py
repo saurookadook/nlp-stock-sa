@@ -2,7 +2,7 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
 from scraper.spiders.news_spider import NewsSpider
-from scraper.spiders.bloomberg_spider import BloombergSpider
+from scraper.spiders.google_spider import GoogleFinanceSpider
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
@@ -24,7 +24,7 @@ def post_process(items):
 def main():
     process = CrawlerProcess(get_project_settings())
     # process.crawl(NewsSpider).addCallback(post_process)
-    process.crawl(BloombergSpider)
+    process.crawl(GoogleFinanceSpider)
     process.start()
 
 

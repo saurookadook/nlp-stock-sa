@@ -13,22 +13,13 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-class BloombergSpider(scrapy.Spider):
+class GoogleFinanceSpider(scrapy.Spider):
     name = "news"
     custom_settings = {
         'USER_AGENT' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
         'DOWNLOAD_DELAY': 2 
         }
     group_id = uuid.uuid4()
-
-    def preprocess(self, documents):
-        '''
-        Preprocesses a list of text documents by cleaning each one.
-        '''
-        preprocessed_docs = []
-        for doc in documents:
-            preprocessed_docs.append(self.clean(doc)) 
-        return preprocessed_docs 
     
     def clean(self, text):
         '''
@@ -54,13 +45,14 @@ class BloombergSpider(scrapy.Spider):
     
     def start_requests(self):
         urls = [
-            "https://www.bloomberg.com/markets"
+            "https://www.google.com/finance/",
+            # "https://finance.yahoo.com/news/best-ai-stock-palantir-stock-174625325.html"
         ]
         for url in urls:
-            yield scrapy.Request(url=url, callback=self.parse)
+            yield scrapy.Request(url=url, callback=self.parse_google_sub_links)
 
 
-    def parse_bloomberg_sub_links(self, response): 
+    def parse_google_sub_links(self, response): 
         '''
         - parse yahoo sub links only
         - runs methods to pre-process data for nlp models
@@ -68,10 +60,20 @@ class BloombergSpider(scrapy.Spider):
         '''
         links_to_include = ['https']
     
-        links = response.css('a::attr(href)').getall()
-        for link in links:
-            if all(keyword in link for keyword in links_to_include) and 'login' not in link:
-                yield scrapy.Request(url=link, callback=self.parse)
+        # links = response.css('a::attr(href)').getall()
+        # for link in links:
+        #     if all(keyword in link for keyword in links_to_include) and 'login' not in link:
+        #         yield scrapy.Request(url=link, callback=self.parse)
+
+        paragraphs = response.css('p').getall()
+        for paragraph in paragraphs:
+            # Extract links from each <p> tag
+            paragraph_links = scrapy.Selector(text=paragraph).css('a::attr(href)').getall()
+            print(paragraph_links)
+            for link in paragraph_links:
+                if all(keyword in link for keyword in links_to_include) and 'login' not in link:
+                    yield scrapy.Request(url=link, callback=self.parse)
+
 
     def parse(self, response):
         '''
