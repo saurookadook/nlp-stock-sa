@@ -31,7 +31,7 @@ services:
     ports:
       - 9229:9229
     volumes:
-      - ./client:/opts/nlp-stock-sa/client
+      - ./client:/opt/nlp-stock-sa/client
       - /opt/nlp-stock-sa/client/node_modules
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
@@ -68,12 +68,16 @@ services:
     env_file: .env
     environment:
       EXAMPLE: woof
+      WORKERS: 1
     build:
       context: .
-      dockerfile: app/server/Dockerfile
+      dockerfile: server/Dockerfile
       target: server-dev
+    ports:
+      - "3000:3000"
     volumes:
-      - ./server:/opts/nlp-stock-sa/server
+      - ./server:/opt/nlp-stock-sa
+      # - ./server:/opt/nlp-stock-sa/server
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
   ssa:
@@ -82,14 +86,15 @@ services:
     env_file: .env
     environment:
       EXAMPLE: woof
+      WORKERS: 1
     build:
       context: .
-      dockerfile: ssa/Dockerfile
+      dockerfile: server/Dockerfile
       target: ssa-dev
     ports:
-      - 3001:3001
+      - "3001:3001"
     volumes:
-      - ./ssa:/opts/nlp-stock-sa
+      - ./ssa:/opt/nlp-stock-sa/ssa
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
 volumes:
