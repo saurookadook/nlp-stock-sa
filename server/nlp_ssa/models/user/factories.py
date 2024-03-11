@@ -15,9 +15,9 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     username = factory.Faker("username")
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
-    created_at = arrow.utcnow()
-    updated_at = arrow.utcnow()
+    created_at = arrow.get(2020, 4, 15)
+    updated_at = arrow.get(2020, 4, 15)
 
-    @factory.LazyAttribute
-    def email(self):
-        return f"{self.first_name}-{self.last_name}@lolz.net"
+    # @factory.LazyAttribute
+    # def email(self):
+    #     return f"{self.first_name}-{self.last_name}@lolz.net"

@@ -7,7 +7,7 @@ env_config = dict(
     database_name="the_money_maker",
     env="test",
     log_level="DEBUG",
-    log_sql=True,
+    log_sql=False,
 )
 
 from .logging import configure_logging, is_prod

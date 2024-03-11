@@ -2,28 +2,28 @@ import arrow
 import pytest
 from sqlalchemy import select, and_
 from unittest import mock
+from uuid import UUID
 
 from models.user import UserFactory, UserDB
 
 
 @pytest.fixture(autouse=True)
 def mock_utcnow():
-    mock_utcnow = arrow.utcnow()
-    mock.patch("arrow.utcnow", return_value=mock_utcnow)
+    mock.patch("arrow.utcnow", return_value=arrow.get(2024, 3, 11))
     return mock_utcnow
 
 
 @pytest.fixture
 def expected_user_dict():
     return dict(
-        id="4c26429c-c8e8-4fc6-9b39-357d3e5e7dd6",
+        id=UUID("4c26429c-c8e8-4fc6-9b39-357d3e5e7dd6"),
         username="billy-the-butcher",
         first_name="Billy",
         last_name="Butcher",
     )
 
 
-def test_user_db(mock_db_session, mock_utcnow, expected_user_dict):
+def test_user_db(mock_db_session, expected_user_dict):
     user = UserFactory(**expected_user_dict)
     mock_db_session.commit()
 
@@ -37,5 +37,5 @@ def test_user_db(mock_db_session, mock_utcnow, expected_user_dict):
     assert result.username == expected_user_dict["username"]
     assert result.first_name == expected_user_dict["first_name"]
     assert result.last_name == expected_user_dict["last_name"]
-    assert result.created_at == mock_utcnow
-    assert result.updated_at == mock_utcnow
+    assert result.created_at == arrow.get(2020, 4, 15)
+    assert result.updated_at == arrow.get(2020, 4, 15)
