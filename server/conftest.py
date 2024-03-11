@@ -34,12 +34,12 @@ def db_session_test():
         Session.remove()
 
 
-db_session = pytest.fixture(db_session_test)
+mock_db_session = pytest.fixture(db_session_test)
 
 
 @pytest.fixture
-def server_api_client(db_session):
-    app.dependency_overrides[db_session_dependency] = lambda: db_session
+def server_api_client(mock_db_session):
+    app.dependency_overrides[db_session_dependency] = lambda: mock_db_session
     client = TestClient(app)
     return client
 
@@ -51,13 +51,13 @@ def http_requests_mock():
 
 
 @pytest.fixture
-def mock_user(db_session):
+def mock_user(mock_db_session):
     user = UserFactory(
         id="458eae59-4748-42e5-b894-06cb9a25d6c5",
         username="zerosneezes",
         first_name="Zero",
         last_name="McSneezy",
     )
-    db_session.commit()
+    mock_db_session.commit()
     # app.dependency_overrides[user_required] = lambda: user
     return user
