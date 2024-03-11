@@ -6,17 +6,17 @@ from alembic import command, config
 from sqlalchemy.exc import InvalidRequestError
 from starlette.testclient import TestClient
 
-from api.app import app
-from db import Session, engine, db_session as db_session_dependency
-from models.user import UserFactory
+from nlp_ssa.api.app import app
+from nlp_ssa.db import Session, engine, db_session_dependency
+from nlp_ssa.models.user import UserFactory
 
 
 def pytest_sessionstart(session):
     os.environ["DATABASE_NAME"] = "test_the_money_maker"
 
     alembic_ini = os.path.join(os.path.abspath("."), "alembic.ini")
-    alembic_cfg = config.Config(alembic_ini)
-    command.upgrade(alembic_cfg, "head")
+    alembic_config = config.Config(alembic_ini)
+    command.upgrade(alembic_config, "head")
 
 
 def db_session_test():

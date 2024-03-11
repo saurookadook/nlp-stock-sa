@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from uuid import uuid4
 
 from config import configure_logging, env_config
-from db import DBSession
+from db import db_session
 from models.user import UserDB, UserFacade
 
 
@@ -43,14 +43,14 @@ def csrf_protect_exception_handler(request: Request, exc: CsrfProtectError):
 
 @app.get("/api/users/test")
 async def read_users_test():
-    user_facade = UserFacade(DBSession=DBSession)
+    user_facade = UserFacade(db_session=db_session)
 
     try:
         logger.warning(f"{'='*40} getting user {'='*40}")
         user = user_facade.get_one_by_username(username="gordis-goobis")
     except UserFacade.NoResultFound:
         logger.warning(f"{'='*40} creating user {'='*40}")
-        users = DBSession.scalars(
+        users = db_session.scalars(
             insert(UserDB).returning(UserDB),
             [
                 {
@@ -61,7 +61,7 @@ async def read_users_test():
                 }
             ],
         )
-        DBSession.commit()
+        db_session.commit()
         user = users.first()
 
     return {"user": user}

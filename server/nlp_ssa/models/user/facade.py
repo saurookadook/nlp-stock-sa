@@ -9,13 +9,13 @@ class UserFacade:
     class NoResultFound(Exception):
         pass
 
-    def __init__(self, *, DBSession):
-        self.DBSession = DBSession
+    def __init__(self, *, db_session):
+        self.db_session = db_session
 
     def get_one_by_id(self, id):
 
         try:
-            sentiment_analysis = self.DBSession.execute(
+            sentiment_analysis = self.db_session.execute(
                 select(UserDB).where(UserDB.id == id)
             ).scalar_one()
         except NoResultFound:
@@ -27,7 +27,7 @@ class UserFacade:
     def get_one_by_username(self, username):
 
         try:
-            sentiment_analysis = self.DBSession.execute(
+            sentiment_analysis = self.db_session.execute(
                 select(UserDB).where(UserDB.username == username)
             ).scalar_one()
         except NoResultFound:

@@ -30,7 +30,7 @@ Base.metadata.naming_conventions = {
     "pk": "%(table_name)s_pkey",
 }
 
-DBSession = scoped_session(
+db_session = scoped_session(
     sessionmaker(autocommit=False, autoflush=False, bind=engine, future=True)
 )
 
@@ -63,13 +63,13 @@ def ArrowDate(*args, **kwargs):
     return ArrowDateClass(*args, **kwargs)
 
 
-def db_session():
+def db_session_dependency():
     """FastAPI dependency to get database session
 
     Yields:
         Session: open database session
     """
-    session = DBSession()
+    session = db_session()
     try:
         yield session
         session.commit()
