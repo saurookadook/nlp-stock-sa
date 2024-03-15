@@ -11,7 +11,7 @@ class UserDB(Base, TimestampsMixin):
 
     id = Column(postgresql.UUID(as_uuid=True), primary_key=True, nullable=False)
     username = Column(String(length=255), nullable=False, unique=True)
-    # email = Column(String(length=255), nullable=False, unique=True)
+    email = Column(String(length=255), nullable=False, unique=True)
     # TODO: need to encrypt this :)
     # password = Column()
     first_name = Column(String(length=255), nullable=False)

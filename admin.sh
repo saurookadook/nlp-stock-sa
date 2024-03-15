@@ -135,7 +135,10 @@ cleanDocker() {
 }
 
 scriptController() {
-    if [ "$1" == "db" ]; then
+    if [ "$1" == "dcr-alembic" ]; then
+        shift
+        docker-compose run --rm server alembic $@
+    elif [ "$1" == "db" ]; then
         echo ""
         echo "======================================================================================"
         echo "db case"
