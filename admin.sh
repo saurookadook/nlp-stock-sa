@@ -135,9 +135,22 @@ cleanDocker() {
 }
 
 scriptController() {
+    # TODO: fix this case :]
     if [ "$1" == "dcr-alembic" ]; then
+        echo "before: $@"
         shift
-        docker-compose run --rm server alembic $@
+        echo "after: $@"
+        while getopts "m" arg; do
+            echo "m arg: ${$arg}"
+            case ${arg} in
+                m)
+                    echo "m: "${$OPTARG}
+                    docker-compose run --rm server alembic revision --autogenerate -m "$OPTARG"
+                    exit 0
+                    ;;
+            esac
+        done
+
     elif [ "$1" == "db" ]; then
         echo ""
         echo "======================================================================================"
