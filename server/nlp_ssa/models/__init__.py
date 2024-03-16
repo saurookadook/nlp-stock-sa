@@ -1,4 +1,5 @@
 __all__ = [
+    "analysis_view",
     "mixins",
     # "sentence_token",
     "sentiment_analysis",
