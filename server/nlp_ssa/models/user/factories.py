@@ -20,8 +20,8 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     @factory.LazyAttribute
     def username(self):
-        return f"{convert_to_kebab_case(self.first_name)}-{convert_to_kebab_case(self.last_name)}"
+        return convert_to_kebab_case(f"{self.first_name}-{self.last_name}")
 
-    # @factory.LazyAttribute
-    # def email(self):
-    #     return f"{self.first_name}-{self.last_name}@lolz.net"
+    @factory.LazyAttribute
+    def email(self):
+        return f"{self.first_name}-{self.last_name}@lolz.net".lower()
