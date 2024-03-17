@@ -2,7 +2,7 @@ import os
 from alembic import command, config
 
 import db
-import models
+from models import *
 from db import Base, engine
 
 
