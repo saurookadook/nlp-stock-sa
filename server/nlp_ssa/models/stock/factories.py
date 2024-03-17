@@ -13,14 +13,9 @@ class StockFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     id = factory.LazyFunction(lambda: uuid.uuid4())
     quote_stock_symbol = factory.Transformer(
-        factory.fuzzy.FuzzyText(length=6), transform=str.upper
+        factory.Faker("random_letters", length=6),
+        transform=lambda o: "".join(o).upper(),
     )
-    full_stock_symbol = factory.LazyFunction(
-        lambda: factory.providers.company.Provider().company()
-    )
+    full_stock_symbol = factory.Faker("company")
     created_at = arrow.get(2020, 4, 15)
     updated_at = arrow.get(2020, 4, 15)
-
-    # @factory.LazyAttribute
-    # def quote_stock_symbol(self):
-    #     return factory.fuzzy.FuzzyText(length=6)
