@@ -1,6 +1,10 @@
 import pytest
 
-from models.sentiment_analysis import SentimentAnalysisFacade, SentimentAnalysisFactory
+from models.sentiment_analysis import (
+    SentimentAnalysis,
+    SentimentAnalysisFacade,
+    SentimentAnalysisFactory,
+)
 
 
 @pytest.fixture
@@ -14,7 +18,7 @@ def test_get_one_by_id(mock_db_session, sentiment_analysis_facade):
 
     result = sentiment_analysis_facade.get_one_by_id(id=mock_sentiment_analysis.id)
 
-    assert result == mock_sentiment_analysis
+    assert result == SentimentAnalysis.model_validate(mock_sentiment_analysis)
 
 
 def test_get_one_by_id_no_result(sentiment_analysis_facade):

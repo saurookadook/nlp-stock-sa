@@ -1,6 +1,6 @@
 import pytest
 
-from models.stock import StockFacade, StockFactory
+from models.stock import Stock, StockFacade, StockFactory
 
 
 @pytest.fixture
@@ -14,7 +14,7 @@ def test_get_one_by_id(mock_db_session, stock_facade):
 
     result = stock_facade.get_one_by_id(id=mock_stock.id)
 
-    assert result == mock_stock
+    assert result == Stock.model_validate(mock_stock)
 
 
 def test_get_one_by_id_no_result(stock_facade):

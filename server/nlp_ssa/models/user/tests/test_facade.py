@@ -1,6 +1,6 @@
 import pytest
 
-from models.user import UserFacade, UserFactory
+from models.user import User, UserFacade, UserFactory
 
 
 @pytest.fixture
@@ -14,7 +14,7 @@ def test_get_one_by_id(mock_db_session, user_facade):
 
     result = user_facade.get_one_by_id(id=mock_user.id)
 
-    assert result == mock_user
+    assert result == User.model_validate(mock_user)
 
 
 def test_get_one_by_id_no_result(user_facade):
