@@ -1,7 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm.exc import NoResultFound
 
-from models.user import User, UserDB
+from models.user import UserDB
+from models.user.user import User
 
 
 class UserFacade:

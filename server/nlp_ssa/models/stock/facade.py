@@ -1,7 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm.exc import NoResultFound
 
-from models.stock import Stock, StockDB
+from models.stock import StockDB
+from models.stock.stock import Stock
 
 
 class StockFacade:

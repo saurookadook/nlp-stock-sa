@@ -1,7 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm.exc import NoResultFound
 
-from models.sentiment_analysis import SentimentAnalysis, SentimentAnalysisDB
+from models.sentiment_analysis import SentimentAnalysisDB
+from models.sentiment_analysis.sentiment_analysis import SentimentAnalysis
 
 
 class SentimentAnalysisFacade:

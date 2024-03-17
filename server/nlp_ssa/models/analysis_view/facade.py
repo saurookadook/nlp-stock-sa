@@ -1,7 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm.exc import NoResultFound
 
-from models.analysis_view import AnalysisView, AnalysisViewDB
+from models.analysis_view import AnalysisViewDB
+from models.analysis_view.analysis_view import AnalysisView
 
 
 class AnalysisViewFacade:
