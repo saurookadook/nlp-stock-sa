@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm.exc import NoResultFound
 
-from models.analysis_view import AnalysisViewDB
+from models.analysis_view import AnalysisView, AnalysisViewDB
 
 
 class AnalysisViewFacade:
@@ -21,5 +21,4 @@ class AnalysisViewFacade:
         except NoResultFound:
             raise AnalysisViewFacade.NoResultFound
 
-        # return AnalysisView.from_orm(analysis_view)
-        return analysis_view
+        return AnalysisView.model_validate(analysis_view)
