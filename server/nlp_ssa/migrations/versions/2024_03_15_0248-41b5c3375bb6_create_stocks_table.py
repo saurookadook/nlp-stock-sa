@@ -24,7 +24,7 @@ def upgrade() -> None:
     op.create_table(
         "stocks",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("quote_stock_symbol", sa.String(length=12), nullable=False),
+        sa.Column("quote_stock_symbol", sa.String(length=10), nullable=False),
         sa.Column("full_stock_symbol", sa.String(length=255), nullable=False),
         sa.Column(
             "created_at",

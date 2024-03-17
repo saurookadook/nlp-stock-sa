@@ -22,6 +22,9 @@ class SentimentAnalysisDB(Base, TimestampsMixin):
     id: Mapped[uuid.UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), primary_key=True, nullable=False
     )
+    source_group_id: Mapped[uuid.UUID] = mapped_column(
+        postgresql.UUID(as_uuid=True), nullable=False
+    )
     quote_stock_symbol: Mapped[str] = mapped_column(
         String(length=10), nullable=False
     )  # reuse as slug?
@@ -31,7 +34,4 @@ class SentimentAnalysisDB(Base, TimestampsMixin):
         server_default=SentimentEnum.NEUTRAL.value,
         default=SentimentEnum.NEUTRAL,
         nullable=False,
-    )
-    source_group_id: Mapped[uuid.UUID] = mapped_column(
-        postgresql.UUID(as_uuid=True), nullable=False
     )

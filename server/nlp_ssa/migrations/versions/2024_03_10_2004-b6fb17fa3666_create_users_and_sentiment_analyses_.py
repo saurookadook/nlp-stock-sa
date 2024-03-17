@@ -27,7 +27,7 @@ def upgrade() -> None:
     op.create_table(
         "sentiment_analyses",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("stock_symbol", sa.String(length=10), nullable=False),
+        sa.Column("quote_stock_symbol", sa.String(length=10), nullable=False),
         sa.Column("score", sa.Float(), nullable=True),
         sa.Column(
             "sentiment",
