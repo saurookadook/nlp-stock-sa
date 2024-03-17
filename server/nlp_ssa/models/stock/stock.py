@@ -10,7 +10,11 @@ class Stock(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
-    quote_stock_symobol: str
-    full_stock_symobol: str
+    quote_stock_symobol: str = (
+        ""  # TODO: for some bizarre reason, these raise errors without the default value
+    )
+    full_stock_symobol: str = (
+        ""  # TODO: for some bizarre reason, these raise errors without the default value
+    )
     created_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
     updated_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
