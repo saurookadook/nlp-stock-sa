@@ -1,6 +1,6 @@
 import pytest
 
-from models.analysis_view import AnalysisViewFacade, AnalysisViewFactory
+from models.analysis_view import AnalysisView, AnalysisViewFacade, AnalysisViewFactory
 
 
 @pytest.fixture
@@ -14,7 +14,7 @@ def test_get_one_by_id(mock_db_session, analysis_view_facade):
 
     result = analysis_view_facade.get_one_by_id(id=mock_analysis_view.id)
 
-    assert result == mock_analysis_view
+    assert result == AnalysisView.model_validate(mock_analysis_view)
 
 
 def test_get_one_by_id_no_result(analysis_view_facade):
