@@ -55,8 +55,8 @@ def upgrade() -> None:
         "users",
         sa.Column("id", sa.UUID(), nullable=False),
         sa.Column("username", sa.String(length=255), nullable=False),
-        sa.Column("first_name", sa.String(length=255), nullable=False),
-        sa.Column("last_name", sa.String(length=255), nullable=False),
+        sa.Column("first_name", sa.String(length=255), nullable=True),
+        sa.Column("last_name", sa.String(length=255), nullable=True),
         sa.Column(
             "created_at",
             db.db.ArrowDateClass(timezone=True),

@@ -1,4 +1,3 @@
-import arrow
 from sqlalchemy import Column, String
 from sqlalchemy.dialects import postgresql
 
@@ -14,5 +13,5 @@ class UserDB(Base, TimestampsMixin):
     email = Column(String(length=255), nullable=False, unique=True)
     # TODO: need to encrypt this :)
     # password = Column()
-    first_name = Column(String(length=255), nullable=False)
-    last_name = Column(String(length=255), nullable=False)
+    first_name = Column(String(length=255), nullable=True)
+    last_name = Column(String(length=255), nullable=True)
