@@ -28,7 +28,7 @@ def test_get_one_by_username(mock_db_session, user_facade):
 
     result = user_facade.get_one_by_username(username=mock_user.username)
 
-    assert result == mock_user
+    assert result == User.model_validate(mock_user)
 
 
 def test_get_one_by_username_no_result(user_facade):
