@@ -14,7 +14,6 @@ class UserFacade:
         self.db_session = db_session
 
     def get_one_by_id(self, id):
-
         try:
             user = self.db_session.execute(
                 select(UserDB).where(UserDB.id == id)
@@ -25,7 +24,6 @@ class UserFacade:
         return User.model_validate(user)
 
     def get_one_by_username(self, username):
-
         try:
             user = self.db_session.execute(
                 select(UserDB).where(UserDB.username == username)
