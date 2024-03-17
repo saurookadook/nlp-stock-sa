@@ -3,7 +3,7 @@ import factory
 import uuid
 
 from db import db_session
-from models.sentiment_analysis import AnalysisViewDB
+from models.analysis_view import AnalysisViewDB
 from models.user import UserFactory
 
 
