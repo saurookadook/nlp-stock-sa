@@ -14,7 +14,7 @@ class StockDB(Base, TimestampsMixin):
         postgresql.UUID(as_uuid=True), primary_key=True, nullable=False
     )
     quote_stock_symbol: Mapped[str] = mapped_column(
-        String(length=12), nullable=False, unique=True
+        String(length=10), nullable=False, unique=True
     )
     full_stock_symbol: Mapped[str] = mapped_column(
         String(length=255), nullable=False, unique=True
