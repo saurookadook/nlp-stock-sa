@@ -12,12 +12,12 @@ class AnalysisViewDB(Base, TimestampsMixin):
     id: Mapped[uuid.UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), primary_key=True, nullable=False
     )
-    user_id: Mapped[uuid.UUID] = mapped_column(
-        postgresql.UUID(as_uuid=True), nullable=False
-    )
     source_group_id: Mapped[uuid.UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), nullable=False
     )
-    author_user_id: Mapped[uuid.UUID] = mapped_column(
+    owner_id: Mapped[uuid.UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), nullable=False
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        postgresql.UUID(as_uuid=True), nullable=True
     )
