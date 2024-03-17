@@ -10,4 +10,4 @@ class StockDB(Base, TimestampsMixin):
 
     id = Column(postgresql.UUID(as_uuid=True), primary_key=True, nullable=False)
     quote_stock_symbol = Column(String(length=12), nullable=False, unique=True)
-    fall_stock_symbol = Column(String(length=255), nullable=False, unique=True)
+    full_stock_symbol = Column(String(length=255), nullable=False, unique=True)

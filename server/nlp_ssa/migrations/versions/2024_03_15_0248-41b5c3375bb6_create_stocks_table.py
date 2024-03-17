@@ -25,7 +25,7 @@ def upgrade() -> None:
         "stocks",
         sa.Column("id", sa.UUID(), nullable=False),
         sa.Column("quote_stock_symbol", sa.String(length=12), nullable=False),
-        sa.Column("fall_stock_symbol", sa.String(length=255), nullable=False),
+        sa.Column("full_stock_symbol", sa.String(length=255), nullable=False),
         sa.Column(
             "created_at",
             db.db.ArrowDateClass(timezone=True),
@@ -39,7 +39,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("fall_stock_symbol"),
+        sa.UniqueConstraint("full_stock_symbol"),
         sa.UniqueConstraint("quote_stock_symbol"),
     )
 
