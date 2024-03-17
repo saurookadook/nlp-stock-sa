@@ -1,12 +1,14 @@
-import arrow
 import factory
 import uuid
 
 from db import db_session
+from models.mixins import TimestampsMixinFactory
 from models.sentiment_analysis import SentimentAnalysisDB, SentimentEnum
 
 
-class SentimentAnalysisFactory(factory.alchemy.SQLAlchemyModelFactory):
+class SentimentAnalysisFactory(
+    TimestampsMixinFactory, factory.alchemy.SQLAlchemyModelFactory
+):
     class Meta:
         model = SentimentAnalysisDB
         sqlalchemy_session = db_session
@@ -21,5 +23,3 @@ class SentimentAnalysisFactory(factory.alchemy.SQLAlchemyModelFactory):
         factory.Faker("random_int", min=11, max=999), transform=lambda o: o / 10
     )
     source_group_id = factory.LazyFunction(lambda: uuid.uuid4())
-    created_at = arrow.utcnow()
-    updated_at = arrow.utcnow()
