@@ -2,8 +2,8 @@ import os
 from alembic import command, config
 
 import db
+import models
 from db import Base, engine
-from models import *
 
 
 def initialize_database():
