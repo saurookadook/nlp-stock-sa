@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm.exc import NoResultFound
 
-from models.sentiment_analysis import SentimentAnalysisDB
+from models.sentiment_analysis import SentimentAnalysis, SentimentAnalysisDB
 
 
 class SentimentAnalysisFacade:
@@ -21,5 +21,4 @@ class SentimentAnalysisFacade:
         except NoResultFound:
             raise SentimentAnalysisFacade.NoResultFound
 
-        # return SentimentAnalysis.from_orm(sentiment_analysis)
-        return sentiment_analysis
+        return SentimentAnalysis.model_validate(sentiment_analysis)

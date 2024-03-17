@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm.exc import NoResultFound
 
-from models.stock import StockDB
+from models.stock import Stock, StockDB
 
 
 class StockFacade:
@@ -20,5 +20,4 @@ class StockFacade:
         except NoResultFound:
             raise StockFacade.NoResultFound
 
-        # return Stock.from_orm(stock)
-        return stock
+        return Stock.model_validate(stock)

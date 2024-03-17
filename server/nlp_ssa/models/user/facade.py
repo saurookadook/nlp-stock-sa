@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm.exc import NoResultFound
 
-from models.user import UserDB
+from models.user import User, UserDB
 
 
 class UserFacade:
@@ -15,23 +15,21 @@ class UserFacade:
     def get_one_by_id(self, id):
 
         try:
-            sentiment_analysis = self.db_session.execute(
+            user = self.db_session.execute(
                 select(UserDB).where(UserDB.id == id)
             ).scalar_one()
         except NoResultFound:
             raise UserFacade.NoResultFound
 
-        # return User.from_orm(sentiment_analysis)
-        return sentiment_analysis
+        return User.model_validate(user)
 
     def get_one_by_username(self, username):
 
         try:
-            sentiment_analysis = self.db_session.execute(
+            user = self.db_session.execute(
                 select(UserDB).where(UserDB.username == username)
             ).scalar_one()
         except NoResultFound:
             raise UserFacade.NoResultFound
 
-        # return User.from_orm(sentiment_analysis)
-        return sentiment_analysis
+        return User.model_validate(user)
