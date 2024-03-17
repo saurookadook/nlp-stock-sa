@@ -3,10 +3,11 @@ import factory
 import uuid
 
 from db import db_session
+from models.mixins import TimestampsMixinFactory
 from models.stock import StockDB
 
 
-class StockFactory(factory.alchemy.SQLAlchemyModelFactory):
+class StockFactory(TimestampsMixinFactory, factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = StockDB
         sqlalchemy_session = db_session
@@ -17,5 +18,3 @@ class StockFactory(factory.alchemy.SQLAlchemyModelFactory):
         transform=lambda o: "".join(o).upper(),
     )
     full_stock_symbol = factory.Faker("company")
-    created_at = arrow.get(2020, 4, 15)
-    updated_at = arrow.get(2020, 4, 15)

@@ -3,11 +3,12 @@ import factory
 import uuid
 
 from db import db_session
+from models.mixins import TimestampsMixinFactory
 from models.user import UserDB
 from utils.case_converters import convert_to_kebab_case
 
 
-class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
+class UserFactory(TimestampsMixinFactory, factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = UserDB
         sqlalchemy_session = db_session
@@ -15,8 +16,6 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = factory.LazyFunction(lambda: uuid.uuid4())
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
-    created_at = arrow.get(2020, 4, 15)
-    updated_at = arrow.get(2020, 4, 15)
 
     @factory.LazyAttribute
     def username(self):
