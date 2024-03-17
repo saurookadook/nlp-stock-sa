@@ -3,7 +3,7 @@ import factory
 import uuid
 
 from db import db_session
-from models.sentiment_analysis import SentimentAnalysisDB
+from models.sentiment_analysis import SentimentAnalysisDB, SentimentEnum
 
 
 class SentimentAnalysisFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -12,8 +12,11 @@ class SentimentAnalysisFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = db_session
 
     id = factory.LazyFunction(lambda: uuid.uuid4())
-    stock_symbol = factory.Faker("stock_symbol")  # TODO: fix this lol
-    sentiment = "neutral"  # TODO: use enum instead
+    quote_stock_symbol = factory.Faker("stock_symbol")  # TODO: fix this lol
+    sentiment = SentimentEnum.NEUTRAL.value
+    score = factory.Transformer(
+        factory.Faker("random_int", min=11, max=999), transform=lambda o: o / 10
+    )
     source_group_id = factory.LazyFunction(lambda: uuid.uuid4())
     created_at = arrow.utcnow()
     updated_at = arrow.utcnow()
