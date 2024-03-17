@@ -16,7 +16,7 @@ class SentimentAnalysisFacade:
 
         try:
             sentiment_analysis = self.db_session.execute(
-                select(SentimentAnalysisDB).where(id=id)
+                select(SentimentAnalysisDB).where(SentimentAnalysisDB.id == id)
             ).scalar_one()
         except NoResultFound:
             raise SentimentAnalysisFacade.NoResultFound

@@ -24,9 +24,9 @@ def upgrade() -> None:
     op.create_table(
         "analysis_views",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("user_id", sa.UUID(), nullable=False),
         sa.Column("source_group_id", sa.UUID(), nullable=False),
-        sa.Column("author_user_id", sa.UUID(), nullable=False),
+        sa.Column("owner_id", sa.UUID(), nullable=False),
+        sa.Column("user_id", sa.UUID(), nullable=True),
         sa.Column(
             "created_at",
             db.db.ArrowDateClass(timezone=True),
