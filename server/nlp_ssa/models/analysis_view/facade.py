@@ -16,7 +16,7 @@ class AnalysisViewFacade:
 
         try:
             analysis_view = self.db_session.execute(
-                select(AnalysisViewDB).where(id=id)
+                select(AnalysisViewDB).where(AnalysisViewDB.id == id)
             ).scalar_one()
         except NoResultFound:
             raise AnalysisViewFacade.NoResultFound
