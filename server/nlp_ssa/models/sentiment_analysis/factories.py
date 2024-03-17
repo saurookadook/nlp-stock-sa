@@ -20,6 +20,7 @@ class SentimentAnalysisFactory(
     )
     sentiment = SentimentEnum.NEUTRAL.value
     score = factory.Transformer(
-        factory.Faker("random_int", min=11, max=999), transform=lambda o: o / 10
+        factory.Faker("random_int", min=11, max=999),
+        transform=lambda o: o / 10 if type(o) is int else o,
     )
     source_group_id = factory.LazyFunction(lambda: uuid.uuid4())
