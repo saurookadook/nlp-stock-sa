@@ -5,7 +5,10 @@ from sqlalchemy import engine_from_config, pool
 from config import env_config
 from db import Base
 
-from models import *
+from models.analysis_view.db import AnalysisViewDB
+from models.sentiment_analysis.db import SentimentAnalysisDB
+from models.stock.db import StockDB
+from models.user.db import UserDB
 
 
 # this is the Alembic Config object, which provides

@@ -2,8 +2,13 @@ import os
 from alembic import command, config
 
 import db
-from models import *
 from db import Base, engine
+
+# from models import analysis_view, sentiment_analysis, stock, user
+from models.analysis_view.db import AnalysisViewDB
+from models.sentiment_analysis.db import SentimentAnalysisDB
+from models.stock.db import StockDB
+from models.user.db import UserDB
 
 
 def initialize_database():
