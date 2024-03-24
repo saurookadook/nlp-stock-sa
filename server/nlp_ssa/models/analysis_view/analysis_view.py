@@ -11,7 +11,7 @@ class AnalysisView(BaseModel):
 
     id: UUID
     source_group_id: UUID
-    owner_id: UUID
-    user_id: Optional[UUID]
+    # owner_id: UUID
+    user_id: UUID
     created_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
     updated_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]

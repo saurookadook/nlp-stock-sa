@@ -20,7 +20,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.create_foreign_key(None, "analysis_views", "users", ["owner_id"], ["id"])
+    op.create_foreign_key(None, "analysis_views", "users", ["user_id"], ["id"])
 
 
 def downgrade() -> None:
