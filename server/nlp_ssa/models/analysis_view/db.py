@@ -23,4 +23,4 @@ class AnalysisViewDB(Base, TimestampsMixin):
     # owner_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
     # owner: Mapped["UserDB"] = relationship(back_populates="analysis_views")
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=True)
-    users: Mapped["UserDB"] = relationship(back_populates="analysis_views")
+    user: Mapped["UserDB"] = relationship(back_populates="analysis_views")

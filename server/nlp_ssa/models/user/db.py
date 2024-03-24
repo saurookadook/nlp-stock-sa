@@ -9,8 +9,6 @@ from models.mixins import TimestampsMixin
 
 
 class UserDB(Base, TimestampsMixin):
-    from models.analysis_view.db import AnalysisViewDB
-
     __tablename__ = "users"
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -25,6 +23,8 @@ class UserDB(Base, TimestampsMixin):
     first_name: Mapped[str] = mapped_column(String(length=255), nullable=True)
     last_name: Mapped[str] = mapped_column(String(length=255), nullable=True)
 
-    analysis_views: Mapped[List["AnalysisViewDB"]] = relationship(
-        back_populates="owner"
-    )
+    #####
+    # TODO: configure polymorphic relationship at some point (aka "generic association")
+    # https://docs.sqlalchemy.org/en/20/orm/examples.html#module-examples.generic_associations
+    #####
+    analysis_views: Mapped[List["AnalysisViewDB"]] = relationship(back_populates="user")
