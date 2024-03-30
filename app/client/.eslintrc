@@ -50,5 +50,25 @@
         "no-use-before-define": 0,
         "no-useless-escape": 0,
         "object-curly-spacing": [1, "always"]
-    }
+    },
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [
+                    ".js",
+                    ".ts",
+                    ".tsx"
+                ],
+                "paths": ["src/*", "webpack.config.js"]
+            }
+        }
+    },
+    "overrides": [
+        {
+            "files": ["webpack.config.js"],
+            "rules": {
+                "@typescript-eslint/no-var-requires": 0
+            }
+        }
+    ]
 }

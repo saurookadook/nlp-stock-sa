@@ -6,15 +6,17 @@ const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV == 'production';
 
-
 const config = {
+    devtool: 'inline-source-map',
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.js',
     },
     devServer: {
         open: true,
         host: 'localhost',
+        static: './dist',
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -28,8 +30,8 @@ const config = {
         rules: [
             {
                 test: /\.(ts|tsx)$/i,
-                loader: 'ts-loader',
                 exclude: ['/node_modules/'],
+                loader: 'ts-loader',
             },
             {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
@@ -41,17 +43,19 @@ const config = {
         ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
+        alias: {
+            common: path.resolve(__dirname, 'src/common'),
+        },
+        extensions: ['.tsx', '.ts', '.jsx', '.js'],
+        modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     },
 };
 
 module.exports = () => {
     if (isProduction) {
         config.mode = 'production';
-        
-        
+
         config.plugins.push(new WorkboxWebpackPlugin.GenerateSW());
-        
     } else {
         config.mode = 'development';
     }
