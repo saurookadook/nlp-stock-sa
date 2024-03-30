@@ -17,5 +17,4 @@ class AnalysisViewFactory(
     id = factory.LazyFunction(lambda: uuid.uuid4())
     source_group_id = factory.LazyFunction(lambda: uuid.uuid4())
     # owner = factory.SubFactory(UserFactory)
-    owner_id = factory.LazyFunction(lambda: uuid.uuid4())
-    user_id = factory.LazyFunction(lambda: uuid.uuid4())
+    user = factory.SubFactory(UserFactory)

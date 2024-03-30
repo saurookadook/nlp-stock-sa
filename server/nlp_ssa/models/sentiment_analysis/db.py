@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from db import Base
 from models.mixins import TimestampsMixin
-from models.sentiment_analysis import SentimentEnum
+from models.sentiment_analysis.constants import SentimentEnum
 
 
 SENTIMENT_ENUM = postgresql.ENUM(
