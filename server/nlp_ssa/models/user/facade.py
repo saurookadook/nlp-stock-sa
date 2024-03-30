@@ -32,3 +32,14 @@ class UserFacade:
             raise UserFacade.NoResultFound
 
         return User.model_validate(user)
+
+    def get_analysis_views_by_quote_stock_symbol(self, quote_stock_symbol: str):
+        user_analysis_views = []
+        # try:
+        #     user_analysis_views = self.db_session.execute(
+        #         select(UserDB)
+        #     )
+        # except Exception:
+        #     raise
+
+        return user_analysis_views
