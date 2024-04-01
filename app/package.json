@@ -1,8 +1,19 @@
 {
-    "name": "app",
+    "name": "nlpssa-frontend",
     "packageManager": "yarn@4.1.1",
     "engines": {
         "node": "^18.18.0",
         "yarn": "^4.1.0"
-    }
+    },
+    "scripts": {
+        "install:all": "yarn workspaces foreach -A run install",
+        "client": "yarn workspace client start",
+        "server": "yarn workspace server start",
+        "prepare": "yarn workspaces foreach -A run build"
+    },
+    "workspaces": [
+        "client",
+        "server",
+        "types/**"
+    ]
 }

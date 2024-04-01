@@ -1,8 +1,8 @@
 FROM node:18-bullseye AS client-packages-dev
 ENV NODE_ENV development
-COPY ./app/client/package.json package.json
-COPY ./app/client/.yarn .yarn
-COPY ./app/client/yarn.lock yarn.lock
+COPY ./app/client/package.json /package.json
+COPY ./app/client/.yarn /.yarn
+COPY ./app/client/yarn.lock /yarn.lock
 RUN yarn install
 
 FROM node:18-bullseye AS client-dev
@@ -17,8 +17,10 @@ RUN mkdir -p /opt/nlp-stock-sa/client/node_modules
 RUN chown -R nlpstocksaapp:nlpstocksaapp /opt/nlp-stock-sa/client/node_modules
 USER nlpstocksaapp
 WORKDIR /opt/nlp-stock-sa/client
-COPY --from=client-packages-dev /node_modules /opt/nlp-stock-sa/client/node_modules
-CMD yarn serve
+COPY --from=client-packages-dev /package.json /package.json
+COPY --from=client-packages-dev /yarn.lock /yarn.lock
+COPY --from=client-packages-dev /node_modules /node_modules
+CMD yarn serve --watch
 
 FROM client-dev AS client-test
 COPY ./app/client ./client

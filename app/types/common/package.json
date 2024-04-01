@@ -1,0 +1,5 @@
+{
+    "name": "@nlpssa-app-types/common",
+    "version": "0.0.0",
+    "typings": "main.d.ts"
+}

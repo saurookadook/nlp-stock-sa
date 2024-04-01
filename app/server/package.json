@@ -1,5 +1,5 @@
 {
-    "name": "server",
+    "name": "@nlpssa-app/server",
     "packageManager": "yarn@4.1.0",
     "main": "index.ts",
     "scripts": {
@@ -17,6 +17,7 @@
         "nodemon": "^3.0.3"
     },
     "devDependencies": {
+        "@nlpssa-app-types/common": "workspaces:*",
         "@types/cors": "^2.8.17",
         "@types/eslint": "^8",
         "@types/express": "^4.17.21",

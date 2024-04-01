@@ -1,15 +1,13 @@
 {
-    "name": "nlp-stock-sa_app-client",
+    "name": "@nlpssa-app/client",
     "description": "Frontend for nlp-stock-sa application",
     "version": "0.0.0",
     "private": true,
     "scripts": {
         "start": "build:dev --watch",
-        "build": "webpack --mode=production --node-env=production",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject",
         "build:dev": "webpack --mode=development",
         "build:prod": "webpack --mode=production --node-env=production",
+        "build": "yarn build:prod",
         "watch": "webpack --watch",
         "serve": "webpack serve"
     },
@@ -23,6 +21,7 @@
         "@babel/plugin-transform-runtime": "^7.24.3",
         "@babel/preset-env": "^7.24.3",
         "@babel/preset-react": "^7.24.1",
+        "@nlpssa-app-types/common": "workspaces:*",
         "@testing-library/jest-dom": "^5.16.3",
         "@testing-library/react": "^12.1.4",
         "@testing-library/user-event": "^13.5.0",
