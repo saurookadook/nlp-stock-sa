@@ -1,8 +1,8 @@
 FROM node:18-bullseye AS client-packages-dev
 ENV NODE_ENV development
 WORKDIR /opt/nlpssa-frontend/client
-COPY ./app/client/package.json package.json
-COPY ./app/client/webpack.config.js webpack.config.js
+COPY ./app/src/client/package.json package.json
+COPY ./app/src/client/webpack.config.js webpack.config.js
 WORKDIR /opt/nlpssa-frontend
 COPY ./app/.yarn .yarn
 COPY ./app/types types

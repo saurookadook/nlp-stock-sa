@@ -19,7 +19,9 @@
         "client": "yarn workspace @nlpssa-app/client start",
         "client:serve": "yarn workspace @nlpssa-app/client serve",
         "server": "yarn workspace @nlpssa-app/server start",
-        "prepare": "yarn workspaces foreach -A run build"
+        "prepare": "yarn workspaces foreach -A run build",
+        "serve": "NODE_OPTIONS=--max-http-header-size=81000 DEBUG=express:* nodemon --inspect=0.0.0.0:9229 -e js,jsx,handlebars --exec node_modules/.bin/babel-node src/server/index.ts",
+        "serve:prod": "node --max-http-header-size=81000 dist/server/index.js"
     },
     "devDependencies": {
         "@babel/core": "^7.24.3",
