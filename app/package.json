@@ -1,10 +1,17 @@
 {
     "name": "nlpssa-frontend",
+    "description": "Frontend for nlp-stock-sa application",
     "packageManager": "yarn@4.1.1",
+    "version": "0.0.0",
     "engines": {
         "node": "^18.18.0",
         "yarn": "^4.1.0"
     },
+    "workspaces": [
+        "client",
+        "server",
+        "types/**"
+    ],
     "scripts": {
         "install:all": "yarn workspaces foreach -A run install",
         "install:client": "yarn workspace @nlpssa-app/client install",
@@ -14,9 +21,32 @@
         "server": "yarn workspace @nlpssa-app/server start",
         "prepare": "yarn workspaces foreach -A run build"
     },
-    "workspaces": [
-        "client",
-        "server",
-        "types/**"
-    ]
+    "devDependencies": {
+        "@babel/core": "^7.24.3",
+        "@babel/plugin-transform-runtime": "^7.24.3",
+        "@babel/preset-env": "^7.24.3",
+        "@babel/preset-react": "^7.24.1",
+        "@types/babel__core": "^7",
+        "@types/babel__preset-env": "^7",
+        "@types/eslint": "^8",
+        "@types/jest": "^27.4.1",
+        "@typescript-eslint/eslint-plugin": "^7.0.1",
+        "@typescript-eslint/parser": "^7.0.0",
+        "@webpack-cli/generators": "^3.0.7",
+        "babel-loader": "^9.1.3",
+        "copy-webpack-plugin": "^12.0.2",
+        "eslint": "^8.52.0",
+        "html-webpack-plugin": "^5.6.0",
+        "prettier": "^3.1.0",
+        "prettier-eslint": "^16.1.2",
+        "ts-loader": "^9.5.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.3.3",
+        "webpack": "^5.90.3",
+        "webpack-assets-manifest": "^5.2.0",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^5.0.2",
+        "webpack-node-externals": "^3.0.0",
+        "workbox-webpack-plugin": "^7.0.0"
+    }
 }

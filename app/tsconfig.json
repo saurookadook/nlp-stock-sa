@@ -17,6 +17,6 @@
         "noEmit": true,
         "jsx": "react-jsx"
     },
-    "include": ["@nlpssa-app-types/common", "src"],
-    "exclude": [".yarn", "node_modules/", "public", "./webpack.config.js"]
+    "exclude": [".yarn", "node_modules/", "public", "./webpack.config.js"],
+    "include": ["@nlpssa-app-types/common", "src"]
 }
