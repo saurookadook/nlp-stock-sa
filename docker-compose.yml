@@ -5,7 +5,7 @@ services:
     image: alpine
     command: sh -C "echo start"
     depends_on:
-      - client
+      - frontend
       # - haproxy
       - server
       - ssa
@@ -20,29 +20,29 @@ services:
     volumes:
       - db_volume:/var/lib/postgresql/data
 
-  client:
+  frontend:
     env_file: .env
     environment:
       EXAMPLE: woof
     build:
       context: .
-      dockerfile: app/client/Dockerfile
-      target: client-dev
+      dockerfile: app/Dockerfile
+      target: frontend-dev
     ports:
       - 9229:9229
     volumes:
-      - ./client:/opt/nlp-stock-sa/client
-      - /opt/nlp-stock-sa/client/node_modules
+      - ./app:/opt/nlpssa-frontend
+      - /opt/nlpssa-frontend/node_modules
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
-  client-test:
+  frontend-test:
     env_file: .env
     environment:
       ENV: test
     build:
       context: .
-      dockerfile: app/client/Dockerfile
-      target: client-dev
+      dockerfile: app/Dockerfile
+      target: frontend-dev
 
   # haproxy:
   #   build:
