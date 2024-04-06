@@ -8,7 +8,12 @@ const isProduction = process.env.NODE_ENV == 'production';
 
 const config = {
     devtool: 'inline-source-map',
-    entry: './src/index.tsx',
+    entry: {
+        login: [
+            '@babel/polyfill',
+            path.resolve(__dirname, 'src/login/index.tsx')
+        ]
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
@@ -16,11 +21,13 @@ const config = {
     devServer: {
         open: true,
         host: 'localhost',
-        static: './dist',
+        static: {
+            directory: path.resolve(__dirname, 'dist'),
+        },
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html',
+            template: path.resolve(__dirname, 'index.html'),
         }),
 
         // Add your plugins here

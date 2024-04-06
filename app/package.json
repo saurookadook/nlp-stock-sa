@@ -7,8 +7,11 @@
     },
     "scripts": {
         "install:all": "yarn workspaces foreach -A run install",
-        "client": "yarn workspace client start",
-        "server": "yarn workspace server start",
+        "install:client": "yarn workspace @nlpssa-app/client install",
+        "install:server": "yarn workspace @nlpssa-app/server install",
+        "client": "yarn workspace @nlpssa-app/client start",
+        "client:serve": "yarn workspace @nlpssa-app/client serve",
+        "server": "yarn workspace @nlpssa-app/server start",
         "prepare": "yarn workspaces foreach -A run build"
     },
     "workspaces": [
