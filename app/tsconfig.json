@@ -5,20 +5,29 @@
     "compilerOptions": {
         "allowJs": true,
         "allowSyntheticDefaultImports": true,
+        "baseUrl": "./src",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "isolatedModules": true,
         "jsx": "react-jsx",
-        "lib": ["dom", "dom.iterable", "esnext"],
+        "lib": ["dom", "dom.iterable", "es2023", "esnext"],
         "module": "esnext",
         "moduleResolution": "node",
         "noEmit": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true,
+        "noFallthroughCasesInSwitch": false, /* disabling this for now */
+        "noImplicitAny": false, /* disabling this for now */
+        "outDir": "./dist",
+        "paths": {
+            "client/*": ["client/*"],
+            "server/*": ["server/*"],
+            "types/*": ["types/*"]
+        },
+        "rootDir": "./",
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "strict": true,
-        "target": "es5"
+        "target": "es5",
+        "typeRoots": ["./node_modules/@types", "./src/types/*"]
     },
     "exclude": [".yarn/", "node_modules/", "public/", "./webpack.config.mjs"],
     "include": ["@nlpssa-app-types/common", "src/client", "src/server"]

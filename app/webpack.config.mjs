@@ -77,7 +77,9 @@ const buildConfig = (env, argv) => ({
     plugins: getPlugins(argv.mode),
     resolve: {
         alias: {
-            common: path.resolve(__dirname, 'src/common'),
+            client: path.resolve(__dirname, 'src/client'),
+            server: path.resolve(__dirname, 'src/server'),
+            types: path.resolve(__dirname, 'src/types'),
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
         modules: [path.resolve(__dirname, 'src'), 'node_modules'],
@@ -90,7 +92,7 @@ function getPlugins(mode) {
             template: path.resolve(__dirname, 'index.html'),
         }),
         new WebpackAssetsManifest({})
-    ]
+    ];
 
     return mode === 'production'
         ? [
@@ -98,7 +100,7 @@ function getPlugins(mode) {
             new WorkboxWebpackPlugin.GenerateSW()
         ] : [
             ...commonPlugins
-        ]
+        ];
 }
 
 export default (env, argv) => {
