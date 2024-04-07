@@ -14,10 +14,11 @@
         "module": "esnext",
         "moduleResolution": "node",
         "noEmit": true,
-        "noFallthroughCasesInSwitch": false, /* disabling this for now */
-        "noImplicitAny": false, /* disabling this for now */
+        "noFallthroughCasesInSwitch": false /* disabling this for now */,
+        "noImplicitAny": false /* disabling this for now */,
         "outDir": "./dist",
         "paths": {
+            "@nlpssa-app-types/*": ["@nlpssa-app-types/*"],
             "client/*": ["client/*"],
             "server/*": ["server/*"],
             "types/*": ["types/*"]
@@ -29,6 +30,6 @@
         "target": "es5",
         "typeRoots": ["./node_modules/@types", "./src/types/*"]
     },
-    "exclude": [".yarn/", "node_modules/", "public/", "./webpack.config.mjs"],
-    "include": ["@nlpssa-app-types/common", "src/client", "src/server"]
+    "exclude": [".yarn/", "dist/", "node_modules/", "public/", "./webpack.config.mjs"],
+    "include": ["src/client", "src/server"]
 }

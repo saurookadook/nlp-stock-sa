@@ -30,6 +30,9 @@
             "react-app/jest"
         ]
     },
+    "browser": {
+        "@nlpssa-app-types/common": false
+    },
     "browserslist": {
         "production": [
             ">0.2%",

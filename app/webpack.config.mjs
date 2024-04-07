@@ -1,37 +1,33 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-// const path = require('path');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-
 import path from 'path';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+// import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WebpackAssetsManifest from 'webpack-assets-manifest';
 import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
 
-// const isProduction = process.env.NODE_ENV == 'production';
+const isProduction = (envVar) => envVar == 'production';
 
 const __dirname = path.resolve();
 
+const babelOptions = {
+    presets: [
+        '@babel/preset-env',
+        '@babel/preset-react',
+        // '@babel/preset-typescript',
+        // 'react',
+        // [
+        //     'es2015',
+        //     {
+        //         modules: false,
+        //     },
+        // ],
+        // 'es2016',
+    ],
+};
+
 const buildConfig = (env, argv) => ({
-    context: __dirname,
+    context: path.resolve(__dirname),
     devtool: 'inline-source-map',
-    entry: {
-        home: [
-            '@babel/polyfill',
-            path.resolve(__dirname, 'src/client/home/entry.tsx')
-        ],
-        login: [
-            '@babel/polyfill',
-            path.resolve(__dirname, 'src/client/login/entry.tsx')
-        ],
-    },
-    output: {
-        // path: path.resolve(__dirname, 'dist'),
-        // filename: 'bundle.js',
-        path: path.resolve(__dirname, 'public'),
-        filename: '[name]-[chunkhash].min.js',
-    },
     devServer: {
         host: 'localhost',
         open: true,
@@ -40,14 +36,60 @@ const buildConfig = (env, argv) => ({
             directory: path.resolve(__dirname, 'dist'),
         },
     },
+    entry: {
+        'react-vendors': ['@babel/polyfill', 'react', 'react-dom'],
+        home: {
+            import: path.resolve(__dirname, 'src/client/home/entry.tsx'),
+            dependOn: 'react-vendors',
+        },
+        login: {
+            import: path.resolve(__dirname, 'src/client/login/entry.tsx'),
+            dependOn: 'react-vendors',
+        },
+        // home: ['@babel/polyfill', path.resolve(__dirname, 'src/client/home/entry.tsx')],
+        // login: ['@babel/polyfill', path.resolve(__dirname, 'src/client/login/entry.tsx')],
+    },
+    output: {
+        // path: path.resolve(__dirname, 'dist'),
+        // filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist/bundles'),
+        filename: '[name]-[chunkhash].min.js',
+    },
     module: {
         rules: [
-            // NOTE: maybe need different rules for client and server?
             {
-                test: /\.(ts|tsx)$/i,
-                exclude: ['/node_modules/'],
-                loader: 'ts-loader',
+                test: /\.ts(x?)$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: babelOptions,
+                    },
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            compilerOptions: {
+                                noEmit: false,
+                            },
+                        },
+                    },
+                ],
             },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: babelOptions,
+                    },
+                ],
+            },
+            // {
+            //     test: /\.(ts|tsx)$/i,
+            //     exclude: ['/node_modules/'],
+            //     loader: 'ts-loader',
+            // },
             {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
                 type: 'asset',
@@ -89,19 +131,13 @@ const buildConfig = (env, argv) => ({
 
 function getPlugins(mode) {
     const commonPlugins = [
-        new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, 'index.html'),
-        }),
-        new WebpackAssetsManifest({})
+        // new HtmlWebpackPlugin({
+        //     template: path.resolve(__dirname, 'index.html'),
+        // }),
+        new WebpackAssetsManifest({}),
     ];
 
-    return mode === 'production'
-        ? [
-            ...commonPlugins,
-            new WorkboxWebpackPlugin.GenerateSW()
-        ] : [
-            ...commonPlugins
-        ];
+    return isProduction(mode) ? [...commonPlugins, new WorkboxWebpackPlugin.GenerateSW()] : [...commonPlugins];
 }
 
 export default (env, argv) => {

@@ -35,7 +35,7 @@ export const buildManifest = (manifest, bundlePath) => {
 export const manifestMiddleware = (req, res, next) => {
     // TODO: should use CDN path from app-level config
     const bundlePath = '/nlp-ssa/public';
-    const manifestFromJson = JSON.parse(fs.readFileSync('./public/assets-manifest.json', { encoding: 'utf-8' }));
+    const manifestFromJson = JSON.parse(fs.readFileSync('./dist/bundles/assets-manifest.json', { encoding: 'utf-8' }));
     res.locals.manifest = buildManifest(manifestFromJson, bundlePath);
     next();
 };

@@ -11,6 +11,10 @@
         "src/**"
     ],
     "scripts": {
+        "build:dev": "webpack --mode=development",
+        "build:prod": "webpack --mode=production --node-env=production",
+        "build": "yarn build:prod",
+        "watch": "webpack --watch",
         "build:ts": "tsc",
         "install:all": "yarn workspaces foreach -A run install",
         "install:client": "yarn workspace @nlpssa-app/client install",
@@ -20,6 +24,7 @@
         "server": "yarn workspace @nlpssa-app/server start",
         "prepare": "yarn workspaces foreach -A run build",
         "serve": "NODE_OPTIONS=--max-http-header-size=81000 DEBUG=express:* nodemon --inspect=0.0.0.0:9229 -e js,jsx,handlebars --exec node_modules/.bin/babel-node src/server/index.ts",
+        "serve:webpack": "webpack serve",
         "serve:prod": "node --max-http-header-size=81000 dist/server/index.js"
     },
     "devDependencies": {
