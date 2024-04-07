@@ -140,7 +140,7 @@
             "extends": ["prettier", "plugin:@typescript-eslint/recommended"]
         },
         {
-            "files": ["./webpack.config.mjs"],
+            "files": ["./devServer.js", "./webpack.config.js"],
             "rules": {
                 "@typescript-eslint/no-var-requires": 0
             }

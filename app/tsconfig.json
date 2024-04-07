@@ -31,5 +31,9 @@
         "typeRoots": ["./node_modules/@types", "./src/types/*"]
     },
     "exclude": [".yarn/", "dist/", "node_modules/", "public/", "./webpack.config.mjs"],
-    "include": ["src/client", "src/server"]
+    "include": ["src/client", "src/server"],
+    "ts-node": {
+        "esm": true,
+        "transpileOnly": true
+    }
 }

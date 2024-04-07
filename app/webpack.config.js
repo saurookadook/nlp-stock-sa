@@ -1,13 +1,13 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-import path from 'path';
-// import HtmlWebpackPlugin from 'html-webpack-plugin';
-import WebpackAssetsManifest from 'webpack-assets-manifest';
-import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
+const path = require('path');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
+const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 
 const isProduction = (envVar) => envVar == 'production';
 
-const __dirname = path.resolve();
+// const __dirname = path.resolve();
 
 const babelOptions = {
     presets: [
@@ -140,7 +140,7 @@ function getPlugins(mode) {
     return isProduction(mode) ? [...commonPlugins, new WorkboxWebpackPlugin.GenerateSW()] : [...commonPlugins];
 }
 
-export default (env, argv) => {
+module.exports = (env, argv) => {
     const config = buildConfig(env, argv);
 
     // if (isProduction) {

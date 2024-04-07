@@ -7,7 +7,6 @@ import { engine } from 'express-handlebars';
 import homeRouter from 'server/home';
 import loginRouter from 'server/login';
 
-
 const __dirname = path.resolve();
 
 const app = express();
@@ -16,8 +15,8 @@ app.set('view engine', 'handlebars');
 app.engine(
     'handlebars',
     engine({
-        layoutsDir: `${__dirname}/views`
-    })
+        layoutsDir: `${__dirname}/views`,
+    }),
 );
 app.set('views', path.join(__dirname, './views'));
 
@@ -59,10 +58,10 @@ app.use('/login', loginRouter);
 app.use('/', homeRouter);
 
 // Start the server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`);
-    console.log('Press Ctrl+C to quit.');
-});
+// const PORT = process.env.PORT || 9229;
+// app.listen(PORT, () => {
+//     console.log(`App listening on port ${PORT}`);
+//     console.log('Press Ctrl+C to quit.');
+// });
 
 export default app;
