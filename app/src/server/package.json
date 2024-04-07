@@ -2,11 +2,18 @@
     "name": "@nlpssa-app/server",
     "packageManager": "yarn@4.1.1",
     "main": "index.ts",
+    "type": "module",
     "scripts": {
         "install:clean": "rm -rf .yarn/ node_modules/ && yarn install",
         "start:prod": "node dist/index.js",
         "start:dev": "yarn build && nodemon index.ts",
         "build": "webpack",
+        "serve": "nodemon --config ./nodemon.json -x yarn watch:serve",
+        "serve:debug": "nodemon 0.0.0.0 9229 --exec js,jsx,handlebars,ts,tsx --exec 'ts-node ./index.ts'",
+        "serve:inc": "nodemon -e ts --watch src .env --exec \"tsc --incremental && ts-node src/index.js\"",
+        "serve:orig": "NODE_OPTIONS=--max-http-header-size=81000 DEBUG=express:* nodemon --inspect=0.0.0.0:9229 -e js,jsx,handlebars,ts,tsx --exec ../../node_modules/.bin/babel-node ./index.ts",
+        "watch": "nodemon -e ts -w ./src -x yarn watch:serve",
+        "watch:serve": "ts-node --transpile-only ./index.ts 0.0.0.0 9229",
         "lint": "eslint . --ext .ts",
         "lint-and-fix": "yarn lint --fix",
         "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
@@ -14,8 +21,7 @@
     "dependencies": {
         "cors": "^2.8.5",
         "express": "^4.18.2",
-        "express-handlebars": "^7.1.2",
-        "nodemon": "^3.0.3"
+        "express-handlebars": "^7.1.2"
     },
     "devDependencies": {
         "@nlpssa-app-types/common": "workspaces:*",
