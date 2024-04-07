@@ -1,12 +1,10 @@
 import React from 'react';
 // import logo from '/logo.svg';
 
-function App() {
+function App({ data }: { data?: any | null }) {
     return (
         <div className="home">
-            <header className="home-header">
-                {`💸 🤑 💸 Welcome to NLP SSA 💸 🤑 💸`}
-            </header>
+            <header className="home-header">{`💸 🤑 💸 Welcome to NLP SSA 💸 🤑 💸`}</header>
             <div>
                 <p>
                     <em>{`a.k.a.`}</em>
