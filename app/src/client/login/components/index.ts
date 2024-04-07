@@ -1,3 +1,3 @@
-import App from 'client/login';
+import App from 'client/login/components/App';
 
 export { App };
