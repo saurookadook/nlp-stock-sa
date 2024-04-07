@@ -4,9 +4,10 @@ import { render, screen } from '@testing-library/react';
 import { App } from 'client/home/components';
 
 describe('home - App component', () => {
-    test('renders learn react link', () => {
+    it('renders correctly', () => {
         render(<App />);
 
+        expect(screen.getByText("Welcome to NLP SSA", { exact: false })).toBeVisible();
         expect(screen.getByText("THE MONEY MAKERRRRR", { exact: false })).toBeVisible();
     });
 
