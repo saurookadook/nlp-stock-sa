@@ -9,11 +9,11 @@ export const buildManifest = (manifest, bundlePath) => {
         console.log(''.padStart(220, '='));
 
         if (key.endsWith('.map')) {
-            return manifestMap
+            return manifestMap;
         }
 
         let bundleKey;
-        let [_, app, ext] = key.match(/(.*)\.(js|ts|tsx)/);
+        let [_, app, ext] = key.match(/(.*)\.(js|ts|tsx)/)!;
         if (['nlpssaVendor', 'nlpssaCommon'].includes(app)) {
             app = 'common';
             const bundle = key.includes('Common') ? 'common' : 'vendor';
@@ -28,14 +28,14 @@ export const buildManifest = (manifest, bundlePath) => {
 
         manifestMap[app][bundleKey] = `${bundlePath}/${value}`;
 
-        return manifestMap
+        return manifestMap;
     }, {});
-}
+};
 
 export const manifestMiddleware = (req, res, next) => {
     // TODO: should use CDN path from app-level config
     const bundlePath = '/nlp-ssa/public';
-    const manifestFromJson = JSON.parse(fs.readFileSync('./public/assets-manifest.json'));
+    const manifestFromJson = JSON.parse(fs.readFileSync('./public/assets-manifest.json', { encoding: 'utf-8' }));
     res.locals.manifest = buildManifest(manifestFromJson, bundlePath);
     next();
-}
+};

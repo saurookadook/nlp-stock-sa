@@ -92,6 +92,7 @@
         "no-useless-escape": 0,
         "object-curly-spacing": [1, "always"],
         "operator-linebreak": 0,
+        "prefer-const": 1,
         "prettier/prettier": 0,
         "react/destructuring-assignment": 0,
         "react/jsx-filename-extension": [
