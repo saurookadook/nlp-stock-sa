@@ -19,11 +19,11 @@ const buildConfig = (env, argv) => ({
     entry: {
         home: [
             '@babel/polyfill',
-            path.resolve(__dirname, 'src/client/home/entry.ts')
+            path.resolve(__dirname, 'src/client/home/entry.tsx')
         ],
         login: [
             '@babel/polyfill',
-            path.resolve(__dirname, 'src/client/login/entry.ts')
+            path.resolve(__dirname, 'src/client/login/entry.tsx')
         ],
     },
     output: {
@@ -33,8 +33,9 @@ const buildConfig = (env, argv) => ({
         filename: '[name]-[chunkhash].min.js',
     },
     devServer: {
-        open: true,
         host: 'localhost',
+        open: true,
+        port: 9229,
         static: {
             directory: path.resolve(__dirname, 'dist'),
         },
