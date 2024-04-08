@@ -9,23 +9,23 @@ import loginRouter from 'server/login';
 
 const __dirname = path.resolve();
 
-const app = express();
+const expressApp = express();
 
-app.set('view engine', 'handlebars');
-app.engine(
+expressApp.set('view engine', 'handlebars');
+expressApp.engine(
     'handlebars',
     engine({
         layoutsDir: `${__dirname}/views`,
     }),
 );
-app.set('views', path.join(__dirname, './views'));
+expressApp.set('views', path.join(__dirname, './views'));
 
 // Enable cors to be able to reach the backend on localhost:8080 while running React.js in dev mode on localhost:3000
 // You might want to disbale this on production.
-// app.use(cors());
-// app.use(express.json() as RequestHandler);
+// expressApp.use(cors());
+// expressApp.use(express.json() as RequestHandler);
 
-// app.post('/api', async function(req: Request, res: Response) {
+// expressApp.post('/api', async function(req: Request, res: Response) {
 //     let body = plainToClass(RequestBody, req.body as Object);
 //     let validationErrors = await validate(body);
 //     if (validationErrors.length == 0) {
@@ -41,7 +41,7 @@ app.set('views', path.join(__dirname, './views'));
 // // This code makes sure that any request that does not matches a static file
 // // in the build folder, will just serve index.html. Client side routing is
 // // going to make sure that the correct content will be loaded.
-// app.use((req: Request, res: Response, next: NextFunction) => {
+// expressApp.use((req: Request, res: Response, next: NextFunction) => {
 //     if (/(.ico|.js|.css|.jpg|.png|.map)$/i.test(req.path)) {
 //         next();
 //     } else {
@@ -52,16 +52,16 @@ app.set('views', path.join(__dirname, './views'));
 //     }
 // });
 
-// app.use(express.static(path.join(__dirname, 'build')));
+// expressApp.use(express.static(path.join(__dirname, 'build')));
 
-app.use('/login', loginRouter);
-app.use('/', homeRouter);
+expressApp.use('/login', loginRouter);
+expressApp.use('/', homeRouter);
 
 // Start the server
 // const PORT = process.env.PORT || 9229;
-// app.listen(PORT, () => {
+// expressApp.listen(PORT, () => {
 //     console.log(`App listening on port ${PORT}`);
 //     console.log('Press Ctrl+C to quit.');
 // });
 
-export default app;
+export default expressApp;
