@@ -1,13 +1,14 @@
 FROM node:18-bullseye AS frontend-packages-dev
 ENV NODE_ENV development
-# WORKDIR /opt/nlpssa-frontend
-# COPY ./app/src/client/package.json package.json
-# COPY ./app/src/client/webpack.config.js webpack.config.js
 WORKDIR /opt/nlpssa-frontend
 COPY ./app/.yarn .yarn
-COPY ./app/types types
+COPY ./app/src/client src/client
+COPY ./app/src/server src/server
+COPY ./app/src/types src/types
 COPY ./app/.yarnrc.yml .yarnrc.yml
 COPY ./app/package.json package.json
+COPY ./app/tsconfig.json tsconfig.json
+COPY ./app/webpack.config.js webpack.config.js
 COPY ./app/yarn.lock yarn.lock
 RUN corepack enable
 RUN yarn install && yarn build:dev
@@ -20,8 +21,6 @@ RUN mkdir -p /var/log/nlpssa-frontend
 RUN chown -R nlpstocksaapp:nlpstocksaapp /var/log/nlpssa-frontend
 RUN mkdir -p /opt/nlpssa-frontend/logs
 RUN chown -R nlpstocksaapp:nlpstocksaapp /opt/nlpssa-frontend/logs
-RUN mkdir -p /opt/nlpssa-frontend/node_modules
-RUN chown -R nlpstocksaapp:nlpstocksaapp /opt/nlpssa-frontend/node_modules
 RUN mkdir -p /opt/nlpssa-frontend/node_modules
 RUN chown -R nlpstocksaapp:nlpstocksaapp /opt/nlpssa-frontend/node_modules
 USER nlpstocksaapp
