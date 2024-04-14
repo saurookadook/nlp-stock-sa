@@ -2095,41 +2095,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nlpssa-app-types/common@workspace:src/types/common, @nlpssa-app-types/common@workspaces:*":
-  version: 0.0.0-use.local
-  resolution: "@nlpssa-app-types/common@workspace:src/types/common"
-  languageName: unknown
-  linkType: soft
-
-"@nlpssa-app/client@workspace:src/client":
-  version: 0.0.0-use.local
-  resolution: "@nlpssa-app/client@workspace:src/client"
-  dependencies:
-    "@nlpssa-app-types/common": "workspaces:*"
-    "@testing-library/jest-dom": "npm:^5.16.3"
-    "@testing-library/react": "npm:^12.1.4"
-    "@testing-library/user-event": "npm:^13.5.0"
-    "@types/react": "npm:^17.0.43"
-    "@types/react-dom": "npm:^17.0.14"
-    react: "npm:^18.2.0"
-    react-dom: "npm:^18.2.0"
-    web-vitals: "npm:^2.1.4"
-  languageName: unknown
-  linkType: soft
-
-"@nlpssa-app/server@workspace:src/server":
-  version: 0.0.0-use.local
-  resolution: "@nlpssa-app/server@workspace:src/server"
-  dependencies:
-    "@nlpssa-app-types/common": "workspaces:*"
-    "@types/cors": "npm:^2.8.17"
-    "@types/express": "npm:^4.17.21"
-    cors: "npm:^2.8.5"
-    express: "npm:^4.18.2"
-    express-handlebars: "npm:^7.1.2"
-  languageName: unknown
-  linkType: soft
-
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -2680,6 +2645,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testing-library/dom@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@testing-library/dom@npm:10.0.0"
+  dependencies:
+    "@babel/code-frame": "npm:^7.10.4"
+    "@babel/runtime": "npm:^7.12.5"
+    "@types/aria-query": "npm:^5.0.1"
+    aria-query: "npm:5.3.0"
+    chalk: "npm:^4.1.0"
+    dom-accessibility-api: "npm:^0.5.9"
+    lz-string: "npm:^1.5.0"
+    pretty-format: "npm:^27.0.2"
+  checksum: 10c0/2d12d2a6018a6f1d15e91834180bc068932c699ff1fcbfb80aa21aba519a4f5329c861dfa852e06ee5615bcb92ef2a0f0e755e32684ea3dada63bc34248382ab
+  languageName: node
+  linkType: hard
+
 "@testing-library/dom@npm:^8.0.0":
   version: 8.20.1
   resolution: "@testing-library/dom@npm:8.20.1"
@@ -3089,6 +3070,15 @@ __metadata:
   version: 15.14.9
   resolution: "@types/node@npm:15.14.9"
   checksum: 10c0/fe5b69cffd20f97c814d568c1d791b3c367f9efa6567a18d2c15cd73c5437f47bcff73a2e10bdfe59f90ce7df47e6cc3c6d431c76d2213bf6099e8ab5d16d355
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.12.5":
+  version: 20.12.5
+  resolution: "@types/node@npm:20.12.5"
+  dependencies:
+    undici-types: "npm:~5.26.4"
+  checksum: 10c0/2da65516fba98f0417620e42bddbe53e144d4782d69cd37f99df2537c6850b9cfbdb8a017f02c61e9a074bcac84f9f3f221b250474ac8c6b95d507a47e8d53f9
   languageName: node
   linkType: hard
 
@@ -4141,7 +4131,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aria-query@npm:^5.0.0, aria-query@npm:^5.3.0":
+"aria-query@npm:5.3.0, aria-query@npm:^5.0.0, aria-query@npm:^5.3.0":
   version: 5.3.0
   resolution: "aria-query@npm:5.3.0"
   dependencies:
@@ -8468,7 +8458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json5@npm:^2.2.0, json5@npm:^2.2.3":
+"json5@npm:^2.2.0, json5@npm:^2.2.2, json5@npm:^2.2.3":
   version: 2.2.3
   resolution: "json5@npm:2.2.3"
   bin:
@@ -9338,16 +9328,26 @@ __metadata:
     "@babel/polyfill": "npm:^7.12.1"
     "@babel/preset-env": "npm:^7.24.3"
     "@babel/preset-react": "npm:^7.24.1"
+    "@testing-library/dom": "npm:^10.0.0"
+    "@testing-library/jest-dom": "npm:^5.16.3"
+    "@testing-library/react": "npm:^12.1.4"
+    "@testing-library/user-event": "npm:^13.5.0"
     "@types/babel__core": "npm:^7"
     "@types/babel__preset-env": "npm:^7"
+    "@types/cors": "npm:^2.8.17"
     "@types/eslint": "npm:^8"
+    "@types/express": "npm:^4.17.21"
     "@types/jest": "npm:^27.4.1"
+    "@types/node": "npm:^20.12.5"
+    "@types/react": "npm:^17.0.43"
+    "@types/react-dom": "npm:^17.0.14"
     "@typescript-eslint/eslint-plugin": "npm:^7.0.1"
     "@typescript-eslint/parser": "npm:^7.0.0"
     "@webpack-cli/generators": "npm:^3.0.7"
     babel-loader: "npm:^9.1.3"
     concurrently: "npm:^8.2.2"
     copy-webpack-plugin: "npm:^12.0.2"
+    cors: "npm:^2.8.5"
     eslint: "npm:^8.52.0"
     eslint-config-prettier: "npm:^7.2.0"
     eslint-config-react-app: "npm:^7.0.1"
@@ -9358,13 +9358,19 @@ __metadata:
     eslint-plugin-prettier: "npm:^3.3.1"
     eslint-plugin-react: "npm:^7.28.0"
     eslint-plugin-react-hooks: "npm:^4.2.0"
+    express: "npm:^4.18.2"
+    express-handlebars: "npm:^7.1.2"
     html-webpack-plugin: "npm:^5.6.0"
     nodemon: "npm:^3.0.3"
     prettier: "npm:^3.1.0"
     prettier-eslint: "npm:^16.1.2"
+    react: "npm:^18.2.0"
+    react-dom: "npm:^18.2.0"
     ts-loader: "npm:^9.5.1"
     ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:^5.3.3"
+    web-vitals: "npm:^2.1.4"
     webpack: "npm:^5.90.3"
     webpack-assets-manifest: "npm:^5.2.0"
     webpack-cli: "npm:^5.1.4"
@@ -12252,6 +12258,17 @@ __metadata:
     minimist: "npm:^1.2.6"
     strip-bom: "npm:^3.0.0"
   checksum: 10c0/5b4f301a2b7a3766a986baf8fc0e177eb80bdba6e396792ff92dc23b5bca8bb279fc96517dcaaef63a3b49bebc6c4c833653ec58155780bc906bdbcf7dda0ef5
+  languageName: node
+  linkType: hard
+
+"tsconfig-paths@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "tsconfig-paths@npm:4.2.0"
+  dependencies:
+    json5: "npm:^2.2.2"
+    minimist: "npm:^1.2.6"
+    strip-bom: "npm:^3.0.0"
+  checksum: 10c0/09a5877402d082bb1134930c10249edeebc0211f36150c35e1c542e5b91f1047b1ccf7da1e59babca1ef1f014c525510f4f870de7c9bda470c73bb4e2721b3ea
   languageName: node
   linkType: hard
 
