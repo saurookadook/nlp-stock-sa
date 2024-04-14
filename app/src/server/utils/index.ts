@@ -21,6 +21,11 @@ export const createTerminationHandler = (server, options = { coredump: false, ti
     };
 };
 
+/**
+ *
+ * @param fn
+ * @returns Resolved return value from `fn`
+ */
 export const asyncWrapper = (fn) => {
     return (...args) => {
         const next = args[args.length - 1];

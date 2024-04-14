@@ -3,10 +3,7 @@ import fs from 'fs';
 export const buildManifest = (manifest, bundlePath) => {
     return Object.entries(manifest).reduce((manifestMap, manifestEntry) => {
         const [key, value] = manifestEntry;
-        console.log(''.padStart(220, '='));
-        console.log(`key: ${key}`);
-        console.log('value: \n', value);
-        console.log(''.padStart(220, '='));
+        console.log('\n'.padStart(220, '='), `key: ${key}\n`, `value: ${value}\n`, '\n'.padEnd(220, '='));
 
         if (key.endsWith('.map')) {
             return manifestMap;
