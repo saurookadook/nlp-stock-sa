@@ -1,4 +1,4 @@
-import '@nlpssa-app-types/common';
+// import '@nlpssa-app-types/common';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
