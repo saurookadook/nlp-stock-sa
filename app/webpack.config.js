@@ -26,22 +26,24 @@ const buildConfig = (env, argv) => ({
     // },
     entry: {
         // Maybe don't need this...?
-        'react-vendors': [
-            '@babel/polyfill',
-            '@chakra-ui/react',
-            '@emotion/react',
-            '@emotion/styled',
-            'react',
-            'react-dom',
-        ],
-        home: {
-            import: path.resolve(__dirname, 'src/client/home/entry.tsx'),
-            dependOn: 'react-vendors',
-        },
-        login: {
-            import: path.resolve(__dirname, 'src/client/login/entry.tsx'),
-            dependOn: 'react-vendors',
-        },
+        // 'react-vendors': [
+        //     '@babel/polyfill',
+        //     '@chakra-ui/react',
+        //     '@emotion/react',
+        //     '@emotion/styled',
+        //     'react',
+        //     'react-dom',
+        // ],
+        // home: {
+        //     import: path.resolve(__dirname, 'src/client/home/entry.tsx'),
+        //     dependOn: 'react-vendors',
+        // },
+        // login: {
+        //     import: path.resolve(__dirname, 'src/client/login/entry.tsx'),
+        //     dependOn: 'react-vendors',
+        // },
+        home: ['@babel/polyfill', path.resolve(__dirname, 'src/client/home/entry.tsx')],
+        login: ['@babel/polyfill', path.resolve(__dirname, 'src/client/login/entry.tsx')],
     },
     output: {
         filename: '[name]-[chunkhash].min.js',

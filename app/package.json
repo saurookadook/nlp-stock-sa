@@ -14,7 +14,7 @@
         "build": "yarn build:prod",
         "watch": "webpack --mode=development --watch",
         "install:clean": "yarn cache clean && rm -rf .yarn/ dist/ node_modules/ && yarn install",
-        "serve": "nodemon --inspect=0.0.0.0:9229 -w src --exec \"node --experimental-specifier-resolution=node --loader ./customTSNodeLoader.js src/server/index.ts\"",
+        "serve": "nodemon --inspect=0.0.0.0:9229 -w ./src --exec \"node --experimental-specifier-resolution=node --loader ./customTSNodeLoader.js src/server/index.ts\"",
         "start": "yarn build:dev && yarn serve",
         "restart": "yarn install:clean && yarn build:dev && yarn serve"
     },
