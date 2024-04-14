@@ -1,9 +1,10 @@
 import expressApp from './expressApp';
 import { createTerminationHandler } from './utils';
 
-const PORT = process.env.CLIENBT_PORT || 8080;
-const frontendServer = expressApp.listen(PORT, () => {
-    console.log(`Express app frontend server running on port ${PORT}`);
+const CLIENT_PORT = Number(process.env.CLIENT_PORT || 8080);
+const HOST = process.env.HOST || '0.0.0.0';
+const frontendServer = expressApp.listen(CLIENT_PORT, HOST, () => {
+    console.log(`Express app frontend server running on port ${CLIENT_PORT}`);
 });
 
 const exitHandler = createTerminationHandler(frontendServer);

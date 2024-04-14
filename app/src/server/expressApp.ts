@@ -60,11 +60,4 @@ if (process.env.ENV !== 'production') {
 expressApp.use('/login', loginRouter);
 expressApp.use('/', homeRouter);
 
-// Start the server
-// const PORT = process.env.PORT || 9229;
-// expressApp.listen(PORT, () => {
-//     console.log(`App listening on port ${PORT}`);
-//     console.log('Press Ctrl+C to quit.');
-// });
-
 export default expressApp;
