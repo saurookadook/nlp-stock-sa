@@ -1,13 +1,14 @@
 import path from 'path';
 
-import cors from 'cors';
-import express, { NextFunction, Request, RequestHandler, Response } from 'express';
+// import cors from 'cors';
+import express, { RequestHandler } from 'express';
 import { engine } from 'express-handlebars';
 
-import homeRouter from 'server/home';
-import loginRouter from 'server/login';
+import homeRouter from './home';
+import loginRouter from './login';
 
 const __dirname = path.resolve();
+console.log('\n'.padStart(220, '='), `dirname: ${__dirname}`, '\n'.padEnd(220, '='));
 
 const expressApp = express();
 
@@ -15,15 +16,15 @@ expressApp.set('view engine', 'handlebars');
 expressApp.engine(
     'handlebars',
     engine({
-        layoutsDir: `${__dirname}/views`,
+        layoutsDir: `${__dirname}/src/server/views`,
     }),
 );
-expressApp.set('views', path.join(__dirname, './views'));
+expressApp.set('views', path.join(__dirname, 'src/server/views'));
 
 // Enable cors to be able to reach the backend on localhost:8080 while running React.js in dev mode on localhost:3000
 // You might want to disbale this on production.
 // expressApp.use(cors());
-// expressApp.use(express.json() as RequestHandler);
+expressApp.use(express.json() as RequestHandler);
 
 // expressApp.post('/api', async function(req: Request, res: Response) {
 //     let body = plainToClass(RequestBody, req.body as Object);
@@ -52,7 +53,9 @@ expressApp.set('views', path.join(__dirname, './views'));
 //     }
 // });
 
-// expressApp.use(express.static(path.join(__dirname, 'build')));
+if (process.env.ENV !== 'production') {
+    expressApp.use('/dist', express.static(path.join(__dirname, 'dist')));
+}
 
 expressApp.use('/login', loginRouter);
 expressApp.use('/', homeRouter);

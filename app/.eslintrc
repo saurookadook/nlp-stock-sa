@@ -39,6 +39,7 @@
         "window": true
     },
     "rules": {
+        "@typescript-eslint/no-explicit-any": 1,
         "array-bracket-newline": [1, "consistent"],
         "array-bracket-spacing": [
             1,
@@ -117,11 +118,11 @@
             "node": {
                 "extensions": [
                     ".js",
-                    "mjs",
+                    ".mjs",
                     ".ts",
                     ".tsx"
                 ],
-                "paths": ["src/*", "webpack.config.mjs"]
+                "paths": ["src/*", "customTSNodeLoader.js", "webpack.config.js"]
             }
         },
         "react": {
@@ -140,7 +141,7 @@
             "extends": ["prettier", "plugin:@typescript-eslint/recommended"]
         },
         {
-            "files": ["./devServer.js", "./webpack.config.js"],
+            "files": ["./webpack.config.js"],
             "rules": {
                 "@typescript-eslint/no-var-requires": 0
             }

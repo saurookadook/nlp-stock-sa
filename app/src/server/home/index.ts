@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, RequestHandler, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 
 import { manifestMiddleware } from 'server/middleware';
 import { asyncWrapper } from 'server/utils';
@@ -18,8 +18,13 @@ router.use(
             console.warn(`[home route] - caught exception: ${e}`);
         }
 
-        const { appJs: reactVendorsJs } = res.locals.manifest['react-vendors'];
-        console.log({ localsManifest: res.locals.manifest, appJs: res.locals.manifest['home'], reactVendorsJs });
+        // const { appJs: reactVendorsJs } = res.locals.manifest['react-vendors'];
+        console.log(
+            '\n'.padStart(220, '='),
+            'home router: ',
+            { localsManifest: res.locals.manifest },
+            '\n'.padEnd(220, '='),
+        );
 
         try {
             return res.render('index', {

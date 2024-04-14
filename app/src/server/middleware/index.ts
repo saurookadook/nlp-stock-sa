@@ -11,6 +11,7 @@ export const buildManifest = (manifest, bundlePath) => {
 
         let bundleKey;
         let [_, app, ext] = key.match(/(.*)\.(js|ts|tsx)/)!;
+        console.log('\n'.padStart(220, '='), `_: ${_}\napp: ${app}\next: ${ext}\n`, '\n'.padEnd(220, '='));
         if (['nlpssaVendor', 'nlpssaCommon'].includes(app)) {
             app = 'common';
             const bundle = key.includes('Common') ? 'common' : 'vendor';
