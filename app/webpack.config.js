@@ -25,7 +25,15 @@ const buildConfig = (env, argv) => ({
     //     },
     // },
     entry: {
-        'react-vendors': ['@babel/polyfill', 'react', 'react-dom'],
+        // Maybe don't need this...?
+        'react-vendors': [
+            '@babel/polyfill',
+            '@chakra-ui/react',
+            '@emotion/react',
+            '@emotion/styled',
+            'react',
+            'react-dom',
+        ],
         home: {
             import: path.resolve(__dirname, 'src/client/home/entry.tsx'),
             dependOn: 'react-vendors',
