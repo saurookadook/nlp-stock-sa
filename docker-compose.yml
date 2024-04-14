@@ -1,5 +1,3 @@
-version: "3.7"
-
 services:
   all:
     image: alpine
@@ -8,7 +6,7 @@ services:
       - frontend
       # - haproxy
       - server
-      - ssa
+      # - ssa
 
   database:
     image: postgres:16.2-bullseye # higher than this?
@@ -29,20 +27,21 @@ services:
       dockerfile: app/Dockerfile
       target: frontend-dev
     ports:
-      - 9229:9229
+      - "8080:8080"
+      - "9229:9229"
     volumes:
       - ./app:/opt/nlpssa-frontend
       - /opt/nlpssa-frontend/node_modules
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
-  frontend-test:
-    env_file: .env
-    environment:
-      ENV: test
-    build:
-      context: .
-      dockerfile: app/Dockerfile
-      target: frontend-dev
+  # frontend-test:
+  #   env_file: .env
+  #   environment:
+  #     ENV: test
+  #   build:
+  #     context: .
+  #     dockerfile: app/Dockerfile
+  #     target: frontend-test
 
   # haproxy:
   #   build:
@@ -80,22 +79,22 @@ services:
       # - ./server:/opt/nlp-stock-sa/server
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
-  ssa:
-    depends_on:
-      - database
-    env_file: .env
-    environment:
-      EXAMPLE: woof
-      WORKERS: 1
-    build:
-      context: .
-      dockerfile: server/Dockerfile
-      target: ssa-dev
-    ports:
-      - "3001:3001"
-    volumes:
-      - ./ssa:/opt/nlp-stock-sa/ssa
-      # - ~/.aws:/home/nlpstocksaapp/.aws:ro
+  # ssa:
+  #   depends_on:
+  #     - database
+  #   env_file: .env
+  #   environment:
+  #     EXAMPLE: woof
+  #     WORKERS: 1
+  #   build:
+  #     context: .
+  #     dockerfile: server/Dockerfile
+  #     target: ssa-dev
+  #   ports:
+  #     - "3001:3001"
+  #   volumes:
+  #     - ./server/ssa:/opt/nlp-stock-sa/ssa
+  #     # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
 volumes:
   db_volume:

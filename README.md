@@ -20,6 +20,14 @@ Resources:
 
 <!-- TODO: include download links :] -->
 
+### Details
+
+For Docker, make sure you bump the resources it can be allocated:
+- **CPU limit**: `16`
+- **Memory limit**: `16 GB`
+- **Swap**: `1.5 GB`
+- **Virtual disk limit**: `160 GB`
+
 ## Installation
 
 Add following to `/etc/hosts`
