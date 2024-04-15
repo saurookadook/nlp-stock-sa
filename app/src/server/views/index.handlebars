@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>💸 🤑 💸 NLP SSA 💸 🤑 💸</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+
+        <!-- CRA initial CSS -->
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+                    'Droid Sans', 'Helvetica Neue', sans-serif;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                margin: 0;
+                min-height: 1000px;
+                width: 100vw;
+            }
+
+            code {
+                font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+            }
+
+            .App {
+                text-align: center;
+            }
+
+            .App-logo {
+                height: 40vmin;
+                pointer-events: none;
+            }
+
+            @media (prefers-reduced-motion: no-preference) {
+                .App-logo {
+                    animation: App-logo-spin infinite 20s linear;
+                }
+            }
+
+            .App-header {
+                background-color: #282c34;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                font-size: calc(10px + 2vmin);
+                color: white;
+            }
+
+            .App-link {
+                color: #61dafb;
+            }
+
+            @keyframes App-logo-spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+
+        {{!-- <link rel="stylesheet" href="{{}}"> --}}
+        {{#if vendorJs}}
+            <script type="text/javascript" src="{{ vendorJs }}" defer></script>
+        {{else}}
+            <!-- vendorJs failed to load :[ -->
+        {{/if}}
+        {{#if commonJs}}
+            <script type="text/javascript" src="{{ commonJs }}" defer></script>
+        {{else}}
+            <!-- commonJs failed to load :[ -->
+        {{/if}}
+        <script type="text/javascript" src="{{ appJs }}" defer></script>
+        <script>
+            var initApp = function() {
+                window.ipd = {{{ initialPageData }}};
+                window.renderApp(window.ipd);
+            }
+
+            if (
+                document.readyState === "complete"
+                || (document.readyState !== "loading" && !document.documentElement.doScroll)
+            ) {
+                initApp();
+            } else {
+                document.addEventListener('DOMContentLoaded', initApp);
+            }
+        </script>
+    </head>
+    <body>
+        <div id="page-container">
+            <main id="nlpssa-main" tabindex="0"></main>
+        </div>
+    </body>
+
+    <!-- TODO: not sure if this will work lol -->
+    <script>
+        try {
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", () => {
+                    navigator.serviceWorker
+                        .register("service-worker.js")
+                        .then((registration) => {
+                            console.log("Service Worker registered: ", registration);
+                        })
+                        .catch((registrationError) => {
+                            console.error("Service Worker registration failed: ", registrationError);
+                        });
+                });
+            }
+        } catch (error) {
+            console.error('serviceWorker script', error);
+        }
+    </script>
+</html>

@@ -1,0 +1,43 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Node 18",
+    "_version": "18.2.0",
+    "compilerOptions": {
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": "./src",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "isolatedModules": true,
+        "jsx": "react-jsx",
+        "lib": ["dom", "dom.iterable", "es2023", "esnext"],
+        "module": "ES2022",
+        "moduleResolution": "Bundler",
+        // "module": "NodeNext",
+        // "moduleResolution": "NodeNext",
+        "noEmit": true,
+        "noFallthroughCasesInSwitch": false /* disabling this for now */,
+        "noImplicitAny": false /* disabling this for now */,
+        "outDir": "dist/",
+        "paths": {
+            "@nlpssa-app-types/*": ["types/*"],
+            "client/*": ["client/*"],
+            "server/*": ["server/*"],
+            "types/*": ["types/*"]
+        },
+        // "rootDir": "./",
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "target": "ES2022",
+        "typeRoots": ["./node_modules/@types", "./src/types/*"]
+    },
+    "exclude": [".yarn/", "dist/", "node_modules/", "public/", "./webpack.config.js"],
+    "include": ["./src/**/*"],
+    // "include": ["./src/client/**/*.{ts,tsx}", "./src/server/**/*.{ts,tsx}"]
+    "ts-node": {
+        "esm": true,
+        "experimentalSpecifierResolution": "node",
+        "transpileOnly": true
+    }
+}

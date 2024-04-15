@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": "./app/",
+        "module": "commonjs",
+        "paths": {
+            "__mocks__/*": ["app/src/__mocks__/*"],
+            "client/*": ["app/src/client/*"],
+            "server/*": ["app/src/server/*"],
+            "types/*": ["app/src/types/*"]
+        },
+        "target": "es6"
+    },
+    "exclude": ["node_modules", "public"]
+}

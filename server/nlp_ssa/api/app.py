@@ -73,6 +73,11 @@ async def read_health_check():
     return {"message": "Yaaaaaay, health! Salud!"}
 
 
+@app.get("/login")
+async def read_login():
+    return {"message": "YOU GOTTA LOGIN, SON"}
+
+
 @app.get("/")
 async def read_root():
     # return JSONResponse(status_code=200, content={"message": "Hello, world!"})

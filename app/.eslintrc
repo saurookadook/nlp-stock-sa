@@ -1,0 +1,150 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "babelOptions": {
+            "presets": ["@babel/preset-react"]
+        },
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 14,
+        "requireConfigFiel": false,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "env": {
+        "es6": true,
+        "jest": true,
+        "node": true,
+        "browser": true
+    },
+    "extends": [
+        "prettier/prettier",
+        "prettier/react",
+        "prettier/@typescript-eslint",
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:prettier/recommended",
+        "plugin:jsx-a11y/recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "globals": {
+        "__DEVTOOLS__": false,
+        "assert": true,
+        "expect": true,
+        "window": true
+    },
+    "rules": {
+        "@typescript-eslint/no-explicit-any": 1,
+        "array-bracket-newline": [1, "consistent"],
+        "array-bracket-spacing": [
+            1,
+            "never",
+            {
+                "arraysInArrays": true,
+                "objectsInArrays": false
+            }
+        ],
+        "array-element-newline": [
+            0,
+            {
+                "multiline": true,
+                "minItems": 2
+            }
+        ],
+        "arrow-parens": [2, "always"],
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+                "ts": "never",
+                "tsx": "never"
+            }
+        ],
+        "import/no-extraneous-dependencies": 0,
+        "import/no-named-as-default": 0,
+        "import/prefer-default-export": 0,
+        "jsx-quotes": [2, "prefer-double"],
+        "keyword-spacing": [
+            2,
+            {
+                "before": true,
+                "after": true,
+                "overrides": {
+                    "function": {
+                        "after": false
+                    },
+                    "while": {
+                        "after": false
+                    }
+                }
+            }
+        ],
+        "max-len": 0,
+        "no-extraneous-imports": 0,
+        "no-prototype-builtins": 0,
+        "no-unused-expressions": 0,
+        "no-unused-vars": 1,
+        "no-use-before-define": 0,
+        "no-useless-escape": 0,
+        "object-curly-spacing": [1, "always"],
+        "operator-linebreak": 0,
+        "prefer-const": 1,
+        "prettier/prettier": 0,
+        "react/destructuring-assignment": 0,
+        "react/jsx-filename-extension": [
+            "warn",
+            {
+                "extensions": [".tsx"]
+            }
+        ],
+        "react/jsx-fragments": 0,
+        "react/jsx-one-expression-per-line": 0,
+        "react/forbid-prop-types": 0,
+        "react/no-danger": 0,
+        "react/prop-types": 0,
+        // "react-hooks/rules-of-hooks": "error",
+        // "react-hooks/exhaustive-deps": "warn",
+        "semi": [1, "always"],
+        "space-before-function-paren": 0,
+        "wrap-iife": [2, "inside"]
+    },
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [
+                    ".js",
+                    ".mjs",
+                    ".ts",
+                    ".tsx"
+                ],
+                "paths": ["src/*", "customTSNodeLoader.js", "webpack.config.js"]
+            }
+        },
+        "react": {
+            "version": "detect"
+        }
+    },
+    "overrides": [
+        {
+            "files": ["*\\.{ts,tsx}"],
+            "parser": "@typescript-eslint/parser",
+            "plugins": [
+                "import",
+                "prettier",
+                "@typescript-eslint"
+            ],
+            "extends": ["prettier", "plugin:@typescript-eslint/recommended"]
+        },
+        {
+            "files": ["./webpack.config.js"],
+            "rules": {
+                "@typescript-eslint/no-var-requires": 0
+            }
+        }
+    ]
+}
