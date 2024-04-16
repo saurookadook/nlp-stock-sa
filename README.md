@@ -44,8 +44,6 @@ Add following to `/etc/hosts`
 
 ```sh
 $ brew install nvm yarn python@3.10.4 postgresql@16
-# For M1 Mac only
-$ /opt/homebrew/bin/createuser -s postgres
 $ curl -sSL https://install.python-poetry.org | python 3 -
 $ nvm install $(cat .nvmrc) && nvm use
 ```
