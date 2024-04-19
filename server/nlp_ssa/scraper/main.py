@@ -25,8 +25,9 @@ def post_process(items):
 
 def main():
     process = CrawlerProcess(get_project_settings())
+    process.crawl(NewsSpider)
     # process.crawl(NewsSpider).addCallback(post_process)
-    process.crawl(BloombergSpider)
+    # process.crawl(BloombergSpider)
     process.start()
 
 

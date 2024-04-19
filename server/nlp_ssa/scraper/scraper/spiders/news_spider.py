@@ -18,7 +18,6 @@ nltk.download("wordnet")
 class NewsSpider(scrapy.Spider):
     name = "news"
     custom_settings = {"USER_AGENT": "ScrapyBot", "DOWNLOAD_DELAY": 2}
-    group_id = uuid.uuid4()
 
     def preprocess(self, documents):
         """
@@ -82,5 +81,5 @@ class NewsSpider(scrapy.Spider):
         cleaned_text = self.clean(soup.get_text())
         item = ScraperItem()
         item["Sentence"] = cleaned_text
-        item["GroupId"] = self.group_id
+        item["GroupId"] = uuid.uuid4()
         yield item
