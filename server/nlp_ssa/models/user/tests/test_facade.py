@@ -1,9 +1,18 @@
+import arrow
 import pytest
-from uuid import UUID
+from unittest.mock import patch
+from uuid import UUID, uuid4
 
 from models.analysis_view import AnalysisViewFactory
 from models.sentiment_analysis import SentimentAnalysisFactory
 from models.user import User, UserFacade, UserFactory
+
+
+@pytest.fixture
+def mock_utcnow(monkeypatch):
+    mock_utcnow_return = arrow.get(2024, 4, 19)
+    # monkeypatch.setattr(arrow, "utcnow", lambda: mock_utcnow_return)
+    return mock_utcnow_return
 
 
 @pytest.fixture
@@ -73,3 +82,23 @@ def test_get_analysis_views_by_quote_stock_symbol_no_results(
     result = user_facade.get_analysis_views_by_quote_stock_symbol("TSLA")
 
     assert result == []
+
+
+def test_create_or_update_new_user(user_facade, mock_utcnow):
+    user_dict = {
+        "id": uuid4(),
+        "first_name": "Walter",
+        "last_name": "White",
+        "username": "iamheisenberg",
+        "email": "best-meth-cook@yahoo.com",
+    }
+
+    with patch("models.user.facade.arrow.utcnow", return_value=mock_utcnow) as mock_now:
+        result = user_facade.create_or_update(payload=user_dict)
+
+        assert result.first_name == user_dict["first_name"]
+        assert result.last_name == user_dict["last_name"]
+        assert result.username == user_dict["username"]
+        assert result.email == user_dict["email"]
+        assert result.created_at == mock_now()
+        assert result.updated_at == mock_now()
