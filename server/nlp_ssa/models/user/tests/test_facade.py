@@ -56,8 +56,15 @@ def test_get_analysis_views_by_quote_stock_symbol_singular_result(
         source_group_id=UUID("0a35cf9d-44e7-4e74-bb35-55605f093ce5"),
         quote_stock_symbol="TSLA",
     )
+    sa_not_in_results = SentimentAnalysisFactory(
+        source_group_id=UUID("4a6fac31-aaf9-4fb2-8d6b-b5ab5900d9b6"),
+        quote_stock_symbol="VOO",
+    )
     mock_analysis_view = AnalysisViewFactory(
         source_group_id=sa_1.source_group_id, user=mock_user
+    )
+    AnalysisViewFactory(
+        source_group_id=sa_not_in_results.source_group_id, user=mock_user
     )
     mock_db_session.commit()
 
@@ -78,11 +85,18 @@ def test_get_analysis_views_by_quote_stock_symbol_multiple_results(
         source_group_id=UUID("394fe6c9-676b-4a3c-86bd-d07523cb4caa"),
         quote_stock_symbol="DIS",
     )
+    sa_not_in_results = SentimentAnalysisFactory(
+        source_group_id=UUID("4a6fac31-aaf9-4fb2-8d6b-b5ab5900d9b6"),
+        quote_stock_symbol="VOO",
+    )
     mock_analysis_view_1 = AnalysisViewFactory(
         source_group_id=sa_1.source_group_id, user=mock_user
     )
     mock_analysis_view_2 = AnalysisViewFactory(
         source_group_id=sa_2.source_group_id, user=mock_user
+    )
+    AnalysisViewFactory(
+        source_group_id=sa_not_in_results.source_group_id, user=mock_user
     )
     mock_db_session.commit()
 

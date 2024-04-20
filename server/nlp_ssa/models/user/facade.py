@@ -47,12 +47,12 @@ class UserFacade:
 
         user_analysis_views = (
             self.db_session.execute(
-                select(AnalysisViewDB).join(
+                select(AnalysisViewDB)
+                .join(
                     SentimentAnalysisDB,
                     SentimentAnalysisDB.source_group_id
                     == AnalysisViewDB.source_group_id,
                 )
-                # .join(UserDB, UserDB.id == AnalysisViewDB.user_id)
                 .where(
                     and_(
                         SentimentAnalysisDB.quote_stock_symbol == quote_stock_symbol,
@@ -67,7 +67,6 @@ class UserFacade:
         return user_analysis_views
 
     def create_or_update(self, *, payload: Dict) -> User:
-        # TODO: not sure this will still work?
         insert_stmt = insert(UserDB).values(**payload)
 
         full_stmt = insert_stmt.on_conflict_do_update(
