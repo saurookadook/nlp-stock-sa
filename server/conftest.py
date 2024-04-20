@@ -51,6 +51,17 @@ def http_requests_mock():
 
 
 @pytest.fixture
+def mock_utcnow():
+    return arrow.get(2024, 4, 19).to("utc")
+
+
+@pytest.fixture(autouse=True)
+def mock_arrow_utcnow(mocker, mock_utcnow):
+    utcnow_patch = mocker.patch("arrow.utcnow")
+    utcnow_patch.return_value = mock_utcnow
+
+
+@pytest.fixture
 def mock_user(mock_db_session):
     user = UserFactory(
         id="458eae59-4748-42e5-b894-06cb9a25d6c5",
