@@ -69,8 +69,26 @@ def test_get_analysis_views_by_quote_stock_symbol_singular_result(
 def test_get_analysis_views_by_quote_stock_symbol_multiple_results(
     mock_db_session, user_facade
 ):
+    mock_user = UserFactory()
+    sa_1 = SentimentAnalysisFactory(
+        source_group_id=UUID("0a35cf9d-44e7-4e74-bb35-55605f093ce5"),
+        quote_stock_symbol="DIS",
+    )
+    sa_2 = SentimentAnalysisFactory(
+        source_group_id=UUID("394fe6c9-676b-4a3c-86bd-d07523cb4caa"),
+        quote_stock_symbol="DIS",
+    )
+    mock_analysis_view_1 = AnalysisViewFactory(
+        source_group_id=sa_1.source_group_id, user=mock_user
+    )
+    mock_analysis_view_2 = AnalysisViewFactory(
+        source_group_id=sa_2.source_group_id, user=mock_user
+    )
+    mock_db_session.commit()
 
-    assert False == "Implement me! :["
+    result = user_facade.get_analysis_views_by_quote_stock_symbol("DIS")
+
+    assert result == [mock_analysis_view_1, mock_analysis_view_2]
 
 
 def test_get_analysis_views_by_quote_stock_symbol_no_results(
