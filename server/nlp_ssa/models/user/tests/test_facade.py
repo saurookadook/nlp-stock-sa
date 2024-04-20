@@ -61,7 +61,7 @@ def test_get_analysis_views_by_quote_stock_symbol_singular_result(
     )
     mock_db_session.commit()
 
-    result = user_facade.get_analysis_views_by_quote_stock_symbol("TSLA")
+    result = user_facade.get_analysis_views_by_quote_stock_symbol(mock_user.id, "TSLA")
 
     assert result == [mock_analysis_view]
 
@@ -86,7 +86,7 @@ def test_get_analysis_views_by_quote_stock_symbol_multiple_results(
     )
     mock_db_session.commit()
 
-    result = user_facade.get_analysis_views_by_quote_stock_symbol("DIS")
+    result = user_facade.get_analysis_views_by_quote_stock_symbol(mock_user.id, "DIS")
 
     assert result == [mock_analysis_view_1, mock_analysis_view_2]
 
@@ -94,10 +94,10 @@ def test_get_analysis_views_by_quote_stock_symbol_multiple_results(
 def test_get_analysis_views_by_quote_stock_symbol_no_results(
     mock_db_session, user_facade
 ):
-    UserFactory()
+    mock_user = UserFactory()
     mock_db_session.commit()
 
-    result = user_facade.get_analysis_views_by_quote_stock_symbol("TSLA")
+    result = user_facade.get_analysis_views_by_quote_stock_symbol(mock_user.id, "TSLA")
 
     assert result == []
 
