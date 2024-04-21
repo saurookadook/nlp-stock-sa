@@ -1,14 +1,14 @@
-from pathlib import Path
-import uuid
-import scrapy
-from scraper.items import ScraperItem
-from bs4 import BeautifulSoup
+import nltk
 import re
+import scrapy
+import uuid
+from bs4 import BeautifulSoup
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 from nltk.tokenize import PunktSentenceTokenizer
-import nltk
+from pathlib import Path
+from scraper.items import ScraperItem
 
 nltk.download("punkt")
 nltk.download("stopwords")
