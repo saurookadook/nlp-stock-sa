@@ -51,7 +51,11 @@ class NewsSpider(scrapy.Spider):
         return text
 
     def start_requests(self):
-        urls = ["https://finance.yahoo.com"]
+        # https://finance.yahoo.com/sectors/communication-services/
+        urls = [
+            "https://finance.yahoo.com",
+            "https://finance.yahoo.com/sectors/communication-services/",
+        ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
@@ -63,6 +67,9 @@ class NewsSpider(scrapy.Spider):
         """
         links_to_include = ["finance", "https"]
 
+        # ------------------- selectors -------------------
+        # section.mainContent
+        # section.container[data-testid="largest-companies"] - (on https://finance.yahoo.com/sectors/communication-services/)
         links = response.css("a::attr(href)").getall()
         for link in links:
             if (
