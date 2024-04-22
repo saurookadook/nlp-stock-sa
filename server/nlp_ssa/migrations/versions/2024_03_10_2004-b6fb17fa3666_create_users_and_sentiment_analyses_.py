@@ -12,7 +12,7 @@ from typing import Sequence, Union
 
 import db
 from migrations.alembic_utilities import create_pg_enum, drop_pg_enum
-from models.sentiment_analysis.db import SentimentEnum
+from models.sentiment_analysis.constants import SentimentEnum
 
 # revision identifiers, used by Alembic.
 revision: str = "b6fb17fa3666"
