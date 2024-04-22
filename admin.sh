@@ -73,7 +73,6 @@ createTestDatabase() {
 initDatabase() {
     isDbReady
 
-
     if [[ $* == "-d" || ! $(dbExists) ]]; then
         echo ""
         echo "======================================================================================"
@@ -104,19 +103,27 @@ initTestDatabase() {
 
     isDbReady
 
-    if dbExists; then
-        echo ""
-        echo "======================================================================================"
-        echo "$DATABASE_NAME already exists :]"
-        echo "======================================================================================"
-        echo ""
-    else
+    if [[ $* == "-d" || ! $(dbExists) ]]; then
         echo ""
         echo "======================================================================================"
         echo "Creating $DATABASE_NAME database..."
         echo "======================================================================================"
         echo ""
         createTestDatabase
+    else
+        echo ""
+        echo "======================================================================================"
+        echo "$DATABASE_NAME already exists :]"
+        echo "======================================================================================"
+        echo ""
+    fi
+}
+
+seedDatabase() {
+    isDbReady
+
+    if [[ $* == "-d" || ! $(dbExists) ]]; then
+        docker-compose run --rm server python nlp_ssa/scripts/db/seed_db.py
     fi
 }
 
@@ -185,6 +192,13 @@ scriptController() {
             echo "======================================================================================"
             echo ""
             createTestDatabase
+        elif [ "$2" == "seed" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "Seeding database..."
+            echo "======================================================================================"
+            echo ""
+            seedDatabase
         fi
     elif [ "$1" == "test" ]; then
         if [ "$2" == "server" ]; then
