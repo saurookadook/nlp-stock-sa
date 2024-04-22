@@ -1,4 +1,4 @@
-UserId,FullStockSymbol,QuoteStockSymbol,Score,Sentiment,Output,SourceGroupID,CreatedAt,UpdatedAt
+UserID,FullStockSymbol,QuoteStockSymbol,Score,Sentiment,Output,SourceGroupID,CreatedAt,UpdatedAt
 863cc20f-758a-4de8-ab92-04f1909a1014,Tesla Inc,TSLA,0.762,Positive,"{'neg': 0.0, 'neu': 0.238, 'pos': 0.762, 'compound': 0.6369}",b9ce1c57-60de-4a93-b02e-9e0465d2cc4e,4/15/2024,4/15/2024
 863cc20f-758a-4de8-ab92-04f1909a1014,Nintendo LTD ORD,NTDOF,0.901,Positive,"{'neg': 0.0, 'neu': 0.238, 'pos': 0.901, 'compound': 0.6369}",50cd9c0a-f9ff-4f93-8150-be42cbdfcb64,4/15/2024,4/15/2024
 e3777f01-48f2-43a5-8448-a7f6aecb1b34,"Verb Technology Company, Inc. ",VERB,0.8393,Compound,"{'neg': 0.0, 'neu': 0.417, 'pos': 0.583, 'compound': 0.8393}",49de6bbc-a7df-42d5-9e06-3bc94fa8f85v,4/15/2024,4/15/2024
