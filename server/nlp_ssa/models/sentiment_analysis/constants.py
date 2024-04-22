@@ -3,6 +3,7 @@ from enum import Enum
 
 class SentimentEnum(Enum):
 
-    POSITIVE = "positive"
-    NEUTRAL = "neutral"
+    COMPOUND = "compound"
     NEGATIVE = "negative"
+    NEUTRAL = "neutral"
+    POSITIVE = "positive"
