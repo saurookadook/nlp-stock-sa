@@ -52,7 +52,11 @@ def seed_db():
 
             inspect(row, sort=True)
 
-            print(f" Creating Stock record for {row["QuoteStockSymbol"]} ".center(window_width, "-"))
+            print(
+                f" Creating Stock record for {row['QuoteStockSymbol']} ".center(
+                    window_width, "-"
+                )
+            )
             stock_dict = dict(
                 id=uuid4(),
                 quote_stock_symbol=row["QuoteStockSymbol"],
@@ -66,7 +70,11 @@ def seed_db():
             )
             local_db_session.commit()
 
-            print(f" Creating SentimentAnalysis record for {row["QuoteStockSymbol"]} ".center(window_width, "-"))
+            print(
+                f" Creating SentimentAnalysis record for {row['QuoteStockSymbol']} ".center(
+                    window_width, "-"
+                )
+            )
             sentiment_analysis_record = dict(
                 id=uuid4(),
                 quote_stock_symbol=row["QuoteStockSymbol"],
@@ -84,7 +92,11 @@ def seed_db():
             )
             local_db_session.commit()
 
-            print(f" Creating AnalysisView record for source_group_id {row["SourceGroupID"]} and user {row["UserId"]} ".center(window_width, "-"))
+            print(
+                f" Creating AnalysisView record for source_group_id {row['SourceGroupID']} and user {row['UserId']} ".center(
+                    window_width, "-"
+                )
+            )
             analysis_view_dict = dict(
                 id=uuid4(),
                 source_group_id=row["SourceGroupID"],
