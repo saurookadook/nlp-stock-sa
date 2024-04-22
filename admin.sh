@@ -45,14 +45,18 @@ dbExists() {
     [ "$(psql $PSQL_CONNECTION -l | grep $DATABASE_NAME | wc -l)" -ne 0 ]
 }
 
+dropDatabase() {
+    echo ""
+    echo "======================================================================================"
+    echo "Dropping $DATABASE_NAME database..."
+    echo "======================================================================================"
+    echo ""
+    psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
+}
+
 createDatabase() {
     if [[ $* == "-d" ]]; then # drop flag included
-        echo ""
-        echo "======================================================================================"
-        echo "Dropping $DATABASE_NAME database..."
-        echo "======================================================================================"
-        echo ""
-        psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
+        dropDatabase
     fi
 
     psql $PSQL_CONNECTION -f "db/init_db.sql"
@@ -122,7 +126,7 @@ initTestDatabase() {
 seedDatabase() {
     isDbReady
 
-    if [[ $* == "-d" || ! $(dbExists) ]]; then
+    if [[ ! $(dbExists) ]]; then
         docker-compose run --rm server python nlp_ssa/scripts/db/seed_db.py
     fi
 }
@@ -164,7 +168,9 @@ scriptController() {
         echo "db case"
         echo "======================================================================================"
         echo ""
-        if [ "$2" == "init" ]; then
+        if [ "$2" == "drop" ]; then
+            dropDatabase
+        elif [ "$2" == "init" ]; then
             echo ""
             echo "======================================================================================"
             echo "Initializing $DATABASE_NAME database..."

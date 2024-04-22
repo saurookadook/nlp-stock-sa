@@ -3,7 +3,8 @@
 import arrow
 import csv
 import os
-from sqlalchemy import insert
+from sqlalchemy import delete
+from sqlalchemy.dialects.postgresql import insert
 from uuid import UUID, uuid4
 
 from db import db_session
@@ -34,6 +35,11 @@ users = [
 
 def seed_db():
     local_db_session = db_session()
+    local_db_session.execute(delete(AnalysisViewDB))
+    local_db_session.execute(delete(SentimentAnalysisDB))
+    local_db_session.execute(delete(StockDB))
+    local_db_session.execute(delete(UserDB))
+    local_db_session.flush()
 
     print(" Seeding stocks from stocks_seed_data.csv... ".center(window_width, "-"))
     for user in users:
@@ -52,6 +58,8 @@ def seed_db():
 
             inspect(row, sort=True)
 
+            # TODO: need to parse 4/15/2024 as date and/or transform it to a supported date format
+
             print(
                 f" Creating Stock record for {row['QuoteStockSymbol']} ".center(
                     window_width, "-"
@@ -61,7 +69,6 @@ def seed_db():
                 id=uuid4(),
                 quote_stock_symbol=row["QuoteStockSymbol"],
                 full_stock_symbol=row["FullStockSymbol"],
-                source_group_id=row["SourceGroupID"],
                 created_at=arrow.get(row["CreatedAt"]).to("utc"),
             )
 
@@ -79,9 +86,9 @@ def seed_db():
                 id=uuid4(),
                 quote_stock_symbol=row["QuoteStockSymbol"],
                 score=row["Score"],
-                sentiment=row["Sentiment"],
+                sentiment=row["Sentiment"].lower().strip(),
                 # output=row["Output"],
-                source_group_id=row["SourceGroupID"],
+                source_group_id=UUID(row["SourceGroupID"]),
                 created_at=arrow.get(row["CreatedAt"]).to("utc"),
             )
 
@@ -93,14 +100,14 @@ def seed_db():
             local_db_session.commit()
 
             print(
-                f" Creating AnalysisView record for source_group_id {row['SourceGroupID']} and user {row['UserId']} ".center(
+                f" Creating AnalysisView record for source_group_id {row['SourceGroupID']} and user {row['UserID']} ".center(
                     window_width, "-"
                 )
             )
             analysis_view_dict = dict(
                 id=uuid4(),
-                source_group_id=row["SourceGroupID"],
-                user_id=row["UserID"],
+                source_group_id=UUID(row["SourceGroupID"]),
+                user_id=UUID(row["UserID"]),
                 created_at=arrow.get(row["CreatedAt"]).to("utc"),
             )
 
