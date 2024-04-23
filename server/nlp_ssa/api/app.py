@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi_csrf_protect import CsrfProtect
 from fastapi_csrf_protect.exceptions import CsrfProtectError
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 from pydantic import BaseModel
 from uuid import uuid4
 
@@ -65,6 +65,49 @@ async def read_users_test():
         user = users.first()
 
     return {"user": user}
+
+
+@app.get("/api/analysis-views/test")
+async def read_analysis_views():
+    from models.analysis_view import AnalysisViewDB
+    from models.sentiment_analysis import SentimentAnalysisDB
+
+    user_facade = UserFacade(db_session=db_session)
+
+    try:
+        user = user_facade.get_one_by_username("ovalle15")
+    except Exception as e:
+        raise e
+
+    analysis_views = (
+        db_session.execute(
+            select(AnalysisViewDB)
+            .where(AnalysisViewDB.user_id == user.id)
+            .order_by(AnalysisViewDB.source_group_id)
+        )
+        .scalars()
+        .all()
+    )
+
+    source_group_ids = [av.source_group_id for av in analysis_views]
+    sentiment_analyses = (
+        db_session.execute(
+            select(SentimentAnalysisDB)
+            .where(SentimentAnalysisDB.source_group_id.in_(source_group_ids))
+            .order_by(SentimentAnalysisDB.source_group_id)
+        )
+        .scalars()
+        .all()
+    )
+
+    results = []
+
+    for tuple_result in zip(analysis_views, sentiment_analyses):
+        results.append(
+            dict(analysis_view=tuple_result[0], sentiment_analysis=tuple_result[1])
+        )
+
+    return results
 
 
 @app.get("/api/health-check")
