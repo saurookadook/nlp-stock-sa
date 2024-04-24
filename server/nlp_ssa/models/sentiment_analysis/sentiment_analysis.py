@@ -14,6 +14,7 @@ class SentimentAnalysis(BaseModel):
     quote_stock_symbol: str
     score: float
     sentiment: SentimentEnum
+    # TODO: add 'output' column
     source_group_id: UUID
     created_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
     updated_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]

@@ -35,3 +35,4 @@ class SentimentAnalysisDB(Base, TimestampsMixin):
         default=SentimentEnum.NEUTRAL,
         nullable=False,
     )
+    # TODO: add 'output' column
