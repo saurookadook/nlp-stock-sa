@@ -44,12 +44,18 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-SPIDER_MIDDLEWARES = {"scraper.middlewares.ScraperSpiderMiddleware": 800}
+SPIDER_MIDDLEWARES = {
+    "scrapy_splash.SplashDeduplicateArgsMiddleware": 100,
+    "scraper.middlewares.ScraperSpiderMiddleware": 800,
+}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     "scraper.middlewares.ScraperDownloaderMiddleware": 543,
+    "scrapy_splash.SplashCookiesMiddleware": 723,
+    "scrapy_splash.SplashMiddleware": 725,
+    "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 810,
 }
 
 # Enable or disable extensions
@@ -77,8 +83,8 @@ ITEM_PIPELINES = {"scraper.pipelines.ScraperPipeline": 800}
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-# HTTPCACHE_ENABLED = True
-# HTTPCACHE_EXPIRATION_SECS = 0
+HTTPCACHE_ENABLED = True
+HTTPCACHE_EXPIRATION_SECS = 2
 # HTTPCACHE_DIR = "httpcache"
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
@@ -87,3 +93,12 @@ ITEM_PIPELINES = {"scraper.pipelines.ScraperPipeline": 800}
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+# ##############################
+# Splash settings
+# ##############################
+# SPLASH_URL = 'http://192.168.59.103:8050'
+SPLASH_URL = "http://0.0.0.0:8050"
+
+DUPEFILTER_CLASS = "scrapy_splash.SplashAwareDupeFilter"
+HTTPCACHE_STORAGE = "scrapy_splash.SplashAwareFSCacheStorage"
