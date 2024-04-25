@@ -76,7 +76,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./server:/opt/nlp-stock-sa
+      - ./server:/opt/nlp-stock-sa/server
       # - ./server:/opt/nlp-stock-sa/server
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
@@ -95,7 +95,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./server/scraper:/opt/nlp-stock-sa/scraper
+      - ./server:/opt/nlp-stock-sa/server
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
   splash-server:

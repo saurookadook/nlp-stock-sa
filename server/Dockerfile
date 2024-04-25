@@ -27,6 +27,8 @@ RUN apt-get update
 RUN apt-get install --no-install-recommends -y libssl-dev vim nano
 RUN mkdir -p /var/log/nlp-stock-sa
 RUN useradd --uid 2000 nlpssa_app
+RUN mkdir -p /opt/.venv
+RUN chown -R nlpssa_app:nlpssa_app /opt/.venv
 USER nlpssa_app
 ARG venv
 WORKDIR /opt/nlp-stock-sa
@@ -41,7 +43,11 @@ ARG PORT
 CMD ["uvicorn", "nlp_ssa.api.app:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]
 
 FROM dev-base AS scraper-dev
-CMD poetry run server/ssa/scraper/main.py
+# WORKDIR /opt/nlp-stock-sa/server
+USER root
+CMD ls -la && python3 server/nlp_ssa/scraper/main.py
+# ENV PATH="/root/.poetry/bin:$PATH"
+# CMD ls -la && poetry run server/nlp_ssa/scraper/main.py
 
 FROM install-base AS install-release
 COPY server/pyproject.toml server/poetry.lock ./
