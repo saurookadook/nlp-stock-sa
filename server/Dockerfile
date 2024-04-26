@@ -4,7 +4,7 @@ ARG venv=/opt/.venv
 FROM python:3.10.13-slim-bullseye AS install-base
 ARG YOUR_ENV
 ARG venv
-WORKDIR /opt/nlp-stock-sa
+WORKDIR /opt/nlp-stock-sa/server
 ENV PATH="/root/.poetry/bin:$PATH"
 ENV VIRTUAL_ENV=$venv
 ENV PYTHONUNBUFFERED 1
@@ -31,9 +31,9 @@ RUN mkdir -p /opt/.venv
 RUN chown -R nlpssa_app:nlpssa_app /opt/.venv
 USER nlpssa_app
 ARG venv
-WORKDIR /opt/nlp-stock-sa
+WORKDIR /opt/nlp-stock-sa/server
 ENV PATH="$venv/bin:$PATH"
-ENV PYTHONPATH="nlp_ssa/:$PYTHONPATH"
+ENV PYTHONPATH="/opt/nlp-stock-sa/server/nlp_ssa/:$PYTHONPATH"
 COPY --from=install-dev /opt/.venv /opt/.venv
 
 FROM dev-base AS server-dev
@@ -43,9 +43,11 @@ ARG PORT
 CMD ["uvicorn", "nlp_ssa.api.app:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]
 
 FROM dev-base AS scraper-dev
-# WORKDIR /opt/nlp-stock-sa/server
+ENV PATH="$venv/bin:$PATH"
+ENV PYTHONPATH="/opt/nlp-stock-sa/server/nlp_ssa/:$PYTHONPATH"
 USER root
-CMD ls -la && python3 server/nlp_ssa/scraper/main.py
+WORKDIR /opt/nlp-stock-sa/server
+CMD ls -la && python3 nlp_ssa/scraper/main.py
 # ENV PATH="/root/.poetry/bin:$PATH"
 # CMD ls -la && poetry run server/nlp_ssa/scraper/main.py
 
