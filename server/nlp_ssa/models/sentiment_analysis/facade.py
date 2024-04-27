@@ -14,7 +14,6 @@ class SentimentAnalysisFacade:
         self.db_session = db_session
 
     def get_one_by_id(self, id):
-
         try:
             sentiment_analysis = self.db_session.execute(
                 select(SentimentAnalysisDB).where(SentimentAnalysisDB.id == id)
