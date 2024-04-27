@@ -54,6 +54,16 @@ dropDatabase() {
     psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
 }
 
+dropTestDatabase() {
+    DATABASE_NAME="test_the_money_maker"
+    echo ""
+    echo "======================================================================================"
+    echo "Dropping $DATABASE_NAME database..."
+    echo "======================================================================================"
+    echo ""
+    psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
+}
+
 createDatabase() {
     if [[ $* == "-d" ]]; then # drop flag included
         dropDatabase
@@ -67,7 +77,7 @@ createTestDatabase() {
     DATABASE_NAME="test_the_money_maker"
 
     if [[ $* == "-d" ]]; then # drop flag included
-        psql $PSQL_CONNECTION -c DROP DATABASE IF EXISTS $DATABASE_NAME
+        psql $PSQL_CONNECTION -c DROP DATABASE IF EXISTS "test_the_money_maker"
     fi
 
     psql $PSQL_CONNECTION -f "db/init_test_db.sql"
@@ -170,6 +180,8 @@ scriptController() {
         echo ""
         if [ "$2" == "drop" ]; then
             dropDatabase
+        elif [ "$2" == "drop-test" ]; then
+            dropTestDatabase
         elif [ "$2" == "init" ]; then
             echo ""
             echo "======================================================================================"
