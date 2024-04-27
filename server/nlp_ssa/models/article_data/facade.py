@@ -16,10 +16,10 @@ class ArticleDataFacade:
     def __init__(self, *, db_session):
         self.db_session = db_session
 
-    def get_one_by_id(self, id: Union[UUID, str]):
+    def get_one_by_id(self, id: Union[UUID, str]) -> ArticleData:
         try:
             article_data = self.db_session.execute(
-                select(ArticleDataDB).where(ArticleDataDB.id == UUID(id))
+                select(ArticleDataDB).where(ArticleDataDB.id == id)
             ).scalar_one()
         except NoResultFound:
             raise ArticleDataFacade.NoResultFound
