@@ -5,6 +5,7 @@ import db
 from db import Base, engine
 
 # from models import analysis_view, sentiment_analysis, stock, user
+from models.article_data.db import ArticleDataDB
 from models.analysis_view.db import AnalysisViewDB
 from models.sentiment_analysis.db import SentimentAnalysisDB
 from models.stock.db import StockDB
