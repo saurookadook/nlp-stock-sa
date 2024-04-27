@@ -13,7 +13,7 @@ class ArticleData(BaseModel):
     quote_stock_symbol: str
     source_group_id: UUID
     source_url: str
-    sentence_tokens: str = ""
     raw_content: str = ""
+    sentence_tokens: str = ""
     created_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
     updated_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
