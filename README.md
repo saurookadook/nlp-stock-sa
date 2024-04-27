@@ -120,6 +120,10 @@ Autogenerate revisions:
 $ docker-compose run --rm server alembic revision --autogenerate -m "some migration message"
 ```
 
+### Frontend
+
+_TODO_ 🙃
+
 ## Tests
 
 ### Server
