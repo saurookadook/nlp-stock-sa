@@ -86,13 +86,7 @@ class NewsSpider(scrapy.Spider):
             )
 
     def follow_quote_news_links(self, response):
-        news_links = response.css("div.news-stream a::attr(href)").getall()
-        inspect(news_links)
-        news_links = [
-            self.base_url + link if "finance.yahoo.com" not in link else link
-            for link in news_links
-        ]
-        inspect(news_links)
+        news_links = self._get_non_ad_links_from_response(response)
 
         for link in news_links:
             yield scrapy_splash.SplashRequest(
@@ -124,14 +118,18 @@ class NewsSpider(scrapy.Spider):
         - yields item
         """
         self._debug_logger(header_text="NewsSpider.parse")
-        soup = BeautifulSoup(response.body, "html.parser")
+
+        article_content = response.css("div.morpheusGridBody div.caas-body").get()
+        soup = BeautifulSoup(article_content, "html.parser")
         cleaned_text = self.clean(soup.get_text())
         item = ScraperItem()
+
         self._debug_logger(
             header_text="NewsSpider.parse - cleaned_text",
             variables=[cleaned_text],
             width=200,
         )
+
         item["Sentence"] = cleaned_text
         item["GroupId"] = uuid.uuid4()
         yield item
@@ -144,3 +142,17 @@ class NewsSpider(scrapy.Spider):
             print(var)
         if not variables:
             print("=" * width)
+
+    def _get_non_ad_links_from_response(self, response):
+        stream_links = response.css("div.news-stream a::attr(href)").getall()
+        # inspect(stream_links)
+
+        news_links = []
+        for link in stream_links:
+            if link.startswith("/"):
+                news_links.append(self.base_url + link)
+            elif "finance.yahoo.com" in link:
+                news_links.append(link)
+
+        # inspect(news_links)
+        return news_links

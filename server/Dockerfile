@@ -47,9 +47,7 @@ ENV PATH="$venv/bin:$PATH"
 ENV PYTHONPATH="/opt/nlp-stock-sa/server/nlp_ssa/:$PYTHONPATH"
 USER root
 WORKDIR /opt/nlp-stock-sa/server
-CMD ls -la && python3 nlp_ssa/scraper/main.py
-# ENV PATH="/root/.poetry/bin:$PATH"
-# CMD ls -la && poetry run server/nlp_ssa/scraper/main.py
+CMD python3 nlp_ssa/scraper/main.py
 
 FROM install-base AS install-release
 COPY server/pyproject.toml server/poetry.lock ./
