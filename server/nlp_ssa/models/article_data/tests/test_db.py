@@ -20,9 +20,15 @@ def expected_article_data_dict():
         quote_stock_symbol="NTDOF",
         source_group_id=UUID("3a0e5f09-3904-46df-bffb-13f5a95412ad"),
         source_url="https://finance.yahoo.com/news/they-are-killin-it-123459876.html",
-        raw_content="meow meow meow meow meow meow business meow meow meow business business",
-        sentence_tokens="                              business                business business",
+        raw_content="meow meow meow meow meow meow business meow meow meow business business meow business meow meow meow woof woof meow",
+        sentence_tokens=[
+            "                              business                business",
+            " business      business                              ",
+        ],
     )
+
+
+"patriots owner robert kraft pulls donations to one 1q gdp hits "
 
 
 def test_article_data_db(mock_db_session, expected_article_data_dict):
