@@ -8,7 +8,7 @@ from models.mixins import TimestampsMixin
 
 
 class ArticleDataDB(Base, TimestampsMixin):
-    __tablename__ = "sentence_tokens"
+    __tablename__ = "article_data"
 
     id: Mapped[uuid.UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), primary_key=True, nullable=False
