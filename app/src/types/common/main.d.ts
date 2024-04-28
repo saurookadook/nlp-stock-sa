@@ -14,3 +14,32 @@ declare global {
         renderApp: RenderAppFunc;
     }
 }
+
+type StateSlice = {
+    [key: string]: AmbiguousObject;
+};
+
+interface CombinedState extends StateSlice {
+    pageData?: StateSlice;
+}
+
+interface BaseReducerAction {
+    type: string;
+    payload?: StateSlice;
+}
+
+type GenericReducerFunc<S, A> = (state: S, action: A) => S;
+
+type StateSliceReducerFunc = (state: StateSlice, action: BaseReducerAction) => StateSlice;
+
+type GenericStateSliceReducer<S, A> = [GenericReducerFunc<S, A>, S];
+
+interface StateSliceReducer {
+    [key: string]: GenericStateSliceReducer;
+}
+
+type CombinedStateSliceReducer = [GenericReducerFunc, CombinedState];
+
+interface FinalReducers {
+    [key: string]: GenericReducerFunc;
+}
