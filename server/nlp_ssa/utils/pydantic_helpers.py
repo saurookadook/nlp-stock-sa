@@ -2,9 +2,12 @@ import arrow
 import datetime
 from arrow import Arrow
 from pydantic import (
+    BaseModel,
+    ConfigDict,
     GetCoreSchemaHandler,
     ValidationInfo,
     ValidatorFunctionWrapHandler,
+    alias_generators,
 )
 from pydantic.functional_validators import WrapValidator
 from pydantic_core import core_schema
@@ -89,3 +92,11 @@ class ArrowType(Arrow):
 
 
 SerializerArrowType = Annotated[Arrow, ArrowType]
+
+
+class BaseResponseModel(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=alias_generators.to_camel,
+        from_attributes=True,
+        populate_by_name=True,
+    )
