@@ -5,7 +5,7 @@ from sqlalchemy import select
 from config import configure_logging
 from db import db_session
 
-configure_logging(app_name="nlp_ssa.api.routes.stocks")
+configure_logging(app_name="nlp_ssa.api.routes.article_data")
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
