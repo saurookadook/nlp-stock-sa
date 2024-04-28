@@ -1,9 +1,12 @@
+import logging
 from fastapi import APIRouter
 from sqlalchemy import select
 
+from config import configure_logging
 from db import db_session
 
-
+configure_logging(app_name="nlp_ssa.api.routes.analysis_views")
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
