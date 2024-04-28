@@ -4,7 +4,7 @@ ARG venv=/opt/.venv
 FROM python:3.10.13-slim-bullseye AS install-base
 ARG YOUR_ENV
 ARG venv
-WORKDIR /opt/nlp-stock-sa
+WORKDIR /opt/nlp-stock-sa/server
 ENV PATH="/root/.poetry/bin:$PATH"
 ENV VIRTUAL_ENV=$venv
 ENV PYTHONUNBUFFERED 1
@@ -27,11 +27,13 @@ RUN apt-get update
 RUN apt-get install --no-install-recommends -y libssl-dev vim nano
 RUN mkdir -p /var/log/nlp-stock-sa
 RUN useradd --uid 2000 nlpssa_app
+RUN mkdir -p /opt/.venv
+RUN chown -R nlpssa_app:nlpssa_app /opt/.venv
 USER nlpssa_app
 ARG venv
-WORKDIR /opt/nlp-stock-sa
+WORKDIR /opt/nlp-stock-sa/server
 ENV PATH="$venv/bin:$PATH"
-ENV PYTHONPATH="nlp_ssa/:$PYTHONPATH"
+ENV PYTHONPATH="/opt/nlp-stock-sa/server/nlp_ssa/:$PYTHONPATH"
 COPY --from=install-dev /opt/.venv /opt/.venv
 
 FROM dev-base AS server-dev
@@ -40,8 +42,12 @@ ARG PORT
 # TODO: figure out why $HOST and $PORT aren't getting interpolated correctly
 CMD ["uvicorn", "nlp_ssa.api.app:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]
 
-FROM dev-base AS ssa-dev
-CMD poetry run server/ssa/scraper/main.py
+FROM dev-base AS scraper-dev
+ENV PATH="$venv/bin:$PATH"
+ENV PYTHONPATH="/opt/nlp-stock-sa/server/nlp_ssa/:$PYTHONPATH"
+USER root
+WORKDIR /opt/nlp-stock-sa/server
+CMD python3 nlp_ssa/scraper/main.py
 
 FROM install-base AS install-release
 COPY server/pyproject.toml server/poetry.lock ./

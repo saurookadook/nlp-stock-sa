@@ -21,4 +21,6 @@ class ArticleDataDB(Base, TimestampsMixin):
     )
     source_url: Mapped[str] = mapped_column(String(2048), nullable=False)
     raw_content: Mapped[str] = mapped_column(String(), nullable=True)
-    sentence_tokens: Mapped[str] = mapped_column(String(), nullable=True)
+    sentence_tokens: Mapped[str] = mapped_column(
+        postgresql.ARRAY(String), nullable=True
+    )

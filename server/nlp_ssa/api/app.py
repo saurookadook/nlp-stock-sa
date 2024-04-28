@@ -10,7 +10,6 @@ from uuid import uuid4
 
 from config import configure_logging, env_config
 from db import db_session
-from models.user import UserDB, UserFacade
 
 
 configure_logging(app_name="nlp_ssa.api")
@@ -43,6 +42,8 @@ def csrf_protect_exception_handler(request: Request, exc: CsrfProtectError):
 
 @app.get("/api/users/test")
 async def read_users_test():
+    from models.user import UserDB, UserFacade
+
     user_facade = UserFacade(db_session=db_session)
 
     try:
@@ -70,6 +71,7 @@ async def read_users_test():
 @app.get("/api/analysis-views/test")
 async def read_analysis_views():
     from models.analysis_view import AnalysisViewDB
+    from models.user import UserFacade
     from models.sentiment_analysis import SentimentAnalysisDB
 
     user_facade = UserFacade(db_session=db_session)
@@ -108,6 +110,32 @@ async def read_analysis_views():
         )
 
     return results
+
+
+@app.get("/api/article-data/{stock_slug}")
+async def read_article_data_by_slug(stock_slug: str):
+    from models.article_data import ArticleDataDB
+
+    article_data_rows = (
+        db_session.execute(
+            select(ArticleDataDB).where(
+                ArticleDataDB.quote_stock_symbol == stock_slug.upper()
+            )
+        )
+        .scalars()
+        .all()
+    )
+
+    return [ad_data.__dict__ for ad_data in article_data_rows]
+
+
+@app.get("/api/article-data")
+async def read_all_article_data():
+    from models.article_data import ArticleDataDB
+
+    all_article_data_rows = db_session.execute(select(ArticleDataDB)).scalars().all()
+
+    return [ad_data.__dict__ for ad_data in all_article_data_rows]
 
 
 @app.get("/api/health-check")

@@ -45,8 +45,14 @@ def test_create_or_update_new_article_data(
         "quote_stock_symbol": "NTDOF",
         "source_group_id": UUID("3a0e5f09-3904-46df-bffb-13f5a95412ad"),
         "source_url": "https://finance.yahoo.com/news/they-are-killin-it-123459876.html",
-        "raw_content": "meow meow meow meow meow meow business meow meow meow business business",
-        "sentence_tokens": "                              business                business business",
+        "raw_content": (
+            "meow meow meow meow meow meow business meow meow meow business business meow "
+            "business meow meow meow woof woof meow"
+        ),
+        "sentence_tokens": [
+            "                              business                business",
+            " business      business                              ",
+        ],
     }
 
     result = article_data_facade.create_or_update(payload=article_data_dict)
@@ -74,8 +80,14 @@ def test_create_or_update_existing_article_data(article_data_facade, mock_db_ses
         "quote_stock_symbol": mock_article_data.quote_stock_symbol,
         "source_group_id": mock_article_data.source_group_id,
         "source_url": mock_article_data.source_url,
-        "raw_content": "mickey goofy donald good business star wars theme parks amazing returns",
-        "sentence_tokens": "                    good business                       amazing returns",
+        "raw_content": (
+            "mickey goofy donald good business star wars theme parks amazing"
+            " returns big castle epcot cinderella little mermaid"
+        ),
+        "sentence_tokens": [
+            "                    good business                       amazing",
+            " returns                                           ",
+        ],
     }
 
     article_data_facade.create_or_update(payload=updated_article_data_dict)

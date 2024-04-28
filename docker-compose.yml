@@ -6,7 +6,8 @@ services:
       - frontend
       # - haproxy
       - server
-      # - ssa
+      - scraper
+      - splash-server
 
   database:
     image: postgres:16.2-bullseye # higher than this?
@@ -75,26 +76,35 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./server:/opt/nlp-stock-sa
+      - ./server:/opt/nlp-stock-sa/server
       # - ./server:/opt/nlp-stock-sa/server
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
-  # ssa:
-  #   depends_on:
-  #     - database
-  #   env_file: .env
-  #   environment:
-  #     EXAMPLE: woof
-  #     WORKERS: 1
-  #   build:
-  #     context: .
-  #     dockerfile: server/Dockerfile
-  #     target: ssa-dev
-  #   ports:
-  #     - "3001:3001"
-  #   volumes:
-  #     - ./server/ssa:/opt/nlp-stock-sa/ssa
-  #     # - ~/.aws:/home/nlpstocksaapp/.aws:ro
+  scraper:
+    depends_on:
+      - database
+      - splash-server
+    env_file: .env
+    environment:
+      EXAMPLE: woof
+      WORKERS: 1
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+      target: scraper-dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./server:/opt/nlp-stock-sa/server
+      # - ~/.aws:/home/nlpstocksaapp/.aws:ro
+
+  splash-server:
+    image: scrapinghub/splash:latest
+    ports:
+      - "8050:8050"
+    volumes:
+      - splash:/opt/nlp-stock-sa/scraper/splash
 
 volumes:
   db_volume:
+  splash:
