@@ -11,6 +11,19 @@ from pydantic_core import core_schema
 from typing import Annotated, Any
 
 
+def generic_validator_with_default(class_ref, value, info):
+    return (
+        value
+        if value is not None
+        else get_default_value_from_field_config(class_ref, info)
+    )
+
+
+def get_default_value_from_field_config(class_ref, info):
+    field = class_ref.model_fields[info.field_name]
+    return field.default_factory() if callable(field.default_factory) else field.default
+
+
 def convert_to_arrow_instance(
     value: str | datetime.datetime | Arrow,
     handler: ValidatorFunctionWrapHandler,
@@ -38,10 +51,16 @@ class ArrowType(Arrow):
         _handler: GetCoreSchemaHandler,
     ) -> core_schema.CoreSchema:
 
-        def validate_with_arrow(value) -> Arrow:
+        def validate_as_or_cast_to_arrow(value) -> Arrow:
             try:
-                arrow_date = arrow.get(value)
-                return arrow_date
+                if isinstance(value, Arrow):
+                    return value
+                if not isinstance(value, (str, datetime.datetime)):
+                    raise TypeError(
+                        "Instance of 'string' or 'datetime' required. "
+                        f"Received instance of type {type(value)} instead. (value: {value})"
+                    )
+                return arrow.get(value)
             except Exception as e:
                 raise ValueError(
                     f"Unable to convert value '{value}' to instance of 'Arrow'. "
@@ -55,9 +74,18 @@ class ArrowType(Arrow):
             return value
 
         return core_schema.no_info_after_validator_function(
-            function=validate_with_arrow,
-            schema=core_schema.str_schema(),
+            function=validate_as_or_cast_to_arrow,
+            schema=core_schema.union_schema(
+                [
+                    core_schema.str_schema(),
+                    core_schema.datetime_schema(),
+                    core_schema.is_instance_schema(Arrow),
+                ]
+            ),
             serialization=core_schema.wrap_serializer_function_ser_schema(
                 arrow_serialization, info_arg=True
             ),
         )
+
+
+SerializerArrowType = Annotated[Arrow, ArrowType]
