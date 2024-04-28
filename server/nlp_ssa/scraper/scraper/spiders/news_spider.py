@@ -103,6 +103,9 @@ class NewsSpider(scrapy.Spider):
         )
 
         article_content = response.css("div.morpheusGridBody div.caas-body").get()
+        if not article_content:
+            return
+
         soup = BeautifulSoup(article_content, "html.parser")
         raw_text = soup.get_text()
         cleaned_text = self.clean(raw_text)
@@ -128,6 +131,7 @@ class NewsSpider(scrapy.Spider):
                     sentence_tokens=cleaned_text,
                 )
             )
+            db_session.commit()
         except Exception as e:
             print(e, file=sys.stderr)
         yield item

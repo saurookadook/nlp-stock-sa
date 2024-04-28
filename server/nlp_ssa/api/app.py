@@ -129,6 +129,15 @@ async def read_article_data_by_slug(stock_slug: str):
     return [ad_data.__dict__ for ad_data in article_data_rows]
 
 
+@app.get("/api/article-data")
+async def read_all_article_data():
+    from models.article_data import ArticleDataDB
+
+    all_article_data_rows = db_session.execute(select(ArticleDataDB)).scalars().all()
+
+    return [ad_data.__dict__ for ad_data in all_article_data_rows]
+
+
 @app.get("/api/health-check")
 async def read_health_check():
     # return JSONResponse(status_code=200, content={"message": "Hello, world!"})
