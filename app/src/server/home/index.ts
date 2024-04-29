@@ -12,7 +12,8 @@ router.use(
         let initialPageData = {};
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await fetch(`/nlp-ssa/internal-api/v1/home`);
+            // const pageDataResponse = await fetch(`/nlp-ssa/internal-api/v1/home`);
+            const pageDataResponse = await global.fetch('http://localhost:3000/api/article-data', { mode: 'cors' });
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[home route] - caught exception: ${e}`);
