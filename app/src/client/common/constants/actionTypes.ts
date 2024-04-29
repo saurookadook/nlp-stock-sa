@@ -1,0 +1,1 @@
+export const SET_ARTICLE_DATA = 'SET_ARTICLE_DATA';

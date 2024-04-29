@@ -15,6 +15,7 @@ declare global {
     }
 }
 
+// Generic State Store Types
 type StateSlice = {
     [key: string]: AmbiguousObject;
 };
