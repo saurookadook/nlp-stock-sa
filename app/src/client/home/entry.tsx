@@ -2,6 +2,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { AmbiguousObject } from '@nlpssa-app-types/common/main';
 import { App } from 'client/home/components';
 // import reportWebVitals from 'client/reportWebVitals';
 
@@ -10,7 +11,7 @@ window.renderApp = async (initialPageData) => {
 
     root.render(
         <React.StrictMode>
-            <App data={initialPageData} />
+            <App initialPageData={initialPageData as { data: AmbiguousObject[] }} />
         </React.StrictMode>,
     );
 };
