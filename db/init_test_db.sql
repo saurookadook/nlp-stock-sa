@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS the_money_maker;
+DROP DATABASE IF EXISTS test_the_money_maker;
 
 
-CREATE DATABASE the_money_maker ENCODING 'UTF8';
+CREATE DATABASE test_the_money_maker ENCODING 'UTF8';
 
 DO $body$
 BEGIN

@@ -1,13 +1,15 @@
+import os
+
 env_config = dict(
-    csrf_secret="TMP",
-    database_user="postgres",
-    database_password="example",
-    database_host="database",
-    database_port="5432",
-    database_name="the_money_maker",
-    env="test",
-    log_level="DEBUG",
-    log_sql=False,
+    csrf_secret=os.getenv("CSRF_SECRET", "TMP"),
+    database_user=os.getenv("DATABASE_USER", "postgres"),
+    database_password=os.getenv("DATABASE_PASSWORD", "example"),
+    database_host=os.getenv("DATABASE_HOST", "database"),
+    database_port=os.getenv("DATABASE_PORT", "5432"),
+    database_name=os.getenv("DATABASE_NAME", "the_money_maker"),
+    env=os.getenv("ENV", "test"),
+    log_level=os.getenv("LOG_LEVEL", "DEBUG"),
+    log_sql=os.getenv("LOG_SQL", False),
 )
 
 from .logging import configure_logging, is_prod
