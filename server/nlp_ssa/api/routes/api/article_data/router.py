@@ -13,17 +13,11 @@ router = APIRouter()
 
 @router.get("/api/article-data/{stock_slug}", response_model=ArticleDataResponse)
 async def read_article_data_by_slug(stock_slug: str):
-    from models.article_data import ArticleDataDB
+    from models.article_data import ArticleDataFacade
 
-    article_data_rows = (
-        db_session.execute(
-            select(ArticleDataDB).where(
-                ArticleDataDB.quote_stock_symbol == stock_slug.upper()
-            )
-        )
-        .scalars()
-        .all()
-    )
+    article_data_rows = ArticleDataFacade(
+        db_session=db_session
+    ).get_all_by_stock_symbol(stock_slug)
 
     return {"data": article_data_rows}
 
