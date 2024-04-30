@@ -2,10 +2,12 @@ import arrow
 import pytest
 from uuid import UUID, uuid4
 
-from models.analysis_view import AnalysisViewFactory
-from models.sentiment_analysis import SentimentAnalysisFactory
-from models.user import User, UserFactory
+from models.analysis_view.factories import AnalysisViewFactory
+from models.sentiment_analysis.factories import SentimentAnalysisFactory
+from models.stock.factories import StockFactory
+from models.user import User
 from models.user.facade import UserFacade
+from models.user.factories import UserFactory
 
 
 @pytest.fixture()
@@ -51,14 +53,18 @@ def test_get_one_by_username_no_result(user_facade):
 def test_get_analysis_views_by_quote_stock_symbol_singular_result(
     mock_db_session, user_facade
 ):
+    mock_stock_1 = StockFactory(quote_stock_symbol="TSLA")
+    mock_stock_2 = StockFactory(quote_stock_symbol="VOO")
     mock_user = UserFactory()
+    mock_db_session.commit()
+
     sa_1 = SentimentAnalysisFactory(
         source_group_id=UUID("0a35cf9d-44e7-4e74-bb35-55605f093ce5"),
-        quote_stock_symbol="TSLA",
+        quote_stock_symbol=mock_stock_1.quote_stock_symbol,
     )
     sa_not_in_results = SentimentAnalysisFactory(
         source_group_id=UUID("4a6fac31-aaf9-4fb2-8d6b-b5ab5900d9b6"),
-        quote_stock_symbol="VOO",
+        quote_stock_symbol=mock_stock_2.quote_stock_symbol,
     )
     mock_analysis_view = AnalysisViewFactory(
         source_group_id=sa_1.source_group_id, user=mock_user
@@ -76,18 +82,22 @@ def test_get_analysis_views_by_quote_stock_symbol_singular_result(
 def test_get_analysis_views_by_quote_stock_symbol_multiple_results(
     mock_db_session, user_facade
 ):
+    mock_stock_1 = StockFactory(quote_stock_symbol="DIS")
+    mock_stock_2 = StockFactory(quote_stock_symbol="VOO")
     mock_user = UserFactory()
+    mock_db_session.commit()
+
     sa_1 = SentimentAnalysisFactory(
         source_group_id=UUID("0a35cf9d-44e7-4e74-bb35-55605f093ce5"),
-        quote_stock_symbol="DIS",
+        quote_stock_symbol=mock_stock_1.quote_stock_symbol,
     )
     sa_2 = SentimentAnalysisFactory(
         source_group_id=UUID("394fe6c9-676b-4a3c-86bd-d07523cb4caa"),
-        quote_stock_symbol="DIS",
+        quote_stock_symbol=mock_stock_1.quote_stock_symbol,
     )
     sa_not_in_results = SentimentAnalysisFactory(
         source_group_id=UUID("4a6fac31-aaf9-4fb2-8d6b-b5ab5900d9b6"),
-        quote_stock_symbol="VOO",
+        quote_stock_symbol=mock_stock_2.quote_stock_symbol,
     )
     mock_analysis_view_1 = AnalysisViewFactory(
         source_group_id=sa_1.source_group_id, user=mock_user
@@ -100,7 +110,9 @@ def test_get_analysis_views_by_quote_stock_symbol_multiple_results(
     )
     mock_db_session.commit()
 
-    result = user_facade.get_analysis_views_by_quote_stock_symbol(mock_user.id, "DIS")
+    result = user_facade.get_analysis_views_by_quote_stock_symbol(
+        mock_user.id, mock_stock_1.quote_stock_symbol
+    )
 
     assert result == [mock_analysis_view_1, mock_analysis_view_2]
 

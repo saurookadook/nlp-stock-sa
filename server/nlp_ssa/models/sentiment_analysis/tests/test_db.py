@@ -7,8 +7,9 @@ from uuid import UUID
 from models.sentiment_analysis import (
     SentimentAnalysisDB,
     SentimentEnum,
-    SentimentAnalysisFactory,
 )
+from models.sentiment_analysis.factories import SentimentAnalysisFactory
+from models.stock.factories import StockFactory
 
 
 @pytest.fixture(autouse=True)
@@ -29,6 +30,10 @@ def expected_sentiment_analysis_dict():
 
 
 def test_sentiment_analysis_db(mock_db_session, expected_sentiment_analysis_dict):
+    mock_quote_stock_symbol = expected_sentiment_analysis_dict["quote_stock_symbol"]
+    StockFactory(quote_stock_symbol=mock_quote_stock_symbol)
+    mock_db_session.commit()
+
     sentiment_analysis = SentimentAnalysisFactory(**expected_sentiment_analysis_dict)
     mock_db_session.commit()
 
@@ -36,7 +41,7 @@ def test_sentiment_analysis_db(mock_db_session, expected_sentiment_analysis_dict
         select(SentimentAnalysisDB).where(
             and_(
                 SentimentAnalysisDB.id == sentiment_analysis.id,
-                SentimentAnalysisDB.quote_stock_symbol == "CATZ",
+                SentimentAnalysisDB.quote_stock_symbol == mock_quote_stock_symbol,
             )
         )
     ).scalar_one()
