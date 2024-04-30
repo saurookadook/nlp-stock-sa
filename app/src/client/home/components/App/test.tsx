@@ -5,10 +5,9 @@ import { App } from 'client/home/components';
 
 describe('home - App component', () => {
     it('renders correctly', () => {
-        render(<App />);
+        render(<App initialPageData={{ data: [] }} />);
 
-        expect(screen.getByText("Welcome to NLP SSA", { exact: false })).toBeVisible();
-        expect(screen.getByText("THE MONEY MAKERRRRR", { exact: false })).toBeVisible();
+        expect(screen.getByText('Welcome to NLP SSA', { exact: false })).toBeVisible();
+        expect(screen.getByText('THE MONEY MAKERRRRR', { exact: false })).toBeVisible();
     });
-
-})
+});
