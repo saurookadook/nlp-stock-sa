@@ -4,7 +4,9 @@ from sqlalchemy import select, and_
 from unittest import mock
 from uuid import UUID
 
-from models.article_data import ArticleDataDB, ArticleDataFactory
+from models.article_data import ArticleDataDB
+from models.article_data.factories import ArticleDataFactory
+from models.stock.factories import StockFactory
 
 
 @pytest.fixture(autouse=True)
@@ -20,7 +22,10 @@ def expected_article_data_dict():
         quote_stock_symbol="NTDOF",
         source_group_id=UUID("3a0e5f09-3904-46df-bffb-13f5a95412ad"),
         source_url="https://finance.yahoo.com/news/they-are-killin-it-123459876.html",
-        raw_content="meow meow meow meow meow meow business meow meow meow business business meow business meow meow meow woof woof meow",
+        raw_content=(
+            "meow meow meow meow meow meow business meow meow meow business"
+            " business meow business meow meow meow woof woof meow"
+        ),
         sentence_tokens=[
             "                              business                business",
             " business      business                              ",
@@ -32,6 +37,10 @@ def expected_article_data_dict():
 
 
 def test_article_data_db(mock_db_session, expected_article_data_dict):
+    mock_quote_stock_symbol = expected_article_data_dict["quote_stock_symbol"]
+    StockFactory(quote_stock_symbol=mock_quote_stock_symbol)
+    mock_db_session.commit()
+
     mock_article_data = ArticleDataFactory(**expected_article_data_dict)
     mock_db_session.commit()
 
@@ -39,8 +48,7 @@ def test_article_data_db(mock_db_session, expected_article_data_dict):
         select(ArticleDataDB).where(
             and_(
                 ArticleDataDB.id == mock_article_data.id,
-                ArticleDataDB.quote_stock_symbol
-                == mock_article_data.quote_stock_symbol,
+                ArticleDataDB.quote_stock_symbol == mock_quote_stock_symbol,
             )
         )
     ).scalar_one()

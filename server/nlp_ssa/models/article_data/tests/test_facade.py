@@ -7,8 +7,9 @@ from models.article_data import (
     ArticleData,
     ArticleDataDB,
     ArticleDataFacade,
-    ArticleDataFactory,
 )
+from models.article_data.factories import ArticleDataFactory
+from models.stock.factories import StockFactory
 
 
 @pytest.fixture()
@@ -24,7 +25,12 @@ def article_data_facade(mock_db_session):
 
 
 def test_get_one_by_id(mock_db_session, article_data_facade):
-    mock_article_data = ArticleDataFactory()
+    mock_stock = StockFactory()
+    mock_db_session.commit()
+
+    mock_article_data = ArticleDataFactory(
+        quote_stock_symbol=mock_stock.quote_stock_symbol
+    )
     mock_db_session.commit()
 
     result = article_data_facade.get_one_by_id(id=mock_article_data.id)
@@ -37,9 +43,39 @@ def test_get_one_by_id_no_result(article_data_facade):
         article_data_facade.get_one_by_id(id="2cad8f15-795e-44b8-bf4d-ce81d586594a")
 
 
+def test_get_all_by_stock_symbol(article_data_facade, mock_db_session):
+    mock_stock_1 = StockFactory(quote_stock_symbol="FOO")
+    mock_stock_2 = StockFactory(quote_stock_symbol="BAR")
+    mock_db_session.commit()
+
+    mock_article_data_1 = ArticleDataFactory(
+        quote_stock_symbol=mock_stock_1.quote_stock_symbol
+    )
+    ArticleDataFactory(quote_stock_symbol=mock_stock_2.quote_stock_symbol)
+    mock_article_data_3 = ArticleDataFactory(
+        quote_stock_symbol=mock_stock_1.quote_stock_symbol
+    )
+    mock_db_session.commit()
+
+    results = article_data_facade.get_all_by_stock_symbol(
+        mock_stock_1.quote_stock_symbol
+    )
+
+    assert results == [mock_article_data_1, mock_article_data_3]
+
+
+def test_get_all_by_stock_symbol_no_results(article_data_facade):
+    results = article_data_facade.get_all_by_stock_symbol("NOPE")
+
+    assert results == []
+
+
 def test_create_or_update_new_article_data(
-    article_data_facade, mock_utcnow, mock_facade_now
+    article_data_facade, mock_db_session, mock_utcnow, mock_facade_now
 ):
+    StockFactory(quote_stock_symbol="NTDOF")
+    mock_db_session.commit()
+
     article_data_dict = {
         "id": uuid4(),
         "quote_stock_symbol": "NTDOF",
@@ -70,8 +106,12 @@ def test_create_or_update_new_article_data(
 
 
 def test_create_or_update_existing_article_data(article_data_facade, mock_db_session):
+    mock_stock = StockFactory(quote_stock_symbol="DIS")
+    mock_db_session.commit()
+
     mock_article_data = ArticleDataFactory(
-        id=UUID("7fb2c6c5-b2e3-4bd0-9b84-22fbeb729d8c"), quote_stock_symbol="DIS"
+        id=UUID("7fb2c6c5-b2e3-4bd0-9b84-22fbeb729d8c"),
+        quote_stock_symbol=mock_stock.quote_stock_symbol,
     )
     mock_db_session.commit()
 
