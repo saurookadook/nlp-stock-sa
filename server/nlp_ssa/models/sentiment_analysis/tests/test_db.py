@@ -54,5 +54,5 @@ def test_sentiment_analysis_db(mock_db_session, expected_sentiment_analysis_dict
     )
     assert result.score == expected_sentiment_analysis_dict["score"]
     assert result.sentiment.value == expected_sentiment_analysis_dict["sentiment"]
-    assert result.created_at == arrow.get(2020, 4, 15)
-    assert result.updated_at == arrow.get(2020, 4, 15)
+    assert result.created_at == arrow.get(2020, 4, 15).to("utc")
+    assert result.updated_at == arrow.get(2020, 4, 15).to("utc")
