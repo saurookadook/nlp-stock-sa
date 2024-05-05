@@ -62,11 +62,23 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
                                                     width: '100%',
                                                 }}
                                             >
-                                                <div style={{ display: 'inline-flex', maxWidth: '45%' }}>
+                                                <div
+                                                    style={{
+                                                        display: 'inline-flex',
+                                                        flexDirection: 'column',
+                                                        maxWidth: '45%',
+                                                    }}
+                                                >
                                                     <h2 style={{ fontWeight: 'bold' }}>Raw Content</h2>
                                                     <span>{record.rawContent}</span>
                                                 </div>
-                                                <div style={{ display: 'inline-flex', maxWidth: '45%' }}>
+                                                <div
+                                                    style={{
+                                                        display: 'inline-flex',
+                                                        flexDirection: 'column',
+                                                        maxWidth: '45%',
+                                                    }}
+                                                >
                                                     <h2 style={{ fontWeight: 'bold' }}>Sentence Tokens</h2>
                                                     <span>{record.sentenceTokens}</span>
                                                 </div>
