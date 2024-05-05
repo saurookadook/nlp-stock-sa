@@ -34,3 +34,5 @@ public
 
 ssa/scraper/scraper/spiders/__pycache__
 ssa/scraper/scraper/__pycache__
+
+*storybook.log
