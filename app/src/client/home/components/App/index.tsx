@@ -34,8 +34,11 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
                     // h="50vh"
                     w="100%"
                 >
-                    <header className="home-header">{`💸 🤑 💸 Welcome to NLP SSA 💸 🤑 💸`}</header>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <header
+                        className="home-header"
+                        style={{ fontSize: '2rem', fontWeight: '700' }}
+                    >{`💸 🤑 💸 Welcome to NLP SSA 💸 🤑 💸`}</header>
+                    <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
                         <p>
                             <em>{`a.k.a.`}</em>
                         </p>
@@ -44,14 +47,23 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
                         </p>
                     </div>
                     <section>
-                        <h1>Home: Article Data</h1>
+                        <h1>
+                            <b>Home</b>: Article Data
+                        </h1>
                         {pageData != null && (pageData as PageData).length > 0 ? (
                             <ul>
                                 {(pageData as PageData).map((record, i) => (
                                     <li key={`data-record-${i}`} style={{ listStyle: 'none' }}>
                                         <details>
                                             <summary>
-                                                Stock: {record.quoteStockSymbol}, URL: {record.sourceUrl}
+                                                <b>Stock</b>: {record.quoteStockSymbol}, <b>URL</b>:{' '}
+                                                <a
+                                                    href={record.sourceUrl as string}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {record.sourceUrl}
+                                                </a>
                                             </summary>
                                             <div
                                                 style={{
