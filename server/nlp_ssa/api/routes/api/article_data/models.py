@@ -8,6 +8,7 @@ class ArticleDataEntry(BaseResponseModel):
     id: UUID
     quote_stock_symbol: str
     source_group_id: UUID
+    source_url: str
     raw_content: Optional[str] = ""
     sentence_tokens: Optional[List[str]] = []
     created_at: SerializerArrowType
