@@ -40,6 +40,7 @@ FROM dev-base AS server-dev
 ARG HOST
 ARG PORT
 # TODO: figure out why $HOST and $PORT aren't getting interpolated correctly
+EXPOSE 3000
 CMD ["uvicorn", "nlp_ssa.api.app:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]
 
 FROM dev-base AS scraper-dev
