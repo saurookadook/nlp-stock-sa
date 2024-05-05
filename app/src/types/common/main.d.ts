@@ -10,9 +10,11 @@ declare module '*.svg' {
 declare global {
     type RenderAppFunc = (data: AmbiguousObject) => void;
 
-    interface Window {
-        renderApp: RenderAppFunc;
-    }
+    var renderApp: RenderAppFunc;
+    var $fetchArticle: ({ dispatch }: { dispatch: any }) => Promise<void>;
+    // interface Window {
+    //     renderApp: RenderAppFunc;
+    // }
 }
 
 // Generic State Store Types
