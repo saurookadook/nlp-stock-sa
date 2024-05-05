@@ -2,7 +2,8 @@ import { SET_ARTICLE_DATA } from 'client/common/constants/actionTypes';
 
 export const fetchArticleData = async ({ dispatch }) => {
     try {
-        const apiResponse = await window.fetch('http://localhost:3000/api/aarticle-data', { mode: 'cors' });
+        // http://localhost:3000/api/article-data
+        const apiResponse = await fetch('/api/article-data');
         const apiData = await apiResponse.json();
 
         if (apiData.detail) {

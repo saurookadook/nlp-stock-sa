@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Center, ChakraProvider, Container } from '@chakra-ui/react';
+import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
+import { fetchArticleData } from 'client/home/store/actions';
 // import logo from '/logo.svg';
 
 interface InitialPageData {
@@ -7,11 +9,24 @@ interface InitialPageData {
 }
 
 function App({ initialPageData }: { initialPageData: InitialPageData }) {
+    const state = useContext(BaseStateContext);
+    const dispatch = useContext(BaseDispatchContext);
+
     const { data: pageData } = initialPageData;
+
+    useEffect(() => {
+        if (pageData == null) {
+            window.$fetchArticle = fetchArticleData;
+        }
+
+        if (state.pageData == null) {
+            fetchArticleData({ dispatch });
+        }
+    });
     console.log('home - App', { initialPageData });
     return (
         <ChakraProvider>
-            <Container className="home" maxWidth="75vw">
+            <Container className="home" marginX="auto" maxWidth="75vw">
                 <Center
                     borderColor="gray.400"
                     borderRadius="5px"

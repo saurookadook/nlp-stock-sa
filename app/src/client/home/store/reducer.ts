@@ -3,13 +3,13 @@ import { SET_ARTICLE_DATA } from 'client/common/constants/actionTypes';
 import { combineReducers } from 'client/common/store/utils';
 
 type ArticleDataEntry = {
-    id;
-    quote_stock_symbol;
-    source_group_id;
-    raw_content;
-    sentence_tokens;
-    created_at;
-    updated_at;
+    id: string;
+    quote_stock_symbol: string;
+    source_group_id: string;
+    raw_content: string;
+    sentence_tokens: string[];
+    created_at: string;
+    updated_at: string;
 };
 
 interface PageDataReducerAction {

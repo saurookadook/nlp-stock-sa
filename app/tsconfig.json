@@ -29,6 +29,7 @@
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "strict": true,
+        "strictNullChecks": true /* When type checking, take into account `null` and `undefined`. */,
         "target": "ES2022",
         "typeRoots": ["./node_modules/@types", "./src/types/*"]
     },
