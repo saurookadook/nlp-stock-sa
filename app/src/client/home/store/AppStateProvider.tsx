@@ -4,7 +4,7 @@ import { BaseStateContext, BaseDispatchContext } from 'client/common/store/conte
 import combinedReducer from 'client/home/store/reducer';
 
 // TODO: fix type - React.Provider<typeof StateContext>
-function AppStateProvider({ children, initialState }: { children: React.ReactChildren; initialState: any }): any {
+function AppStateProvider({ children, initialState }: { children: React.ReactElement; initialState?: any }): any {
     const [combinedReducerFunc, combinedInitialState] = combinedReducer;
 
     const [state, dispatch] = useReducer(combinedReducerFunc, combinedInitialState);

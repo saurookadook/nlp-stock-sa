@@ -17,7 +17,7 @@ interface PageDataReducerAction {
     payload: ArticleDataEntry[];
 }
 
-const pageData: GenericStateSliceReducer<ArticleDataEntry[], PageDataReducerAction> = [
+const pageData: GenericStateSliceReducer<ArticleDataEntry[] | null, PageDataReducerAction> = [
     (stateSlice, action) => {
         switch (action.type) {
             case SET_ARTICLE_DATA:
@@ -26,7 +26,7 @@ const pageData: GenericStateSliceReducer<ArticleDataEntry[], PageDataReducerActi
                 return stateSlice;
         }
     },
-    [],
+    null,
 ];
 
 export default combineReducers({ pageData });

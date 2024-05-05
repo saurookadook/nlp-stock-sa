@@ -10,7 +10,8 @@ export const fetchArticleData = async ({ dispatch }) => {
             throw new Error(apiData.detail);
         }
 
-        return setArticleData({ dispatch, articleData: apiData });
+        console.log('fetchArticleData - apiData: ', { apiData });
+        return setArticleData({ dispatch, articleData: apiData.data });
     } catch (e) {
         console.warn('[home fetchArticleData] - caught exception', e);
     }
