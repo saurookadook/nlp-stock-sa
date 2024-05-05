@@ -218,6 +218,15 @@ scriptController() {
             echo ""
             seedDatabase
         fi
+    elif [ "$1" == "frontend" ]; then
+        if [ "$2" == "rebuild" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "Rebuilding frontend..."
+            echo "======================================================================================"
+            echo ""
+            docker compose build frontend --no-cache && docker compose up frontend -d
+        fi
     elif [ "$1" == "test" ]; then
         if [ "$2" == "server" ]; then
             echo ""

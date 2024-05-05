@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import String
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -14,7 +14,7 @@ class ArticleDataDB(Base, TimestampsMixin):
         postgresql.UUID(as_uuid=True), primary_key=True, nullable=False
     )
     quote_stock_symbol: Mapped[str] = mapped_column(
-        String(length=10), nullable=False
+        ForeignKey("stocks.quote_stock_symbol"), nullable=False
     )  # reuse as slug?
     source_group_id: Mapped[uuid.UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), nullable=False

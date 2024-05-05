@@ -2,15 +2,20 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { AmbiguousObject } from '@nlpssa-app-types/common/main';
 import { App } from 'client/home/components';
+import AppStateProvider from 'client/home/store/AppStateProvider';
 // import reportWebVitals from 'client/reportWebVitals';
 
 window.renderApp = async (initialPageData) => {
     const root = createRoot(document.getElementById('nlpssa-main'));
+    console.log('renderApp - initialPageData: ', { initialPageData });
 
     root.render(
         <React.StrictMode>
-            <App data={initialPageData} />
+            <AppStateProvider>
+                <App initialPageData={initialPageData as { data: AmbiguousObject[] }} />
+            </AppStateProvider>
         </React.StrictMode>,
     );
 };

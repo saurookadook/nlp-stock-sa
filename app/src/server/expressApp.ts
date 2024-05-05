@@ -1,6 +1,6 @@
 import path from 'path';
 
-// import cors from 'cors';
+import cors from 'cors';
 import express, { RequestHandler } from 'express';
 import { engine } from 'express-handlebars';
 
@@ -21,9 +21,9 @@ expressApp.engine(
 );
 expressApp.set('views', path.join(__dirname, 'src/server/views'));
 
-// Enable cors to be able to reach the backend on localhost:8080 while running React.js in dev mode on localhost:3000
+// Enable cors to be able to reach the backend on localhost:3000 while running React.js in dev mode on localhost:8081
 // You might want to disbale this on production.
-// expressApp.use(cors());
+expressApp.use(cors());
 expressApp.use(express.json() as RequestHandler);
 
 // expressApp.post('/api', async function(req: Request, res: Response) {
@@ -57,7 +57,7 @@ if (process.env.ENV !== 'production') {
     expressApp.use('/dist', express.static(path.join(__dirname, 'dist')));
 }
 
-expressApp.use('/login', loginRouter);
-expressApp.use('/', homeRouter);
+expressApp.use('/app/login', loginRouter);
+expressApp.use('/app/', homeRouter);
 
 export default expressApp;

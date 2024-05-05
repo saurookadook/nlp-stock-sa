@@ -3,8 +3,9 @@ import pytest
 from models.sentiment_analysis import (
     SentimentAnalysis,
     SentimentAnalysisFacade,
-    SentimentAnalysisFactory,
 )
+from models.sentiment_analysis.factories import SentimentAnalysisFactory
+from models.stock.factories import StockFactory
 
 
 @pytest.fixture
@@ -13,7 +14,12 @@ def sentiment_analysis_facade(mock_db_session):
 
 
 def test_get_one_by_id(mock_db_session, sentiment_analysis_facade):
-    mock_sentiment_analysis = SentimentAnalysisFactory()
+    mock_stock = StockFactory()
+    mock_db_session.commit()
+
+    mock_sentiment_analysis = SentimentAnalysisFactory(
+        quote_stock_symbol=mock_stock.quote_stock_symbol
+    )
     mock_db_session.commit()
 
     result = sentiment_analysis_facade.get_one_by_id(id=mock_sentiment_analysis.id)

@@ -91,6 +91,7 @@
         "no-unused-vars": 1,
         "no-use-before-define": 0,
         "no-useless-escape": 0,
+        "no-var": 0,
         "object-curly-spacing": [1, "always"],
         "operator-linebreak": 0,
         "prefer-const": 1,
@@ -138,7 +139,10 @@
                 "prettier",
                 "@typescript-eslint"
             ],
-            "extends": ["prettier", "plugin:@typescript-eslint/recommended"]
+            "extends": ["prettier", "plugin:@typescript-eslint/recommended"],
+            "rules": {
+                "no-var": 0
+            }
         },
         {
             "files": ["./webpack.config.js"],

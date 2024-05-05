@@ -72,7 +72,7 @@ class NewsSpider(scrapy.Spider):
             yield scrapy_splash.SplashRequest(
                 url=link,
                 callback=self.parse,
-                cb_kwargs=dict(stock_slug=stock_slug),
+                cb_kwargs=dict(source_url=link, stock_slug=stock_slug),
                 args={
                     "wait": 2,
                     # set rendering arguments here
@@ -92,7 +92,7 @@ class NewsSpider(scrapy.Spider):
                 # "magic_response": False,  # optional, default is True
             )
 
-    def parse(self, response, stock_slug):
+    def parse(self, response, source_url, stock_slug):
         """
         - parse html
         - runs methods to pre-process data for nlp models
@@ -126,7 +126,7 @@ class NewsSpider(scrapy.Spider):
                     id=uuid.uuid4(),
                     quote_stock_symbol=stock_slug,
                     source_group_id=source_group_id,
-                    source_url=response.url,
+                    source_url=response.url or source_url,
                     raw_content=raw_text,
                     sentence_tokens=cleaned_text,
                 )

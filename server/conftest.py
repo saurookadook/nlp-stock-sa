@@ -8,7 +8,7 @@ from starlette.testclient import TestClient
 
 from api.app import app
 from db import db_session, engine, db_session_dependency
-from models.user import UserFactory
+from models.user.factories import UserFactory
 
 
 def pytest_sessionstart(session):
@@ -30,8 +30,8 @@ def db_session_test():
                 str(e) + " Make sure you're using db_session correctly!"
             )
         transaction.rollback()
-        # db_connection.close()
-        db_session.remove()
+        db_connection.close()
+    db_session.remove()
 
 
 mock_db_session = pytest.fixture(db_session_test)

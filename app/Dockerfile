@@ -2,7 +2,7 @@ FROM node:18-bullseye AS frontend-dev
 ENV YARN_VERSION 4.1.1
 ENV NODE_ENV development
 ENV NODE_ENV $NODE_ENV
-EXPOSE 80 9229
+EXPOSE 8080 9229
 WORKDIR /frontend
 COPY ./app/.yarn /frontend/.yarn
 COPY ./app/src/client /frontend/src/client
