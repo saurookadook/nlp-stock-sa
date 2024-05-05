@@ -1,3 +1,7 @@
+# ###### In case you forget...
+# :ro === :readonly
+# for each 'ports' entry -> HOST_PORT:CONTAINER_PORT
+
 services:
   all:
     image: alpine
@@ -5,15 +9,17 @@ services:
     depends_on:
       - frontend
       # - haproxy
+      - nginx
       - server
-      - scraper
-      - splash-server
 
   database:
     image: postgres:16.2-bullseye # higher than this?
     env_file: .env
     environment:
       POSTGRES_PASSWORD: example
+    # networks:
+    #   - main_app
+      # - scraper
     ports:
       - 5432:5432
     volumes:
@@ -27,6 +33,10 @@ services:
       context: .
       dockerfile: app/Dockerfile
       target: frontend-dev
+    # links:
+    #   - nginx
+    # networks:
+    #   - main_app
     ports:
       - "8080:8080"
       - "9229:9229"
@@ -35,7 +45,86 @@ services:
       - /opt/nlpssa-frontend/node_modules
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
-  # frontend-test:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx-reverse-proxy/Dockerfile
+    links:
+      - frontend
+      - server
+    # network_mode: host
+    # networks:
+    #   - main_app
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./app/dist/:/etc/nginx/html/
+      - ./nginx-reverse-proxy/conf/:/etc/nginx/conf.d/:ro
+      - ./nginx-reverse-proxy/certs:/etc/nginx/certs
+    command: [ "nginx", "-g", "daemon off;" ]
+
+  server:
+    depends_on:
+      - database
+    env_file: .env
+    environment:
+      EXAMPLE: woof
+      WORKERS: 1
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+      target: server-dev
+    # links:
+    #   - nginx
+    # networks:
+    #   - main_app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/opt/nlp-stock-sa/server
+      # - ~/.aws:/home/nlpstocksaapp/.aws:ro
+
+  scraper:
+    depends_on:
+      - database
+      - splash-server
+    env_file: .env
+    environment:
+      EXAMPLE: woof
+      WORKERS: 1
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+      target: scraper-dev
+    # networks:
+    #   - scraper
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./server:/opt/nlp-stock-sa/server
+      # - ~/.aws:/home/nlpstocksaapp/.aws:ro
+
+  splash-server:
+    image: scrapinghub/splash:latest
+    ports:
+      - "8050:8050"
+    volumes:
+      - splash:/opt/nlp-stock-sa/scraper/splash
+
+networks:
+  main_app:
+    driver: bridge
+  scraper:
+
+volumes:
+  db_volume:
+  splash:
+
+
+# frontend-test:
   #   env_file: .env
   #   environment:
   #     ENV: test
@@ -61,50 +150,3 @@ services:
   #     - 443:443
   #   environment:
   #     EXAMPLE: woof
-
-  server:
-    depends_on:
-      - database
-    env_file: .env
-    environment:
-      EXAMPLE: woof
-      WORKERS: 1
-    build:
-      context: .
-      dockerfile: server/Dockerfile
-      target: server-dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./server:/opt/nlp-stock-sa/server
-      # - ./server:/opt/nlp-stock-sa/server
-      # - ~/.aws:/home/nlpstocksaapp/.aws:ro
-
-  scraper:
-    depends_on:
-      - database
-      - splash-server
-    env_file: .env
-    environment:
-      EXAMPLE: woof
-      WORKERS: 1
-    build:
-      context: .
-      dockerfile: server/Dockerfile
-      target: scraper-dev
-    ports:
-      - "3001:3001"
-    volumes:
-      - ./server:/opt/nlp-stock-sa/server
-      # - ~/.aws:/home/nlpstocksaapp/.aws:ro
-
-  splash-server:
-    image: scrapinghub/splash:latest
-    ports:
-      - "8050:8050"
-    volumes:
-      - splash:/opt/nlp-stock-sa/scraper/splash
-
-volumes:
-  db_volume:
-  splash:
