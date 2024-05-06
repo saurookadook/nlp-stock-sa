@@ -117,8 +117,10 @@ const buildConfig = (env, argv) => ({
     plugins: getPlugins(argv.mode),
     resolve: {
         alias: {
+            '_story-data': path.resolve(__dirname, 'src/_story-data'),
             client: path.resolve(__dirname, 'src/client'),
             server: path.resolve(__dirname, 'src/server'),
+            stories: path.resolve(__dirname, 'src/stories'),
             types: path.resolve(__dirname, 'src/types'),
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],

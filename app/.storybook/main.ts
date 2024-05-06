@@ -1,3 +1,4 @@
+import path from 'path';
 import type { StorybookConfig } from '@storybook/react-webpack5';
 import TsConfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 
@@ -21,24 +22,33 @@ const config: StorybookConfig = {
     },
     stories: ['../src/**/*.mdx', '../src/**/?(*.)stories.@(js|jsx|mjs|ts|tsx)'],
     webpack: async (config) => {
-        const configRules = config.module?.rules || [];
-        console.log({ configRules, resolve: config.resolve });
         // const defaultRules = defaultConfig().module.rules;
-        return {
-            ...config,
-            // module: {
-            //     ...config.module,
-            //     // rules: [...configRules, ...defaultRules],
-            // },
-            resolve: {
-                plugins: [
-                    ...(config.resolve?.plugins || []),
-                    new TsConfigPathsPlugin({
-                        extensions: config.resolve?.extensions,
-                    }),
-                ],
-            },
-        };
+        // module: {
+        //     ...config.module,
+        //     // rules: [...configRules, ...defaultRules],
+        // },
+
+        if (config.resolve) {
+            const configRules = config.module?.rules || [];
+            // console.log({ configRules, resolve: config.resolve });
+            config.resolve.alias = {
+                ...config.resolve!.alias,
+                '_story-data': path.resolve(__dirname, '../src/_story-data'),
+                client: path.resolve(__dirname, '../src/client'),
+                server: path.resolve(__dirname, '../src/server'),
+                stories: path.resolve(__dirname, '../src/stories'),
+                types: path.resolve(__dirname, '../src/types'),
+            };
+
+            config.resolve.plugins = [
+                ...(config.resolve?.plugins || []),
+                new TsConfigPathsPlugin({
+                    extensions: config.resolve?.extensions,
+                }),
+            ];
+        }
+
+        return config;
     },
 };
 export default config;

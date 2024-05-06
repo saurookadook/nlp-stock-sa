@@ -20,7 +20,7 @@
         "restart": "yarn install:clean && yarn build:dev && yarn serve",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
-        "debug-storybook": "build-storybook --debug-webpack"
+        "debug-storybook": "yarn build-storybook --debug-webpack"
     },
     "dependencies": {
         "@chakra-ui/react": "^2.8.2",
