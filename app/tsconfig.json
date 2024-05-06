@@ -23,6 +23,7 @@
             "@nlpssa-app-types/*": ["types/*"],
             "client/*": ["client/*"],
             "server/*": ["server/*"],
+            "stories/*": ["stories/*"],
             "types/*": ["types/*"]
         },
         // "rootDir": "./",

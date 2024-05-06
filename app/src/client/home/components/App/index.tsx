@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { Center, ChakraProvider, Container } from '@chakra-ui/react';
+
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchArticleData } from 'client/home/store/actions';
 // import logo from '/logo.svg';
