@@ -9565,7 +9565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.0.0, enhanced-resolve@npm:^5.16.0":
+"enhanced-resolve@npm:^5.0.0, enhanced-resolve@npm:^5.16.0, enhanced-resolve@npm:^5.7.0":
   version: 5.16.0
   resolution: "enhanced-resolve@npm:5.16.0"
   dependencies:
@@ -13805,6 +13805,7 @@ __metadata:
     ts-loader: "npm:^9.5.1"
     ts-node: "npm:^10.9.2"
     tsconfig-paths: "npm:^4.2.0"
+    tsconfig-paths-webpack-plugin: "npm:^4.1.0"
     typescript: "npm:^5.3.3"
     web-vitals: "npm:^2.1.4"
     webpack: "npm:^5.90.3"
@@ -17419,6 +17420,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsconfig-paths-webpack-plugin@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "tsconfig-paths-webpack-plugin@npm:4.1.0"
+  dependencies:
+    chalk: "npm:^4.1.0"
+    enhanced-resolve: "npm:^5.7.0"
+    tsconfig-paths: "npm:^4.1.2"
+  checksum: 10c0/c030e867e70a3f6d1799fdffa209c3a35e1435ad99aac01946b9ebb0fa8208b7b508c1dfe8c8e13d6a2ef70c75b4db062fbfd3c1f3362c69b6c65ffd4a50e226
+  languageName: node
+  linkType: hard
+
 "tsconfig-paths@npm:^3.15.0":
   version: 3.15.0
   resolution: "tsconfig-paths@npm:3.15.0"
@@ -17431,7 +17443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:^4.2.0":
+"tsconfig-paths@npm:^4.1.2, tsconfig-paths@npm:^4.2.0":
   version: 4.2.0
   resolution: "tsconfig-paths@npm:4.2.0"
   dependencies:

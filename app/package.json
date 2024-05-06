@@ -9,7 +9,8 @@
         "yarn": "^4.1.0"
     },
     "scripts": {
-        "build:dev": "tsc -b --verbose && webpack --mode=development",
+        "build:ts": "tsc -b --verbose",
+        "build:dev": "yarn build:ts && webpack --mode=development",
         "build:prod": "webpack --mode=production --node-env=production",
         "build": "yarn build:prod",
         "watch": "webpack --mode=development --watch",
@@ -18,7 +19,8 @@
         "start": "yarn build:dev && yarn serve",
         "restart": "yarn install:clean && yarn build:dev && yarn serve",
         "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build"
+        "build-storybook": "storybook build",
+        "debug-storybook": "build-storybook --debug-webpack"
     },
     "dependencies": {
         "@chakra-ui/react": "^2.8.2",
@@ -87,6 +89,7 @@
         "ts-loader": "^9.5.1",
         "ts-node": "^10.9.2",
         "tsconfig-paths": "^4.2.0",
+        "tsconfig-paths-webpack-plugin": "^4.1.0",
         "typescript": "^5.3.3",
         "webpack": "^5.90.3",
         "webpack-assets-manifest": "^5.2.0",
