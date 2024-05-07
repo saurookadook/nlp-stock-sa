@@ -22,6 +22,8 @@ const config: StorybookConfig = {
     },
     stories: ['../src/**/*.mdx', '../src/**/?(*.)stories.@(js|jsx|mjs|ts|tsx)'],
     webpack: async (config) => {
+        // const configRules = config.module?.rules || [];
+        // console.log({ configKeys: Object.keys(config), configRules, resolve: config.resolve });
         // const defaultRules = defaultConfig().module.rules;
         // module: {
         //     ...config.module,
@@ -29,8 +31,6 @@ const config: StorybookConfig = {
         // },
 
         if (config.resolve) {
-            const configRules = config.module?.rules || [];
-            // console.log({ configRules, resolve: config.resolve });
             config.resolve.alias = {
                 ...config.resolve!.alias,
                 '_story-data': path.resolve(__dirname, '../src/_story-data'),
