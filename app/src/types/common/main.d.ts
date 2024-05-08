@@ -17,7 +17,9 @@ declare global {
     // }
 }
 
-// Generic State Store Types
+/**********************************************************************
+ * Generic State Store Types
+ **********************************************************************/
 type StateSlice = {
     [key: string]: AmbiguousObject;
 };
@@ -46,3 +48,13 @@ type CombinedStateSliceReducer = [GenericReducerFunc, CombinedState];
 interface FinalReducers {
     [key: string]: GenericReducerFunc;
 }
+
+/**********************************************************************
+ * Article Data
+ **********************************************************************/
+type ArticleDataEntry = {
+    quoteStockSymbol: string;
+    sourceUrl: string;
+    rawContent: string;
+    sentenceTokens: string;
+};
