@@ -48,7 +48,7 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
                     // h="50vh"
                     w="100%"
                 >
-                    <Flex flexDirection="column">
+                    <Flex className="article-data-list-wrapper" alignSelf="stretch" flexDirection="column">
                         {pageData != null && (pageData as PageData).length > 0 ? (
                             <ArticleDataList articleData={pageData as ArticleDataEntry[]} />
                         ) : (
