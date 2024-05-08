@@ -15,6 +15,7 @@ import type { ArticleDataEntry } from '@nlpssa-app-types/common/main';
 
 function ArticleDataList({ articleData }: React.PropsWithChildren<{ articleData: ArticleDataEntry[] }>) {
     return (
+        // TODO: maybe this should use `ul` and `li` elements?
         <Accordion allowMultiple allowToggle>
             {articleData.map((record, i) => (
                 <AccordionItem key={`article-record-${i}`}>

@@ -1,6 +1,7 @@
 // import '@nlpssa-app-types/common';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { ChakraProvider } from '@chakra-ui/react';
 
 import { AmbiguousObject } from '@nlpssa-app-types/common/main';
 import { App } from 'client/home/components';
@@ -13,9 +14,11 @@ window.renderApp = async (initialPageData) => {
 
     root.render(
         <React.StrictMode>
-            <AppStateProvider>
-                <App initialPageData={initialPageData as { data: AmbiguousObject[] }} />
-            </AppStateProvider>
+            <ChakraProvider>
+                <AppStateProvider>
+                    <App initialPageData={initialPageData as { data: AmbiguousObject[] }} />
+                </AppStateProvider>
+            </ChakraProvider>
         </React.StrictMode>,
     );
 };

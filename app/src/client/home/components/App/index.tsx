@@ -1,7 +1,10 @@
 import React, { useContext, useEffect } from 'react';
-import { Center, ChakraProvider, Container } from '@chakra-ui/react';
+import { Center, Container, Flex } from '@chakra-ui/react';
 
+import { ArticleDataEntry } from '@nlpssa-app-types/common/main';
+import { BasePage } from 'client/common/layouts';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
+import { ArticleDataList } from 'client/home/components';
 import { fetchArticleData } from 'client/home/store/actions';
 // import logo from '/logo.svg';
 
@@ -22,91 +25,39 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
             fetchArticleData({ dispatch });
         }
     });
+
     console.log('home - App', { initialPageData, pageData });
     return (
-        <ChakraProvider>
+        <BasePage
+            pageTitle={
+                <span>
+                    <b>Home</b>: Article Data
+                </span>
+            }
+        >
             <Container className="home" style={{ margin: '0 auto' }} maxWidth="75vw">
                 <Center
                     borderColor="gray.400"
                     borderRadius="5px"
                     borderStyle="solid"
-                    borderWidth="1px"
+                    borderTopWidth="0px"
+                    borderRightWidth="1px"
+                    borderBottomWidth="0px"
+                    borderLeftWidth="1px"
                     flexDirection="column"
                     // h="50vh"
                     w="100%"
                 >
-                    <header
-                        className="home-header"
-                        style={{ fontSize: '2rem', fontWeight: '700' }}
-                    >{`💸 🤑 💸 Welcome to NLP SSA 💸 🤑 💸`}</header>
-                    <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
-                        <p>
-                            <em>{`a.k.a.`}</em>
-                        </p>
-                        <p>
-                            <b>{`💸 🤑 💸 THE MONEY MAKERRRRR 💸 🤑 💸 `}</b>
-                        </p>
-                    </div>
-                    <section>
-                        <h1>
-                            <b>Home</b>: Article Data
-                        </h1>
+                    <Flex flexDirection="column">
                         {pageData != null && (pageData as PageData).length > 0 ? (
-                            <ul>
-                                {(pageData as PageData).map((record, i) => (
-                                    <li key={`data-record-${i}`} style={{ listStyle: 'none' }}>
-                                        <details>
-                                            <summary>
-                                                <b>Stock</b>: {record.quoteStockSymbol}, <b>URL</b>:{' '}
-                                                <a
-                                                    href={record.sourceUrl as string}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    {record.sourceUrl}
-                                                </a>
-                                            </summary>
-                                            <div
-                                                style={{
-                                                    alignItems: 'flex-start',
-                                                    display: 'flex',
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'space-evenly',
-                                                    width: '100%',
-                                                }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        display: 'inline-flex',
-                                                        flexDirection: 'column',
-                                                        maxWidth: '45%',
-                                                    }}
-                                                >
-                                                    <h2 style={{ fontWeight: 'bold' }}>Raw Content</h2>
-                                                    <span>{record.rawContent}</span>
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        display: 'inline-flex',
-                                                        flexDirection: 'column',
-                                                        maxWidth: '45%',
-                                                    }}
-                                                >
-                                                    <h2 style={{ fontWeight: 'bold' }}>Sentence Tokens</h2>
-                                                    <span>{record.sentenceTokens}</span>
-                                                </div>
-                                            </div>
-                                        </details>
-                                    </li>
-                                ))}
-                            </ul>
+                            <ArticleDataList articleData={pageData as ArticleDataEntry[]} />
                         ) : (
                             'No data :['
                         )}
-                    </section>
+                    </Flex>
                 </Center>
             </Container>
-        </ChakraProvider>
+        </BasePage>
     );
 }
 
