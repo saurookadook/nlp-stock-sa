@@ -64,8 +64,8 @@ function ArticleDataList({ articleData }: React.PropsWithChildren<{ articleData:
                                 flexDirection="column"
                                 maxWidth="45%"
                             >
-                                <h2 style={{ fontWeight: 'bold' }}>Raw Content</h2>
-                                <span>{record.rawContent}</span>
+                                <h2 style={{ fontWeight: 'bold' }}>Sentence Tokens</h2>
+                                <span>{record.sentenceTokens}</span>
                             </Box>
                         </Flex>
                     </AccordionPanel>
