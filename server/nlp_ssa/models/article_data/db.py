@@ -22,7 +22,7 @@ class ArticleDataDB(Base, TimestampsMixin):
     )
     source_url: Mapped[str] = mapped_column(String(2048), nullable=False)
 
-    author: Mapped[str] = mapped_column(String, nullable=True)
+    author: Mapped[str] = mapped_column(String(), nullable=True)
     last_updated_date: Mapped[ArrowType] = mapped_column(ArrowDate(), nullable=True)
     published_date: Mapped[ArrowType] = mapped_column(ArrowDate(), nullable=True)
     raw_content: Mapped[str] = mapped_column(String(), nullable=True)
