@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import { Box, Button, Heading, useColorMode } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
@@ -17,7 +17,8 @@ function BasePage({
         "Are you sure you're sure you're sure?",
         'Are you sure now?',
     ];
-    function annoyingClickHandler(e: MouseEventHandler) {
+
+    function annoyingClickHandler(e) {
         const random = (Math.ceil(Math.random() * 4) || 1) - 1;
         console.log(`random: ${random}`);
         if (window.confirm(prompts[random])) {
