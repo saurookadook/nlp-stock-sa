@@ -1,7 +1,7 @@
 // import '@nlpssa-app-types/common';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
 import { AmbiguousObject } from '@nlpssa-app-types/common/main';
 import { App } from 'client/home/components';
@@ -12,13 +12,19 @@ window.renderApp = async (initialPageData) => {
     const root = createRoot(document.getElementById('nlpssa-main'));
     console.log('renderApp - initialPageData: ', { initialPageData });
 
+    const theme = extendTheme({
+        initialColorMode: 'system',
+        useSystemColorMode: true,
+    });
+
     root.render(
         <React.StrictMode>
-            <ChakraProvider>
-                <AppStateProvider>
+            <AppStateProvider>
+                <ChakraProvider theme={theme}>
+                    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
                     <App initialPageData={initialPageData as { data: AmbiguousObject[] }} />
-                </AppStateProvider>
-            </ChakraProvider>
+                </ChakraProvider>
+            </AppStateProvider>
         </React.StrictMode>,
     );
 };

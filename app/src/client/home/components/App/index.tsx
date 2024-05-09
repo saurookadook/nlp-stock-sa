@@ -1,12 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-import { Center, Container, Flex } from '@chakra-ui/react';
+import { Button, Center, Container, Flex, Spacer } from '@chakra-ui/react';
 
 import { ArticleDataEntry } from '@nlpssa-app-types/common/main';
 import { BasePage } from 'client/common/layouts';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { ArticleDataList } from 'client/home/components';
 import { fetchArticleData } from 'client/home/store/actions';
-// import logo from '/logo.svg';
 
 type PageData = Record<string, unknown>[];
 
@@ -29,6 +28,12 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
     console.log('home - App', { initialPageData, pageData });
     return (
         <BasePage
+            headingChildren={
+                <>
+                    <Spacer />
+                    <Button>I&nbsp;AM BUTTON</Button>
+                </>
+            }
             pageTitle={
                 <span>
                     <b>Home</b>: Article Data
