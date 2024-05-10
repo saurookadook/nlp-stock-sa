@@ -9,6 +9,7 @@ getDatabaseHost() {
 }
 
 DATABASE_NAME="the_money_maker"
+TEST_DATABASE_NAME="test_the_money_maker"
 # https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS
 PSQL_CONNECTION="postgresql://postgres:example@database"
 LAST_RETURN_STATUS_CODE=$?
@@ -55,13 +56,13 @@ dropDatabase() {
 }
 
 dropTestDatabase() {
-    DATABASE_NAME="test_the_money_maker"
     echo ""
     echo "======================================================================================"
-    echo "Dropping $DATABASE_NAME database..."
+    echo "Dropping $TEST_DATABASE_NAME database..."
     echo "======================================================================================"
     echo ""
-    psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
+    # psql "postgresql://postgres:example@database" -c "DROP DATABASE IF EXISTS test_the_money_maker"
+    psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $TEST_DATABASE_NAME"
 }
 
 createDatabase() {
@@ -74,14 +75,13 @@ createDatabase() {
 }
 
 createTestDatabase() {
-    DATABASE_NAME="test_the_money_maker"
-
     if [[ $* == "-d" ]]; then # drop flag included
-        psql $PSQL_CONNECTION -c DROP DATABASE IF EXISTS "test_the_money_maker"
+        dropTestDatabase
     fi
 
+    # psql "postgresql://postgres:example@database" -f "db/init_test_db.sql"
     psql $PSQL_CONNECTION -f "db/init_test_db.sql"
-    docker-compose run -e "DATABASE_NAME=test_the_money_maker" --rm server python nlp_ssa/scripts/db/initialize.py
+    docker-compose run --rm server -e "DATABASE_NAME=${TEST_DATABASE_NAME}" -e ENV=test python nlp_ssa/scripts/db/initialize.py
 }
 
 initDatabase() {
@@ -113,21 +113,19 @@ initDatabase() {
 }
 
 initTestDatabase() {
-    DATABASE_NAME="test_the_money_maker"
-
     isDbReady
 
     if [[ $* == "-d" || ! $(dbExists) ]]; then
         echo ""
         echo "======================================================================================"
-        echo "Creating $DATABASE_NAME database..."
+        echo "Creating $TEST_DATABASE_NAME database..."
         echo "======================================================================================"
         echo ""
         createTestDatabase
     else
         echo ""
         echo "======================================================================================"
-        echo "$DATABASE_NAME already exists :]"
+        echo "$TEST_DATABASE_NAME already exists :]"
         echo "======================================================================================"
         echo ""
     fi

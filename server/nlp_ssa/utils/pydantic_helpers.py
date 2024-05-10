@@ -72,8 +72,9 @@ class ArrowType(Arrow):
                 )
 
         def arrow_serialization(value: Any, _, info) -> str | Arrow:
-            if info.mode == "json":
-                return value.format("YYYY-MM-DDTHH:mm:ss.SSSSSSZZ")
+            if info.mode == "json" and value is not None:
+                return value.isoformat()
+                # return value.format("YYYY-MM-DDTHH:mm:ss.SSSSSSZZ")
             return value
 
         return core_schema.no_info_after_validator_function(
