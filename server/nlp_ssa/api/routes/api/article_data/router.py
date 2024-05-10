@@ -26,6 +26,8 @@ async def read_article_data_by_slug(stock_slug: str):
 async def read_all_article_data():
     from models.article_data import ArticleDataDB
 
-    all_article_data_rows = db_session.execute(select(ArticleDataDB)).scalars().all()
+    all_article_data_rows = (
+        db_session.execute(select(ArticleDataDB).limit(30)).scalars().all()
+    )
 
     return {"data": all_article_data_rows}

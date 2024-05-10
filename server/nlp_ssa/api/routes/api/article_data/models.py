@@ -10,7 +10,7 @@ class ArticleDataEntry(BaseResponseModel):
     source_group_id: UUID
     source_url: str
     raw_content: Optional[str] = ""
-    sentence_tokens: Optional[List[str]] = []
+    sentence_tokens: Optional[str] = ""
     created_at: SerializerArrowType
     updated_at: SerializerArrowType
 
