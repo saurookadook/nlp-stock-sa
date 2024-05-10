@@ -81,7 +81,7 @@ createTestDatabase() {
 
     # psql "postgresql://postgres:example@database" -f "db/init_test_db.sql"
     psql $PSQL_CONNECTION -f "db/init_test_db.sql"
-    docker-compose run --rm server -e "DATABASE_NAME=${TEST_DATABASE_NAME}" -e ENV=test python nlp_ssa/scripts/db/initialize.py
+    docker-compose run -e DATABASE_NAME=$TEST_DATABASE_NAME -e ENV=test --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
 initDatabase() {
@@ -169,7 +169,8 @@ scriptController() {
                     ;;
             esac
         done
-
+    elif [ "$1" == "stash-db" ]; then
+        docker compose run --rm server python nlp_ssa/scripts/db/stash_db.py
     elif [ "$1" == "db" ]; then
         echo ""
         echo "======================================================================================"
