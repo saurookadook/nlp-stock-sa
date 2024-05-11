@@ -11,7 +11,7 @@ getDatabaseHost() {
 DATABASE_NAME="the_money_maker"
 TEST_DATABASE_NAME="test_the_money_maker"
 # https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS
-PSQL_CONNECTION="postgresql://postgres:example@database"
+PSQL_CONNECTION="postgresql://postgres:example@database:5432"
 LAST_RETURN_STATUS_CODE=$?
 
 
@@ -79,8 +79,8 @@ createTestDatabase() {
         dropTestDatabase
     fi
 
-    # psql "postgresql://postgres:example@database" -f "db/init_test_db.sql"
-    psql $PSQL_CONNECTION -f "db/init_test_db.sql"
+    # docker compose exec -e DATABASE_NAME=test_the_money_maker -e ENV=test database psql "postgresql://postgres:example@database" -f "/opt/db/scripts/init_test_db.sql"
+    docker compose exec -e DATABASE_NAME=$TEST_DATABASE_NAME -e ENV=test database psql $PSQL_CONNECTION -f "/opt/db/scripts/init_test_db.sql"
     docker compose run -e DATABASE_NAME=$TEST_DATABASE_NAME -e ENV=test --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
