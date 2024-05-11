@@ -7,7 +7,7 @@ env_config = dict(
     database_host=os.getenv("DATABASE_HOST", "database"),
     database_port=os.getenv("DATABASE_PORT", "5432"),
     database_name=os.getenv("DATABASE_NAME", "the_money_maker"),
-    env=os.getenv("ENV", "test"),
+    env=os.getenv("ENV", "dev"),
     log_level=os.getenv("LOG_LEVEL", "DEBUG"),
     log_sql=os.getenv("LOG_SQL", False),
 )
