@@ -3,7 +3,7 @@ import { Link } from '@chakra-ui/react';
 
 function BaseLink({ ...props }) {
     return (
-        <Link colorScheme="teal" {...props}>
+        <Link color="teal" {...props}>
             {props.children}
         </Link>
     );
