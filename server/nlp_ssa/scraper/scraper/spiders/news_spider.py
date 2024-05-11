@@ -1,4 +1,6 @@
+import arrow
 import json
+import logging
 import nltk
 import re
 import scrapy
@@ -11,6 +13,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 from nltk.tokenize import PunktSentenceTokenizer
 from pathlib import Path
+from pprint import pprint as prettyprint
 from rich import inspect
 from sqlalchemy import select
 
@@ -22,6 +25,8 @@ from scraper.items import ScraperItem
 nltk.download("punkt")
 nltk.download("stopwords")
 nltk.download("wordnet")
+
+logger = logging.getLogger(__name__)
 
 
 class NewsSpider(scrapy.Spider):
@@ -66,13 +71,21 @@ class NewsSpider(scrapy.Spider):
             )
 
     def follow_quote_news_links(self, response, stock_slug):
-        news_links = self._get_non_ad_links_from_response(response)
+        news_item_configs = self._get_non_ad_news_items_from_response(response)
 
-        for link in news_links:
+        self._debug_logger(
+            header_text="news_item_configs", variables=[news_item_configs]
+        )
+        for item_config in news_item_configs:
+            self._debug_logger(header_text="item_config", variables=[item_config])
             yield scrapy_splash.SplashRequest(
-                url=link,
+                url=item_config["url"],
                 callback=self.parse,
-                cb_kwargs=dict(source_url=link, stock_slug=stock_slug),
+                cb_kwargs=dict(
+                    source_url=item_config["url"],
+                    stock_slug=stock_slug,
+                    thumbnail_url=item_config["thumbnail_url"],
+                ),
                 args={
                     "wait": 2,
                     # set rendering arguments here
@@ -92,7 +105,7 @@ class NewsSpider(scrapy.Spider):
                 # "magic_response": False,  # optional, default is True
             )
 
-    def parse(self, response, source_url, stock_slug):
+    def parse(self, response, source_url, stock_slug, thumbnail_url):
         """
         - parse html
         - runs methods to pre-process data for nlp models
@@ -117,9 +130,8 @@ class NewsSpider(scrapy.Spider):
             width=200,
         )
 
-        item = ScraperItem()
-        item["Sentence"] = cleaned_text
-        item["GroupId"] = source_group_id
+        metadata = self._get_article_metadata(response)
+
         try:
             self.article_data_facade.create_or_update(
                 payload=dict(
@@ -127,13 +139,31 @@ class NewsSpider(scrapy.Spider):
                     quote_stock_symbol=stock_slug,
                     source_group_id=source_group_id,
                     source_url=response.url or source_url,
+                    author=metadata["author"],
+                    last_updated_date=(
+                        ""
+                        if not metadata["last_updated_date"]
+                        else arrow.get(metadata["last_updated_date"]).to("utc")
+                    ),
+                    published_date=(
+                        ""
+                        if not metadata["published_date"]
+                        else arrow.get(metadata["published_date"]).to("utc")
+                    ),
                     raw_content=raw_text,
                     sentence_tokens=cleaned_text,
+                    title=metadata["title"],
+                    thumbnail_image_url=thumbnail_url,
                 )
             )
             db_session.commit()
         except Exception as e:
             print(e, file=sys.stderr)
+
+        item = ScraperItem()
+        item["Sentence"] = cleaned_text
+        item["GroupId"] = source_group_id
+
         yield item
 
     def clean(self, text):
@@ -155,25 +185,63 @@ class NewsSpider(scrapy.Spider):
         text = [self.lemmatizer.lemmatize(word=word_1) for word_1 in text]  # Lemmatize
         return text
 
+    def _get_non_ad_news_items_from_response(self, response):
+        news_items = response.css("div.news-stream .stream-item")
+
+        news_item_configs = []
+        for item in news_items:
+            item_link = item.css("a::attr(href)").get()
+            item_thumbnail = item.css("img::attr(src)").get()
+            # self._debug_logger(
+            #     header_text="news_item", variables=[item, item_link, item_thumbnail]
+            # )
+            # logger.debug(f"item_link: '{item_link}'")
+            # logger.debug(f"item_thumbnail: '{item_thumbnail}'")
+            if item_link.startswith("/"):
+                news_item_configs.append(
+                    dict(url=self.base_url + item_link, thumbnail_url=item_thumbnail)
+                )
+            elif "finance.yahoo.com" in item_link:
+                news_item_configs.append(
+                    dict(url=item_link, thumbnail_url=item_thumbnail)
+                )
+
+        return news_item_configs
+
+    def _get_article_metadata(self, response):
+        metadata_dict = dict(
+            author="",
+            last_updated_date="",
+            published_date="",
+            title="",
+        )
+
+        try:
+            byline_wrapper = response.css('[class*="byline-wrapper"]')
+            if byline_wrapper:
+                metadata_dict["author"] = byline_wrapper.css(
+                    '[class*="item-author"] *::text'
+                ).get(default="")
+                metadata_dict["last_updated_date"] = byline_wrapper.css(
+                    "time::attr(datetime)"
+                ).get(default="")
+                metadata_dict["published_date"] = byline_wrapper.css(
+                    "time::attr(datetime)"
+                ).get(default="")
+
+            metadata_dict["title"] = response.css(
+                'meta[name="og:title"]::attr(content)'
+            ).get(default="")
+        except Exception as e:
+            self._debug_logger(header_text="Error getting metadata", variables=[e])
+
+        return metadata_dict
+
     def _debug_logger(
         self, *, header_text: str, variables: list = [], width: int = 200
     ):
         print(f" {header_text} ".center(width, "="))
         for var in variables:
-            print(var)
-        if not variables:
+            prettyprint(var, indent=4, width=width, sort_dicts=True)
+        if len(variables) > 0:
             print("=" * width)
-
-    def _get_non_ad_links_from_response(self, response):
-        stream_links = response.css("div.news-stream a::attr(href)").getall()
-        # inspect(stream_links)
-
-        news_links = []
-        for link in stream_links:
-            if link.startswith("/"):
-                news_links.append(self.base_url + link)
-            elif "finance.yahoo.com" in link:
-                news_links.append(link)
-
-        # inspect(news_links)
-        return news_links
