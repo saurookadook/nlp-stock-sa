@@ -26,7 +26,7 @@ dbIsNotReady() {
 }
 
 isDbReady() {
-    # docker-compose up -d database 1> /dev/null &
+    # docker compose up -d database 1> /dev/null &
     echo ""
     echo "======================================================================================"
     echo "Starting ready loop..."
@@ -71,7 +71,7 @@ createDatabase() {
     fi
 
     psql $PSQL_CONNECTION -f "db/init_db.sql"
-    docker-compose run --rm server python nlp_ssa/scripts/db/initialize.py
+    docker compose run --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
 createTestDatabase() {
@@ -81,7 +81,7 @@ createTestDatabase() {
 
     # psql "postgresql://postgres:example@database" -f "db/init_test_db.sql"
     psql $PSQL_CONNECTION -f "db/init_test_db.sql"
-    docker-compose run -e DATABASE_NAME=$TEST_DATABASE_NAME -e ENV=test --rm server python nlp_ssa/scripts/db/initialize.py
+    docker compose run -e DATABASE_NAME=$TEST_DATABASE_NAME -e ENV=test --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
 initDatabase() {
@@ -135,7 +135,7 @@ seedDatabase() {
     isDbReady
 
     if [[ ! $(dbExists) ]]; then
-        docker-compose run --rm server python nlp_ssa/scripts/db/seed_db.py
+        docker compose run --rm server python nlp_ssa/scripts/db/seed_db.py
     fi
 }
 
@@ -164,7 +164,7 @@ scriptController() {
             case ${arg} in
                 m)
                     echo "m: "${$OPTARG}
-                    docker-compose run --rm server alembic revision --autogenerate -m "$OPTARG"
+                    docker compose run --rm server alembic revision --autogenerate -m "$OPTARG"
                     exit 0
                     ;;
             esac
@@ -233,7 +233,7 @@ scriptController() {
             echo "Running server tests! :D"
             echo "======================================================================================"
             echo ""
-            docker-compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server python -m pytest -s --import-mode=append ${@:3}
+            docker compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server python -m pytest -s --import-mode=append ${@:3}
         fi
     elif [ "$1" == "clean" ]; then
         echo ""
@@ -245,7 +245,7 @@ scriptController() {
             cleanDocker
         fi
     elif [ "$1" == "reset-server" ]; then
-        docker-compose down && docker-compose build database server --no-cache && docker-compose up -d database server
+        docker compose down && docker compose build database server --no-cache && docker compose up -d database server
     elif [ "$1" == "test" ]; then
         echo "testing..."
         # for testing individual things :]
