@@ -24,6 +24,7 @@ async def read_article_data_by_slug(stock_slug: str):
 
 @router.get("/api/article-data", response_model=ArticleDataResponse)
 async def read_all_article_data():
+    """Query results limited to 30"""
     from models.article_data import ArticleDataDB
 
     all_article_data_rows = (
