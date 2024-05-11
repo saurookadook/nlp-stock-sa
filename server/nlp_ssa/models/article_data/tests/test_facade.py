@@ -85,10 +85,10 @@ def test_create_or_update_new_article_data(
             "meow meow meow meow meow meow business meow meow meow business business meow "
             "business meow meow meow woof woof meow"
         ),
-        "sentence_tokens": [
-            "                              business                business",
-            " business      business                              ",
-        ],
+        "sentence_tokens": (
+            "                              business                business"
+            " business      business                              "
+        ),
     }
 
     result = article_data_facade.create_or_update(payload=article_data_dict)
@@ -125,8 +125,8 @@ def test_create_or_update_existing_article_data(article_data_facade, mock_db_ses
             " returns big castle epcot cinderella little mermaid"
         ),
         "sentence_tokens": [
-            "                    good business                       amazing",
-            " returns                                           ",
+            "                    good business                       amazing"
+            " returns                                           "
         ],
     }
 

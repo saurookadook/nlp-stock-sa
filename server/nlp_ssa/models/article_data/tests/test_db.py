@@ -26,14 +26,11 @@ def expected_article_data_dict():
             "meow meow meow meow meow meow business meow meow meow business"
             " business meow business meow meow meow woof woof meow"
         ),
-        sentence_tokens=[
-            "                              business                business",
-            " business      business                              ",
-        ],
+        sentence_tokens=(
+            "                              business                business"
+            " business      business                              "
+        ),
     )
-
-
-"patriots owner robert kraft pulls donations to one 1q gdp hits "
 
 
 def test_article_data_db(mock_db_session, expected_article_data_dict):
