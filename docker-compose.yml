@@ -16,9 +16,9 @@ services:
     env_file: .env
     environment:
       POSTGRES_PASSWORD: example
-    # networks:
-    #   - main_app
-      # - scraper
+    networks:
+      - main_app
+      - scraper
     ports:
       - 5432:5432
     volumes:
@@ -32,10 +32,8 @@ services:
       context: .
       dockerfile: app/Dockerfile
       target: frontend-dev
-    # links:
-    #   - nginx
-    # networks:
-    #   - main_app
+    networks:
+      - main_app
     ports:
       - "8080:8080"
       - "9229:9229"
@@ -52,8 +50,9 @@ services:
       - frontend
       - server
     # network_mode: host
-    # networks:
-    #   - main_app
+    networks:
+      - main_app
+      - scraper
     ports:
       - "80:80"
       - "443:443"
@@ -76,10 +75,8 @@ services:
       context: .
       dockerfile: server/Dockerfile
       target: server-dev
-    # links:
-    #   - nginx
-    # networks:
-    #   - main_app
+    networks:
+      - main_app
     ports:
       - "3000:3000"
     volumes:
@@ -98,8 +95,8 @@ services:
       context: .
       dockerfile: server/Dockerfile
       target: scraper-dev
-    # networks:
-    #   - scraper
+    networks:
+      - scraper
     ports:
       - "3001:3001"
     volumes:
@@ -108,6 +105,8 @@ services:
 
   splash-server:
     image: scrapinghub/splash:latest
+    networks:
+      - scraper
     ports:
       - "8050:8050"
     volumes:
@@ -117,6 +116,7 @@ networks:
   main_app:
     driver: bridge
   scraper:
+    driver: bridge
 
 volumes:
   db_volume:
