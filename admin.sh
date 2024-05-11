@@ -52,7 +52,7 @@ dropDatabase() {
     echo "Dropping $DATABASE_NAME database..."
     echo "======================================================================================"
     echo ""
-    psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
+    docker compose exec database psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
 }
 
 dropTestDatabase() {
@@ -61,8 +61,7 @@ dropTestDatabase() {
     echo "Dropping $TEST_DATABASE_NAME database..."
     echo "======================================================================================"
     echo ""
-    # psql "postgresql://postgres:example@database" -c "DROP DATABASE IF EXISTS test_the_money_maker"
-    psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $TEST_DATABASE_NAME"
+    docker compose exec database psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $TEST_DATABASE_NAME"
 }
 
 createDatabase() {
@@ -70,7 +69,7 @@ createDatabase() {
         dropDatabase
     fi
 
-    psql $PSQL_CONNECTION -f "db/init_db.sql"
+    docker compose exec database psql $PSQL_CONNECTION -f "/opt/db/scripts/init_db.sql"
     docker compose run --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
@@ -79,8 +78,7 @@ createTestDatabase() {
         dropTestDatabase
     fi
 
-    # docker compose exec -e DATABASE_NAME=test_the_money_maker -e ENV=test database psql "postgresql://postgres:example@database" -f "/opt/db/scripts/init_test_db.sql"
-    docker compose exec -e DATABASE_NAME=$TEST_DATABASE_NAME -e ENV=test database psql $PSQL_CONNECTION -f "/opt/db/scripts/init_test_db.sql"
+    docker compose exec database psql $PSQL_CONNECTION -f "/opt/db/scripts/init_test_db.sql"
     docker compose run -e DATABASE_NAME=$TEST_DATABASE_NAME -e ENV=test --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
