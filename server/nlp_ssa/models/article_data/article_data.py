@@ -1,9 +1,8 @@
 from pydantic import BaseModel, ConfigDict
-from pydantic.functional_validators import WrapValidator
-from typing import Annotated, List
+from typing import Annotated, Optional
 from uuid import UUID
 
-from utils.pydantic_helpers import convert_to_arrow_instance
+from utils.pydantic_helpers import SerializerArrowType
 
 
 class ArticleData(BaseModel):
@@ -13,7 +12,16 @@ class ArticleData(BaseModel):
     quote_stock_symbol: str
     source_group_id: UUID
     source_url: str
-    raw_content: str = ""
-    sentence_tokens: List[str] = []
-    created_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
-    updated_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
+
+    author: Optional[str] = ""
+    last_updated_date: Optional[SerializerArrowType] = None
+    # last_updated_date: Annotated[str, WrapValidator(convert_to_arrow_instance)]
+    published_date: Optional[SerializerArrowType] = None
+    raw_content: Optional[str] = ""
+    sentence_tokens: Optional[str] = ""
+    title: Optional[str] = ""
+    thumbnail_image_url: Optional[str] = ""
+    created_at: SerializerArrowType
+    # created_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
+    updated_at: SerializerArrowType
+    # updated_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]

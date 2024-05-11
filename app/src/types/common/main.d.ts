@@ -57,4 +57,9 @@ type ArticleDataEntry = {
     sourceUrl: string;
     rawContent: string;
     sentenceTokens: string;
+    author?: string;
+    lastUpdatedDate?: string;
+    publishedDate?: string;
+    title?: string;
+    thumbnailImageUrl?: string;
 };

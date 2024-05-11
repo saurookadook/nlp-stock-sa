@@ -1,3 +1,4 @@
+import BaseLink from 'client/common/components/BaseLink';
 import NavHeader from 'client/common/components/NavHeader';
 
-export { NavHeader };
+export { BaseLink, NavHeader };
