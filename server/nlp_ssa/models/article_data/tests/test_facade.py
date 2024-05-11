@@ -104,6 +104,11 @@ def test_create_or_update_new_article_data(
     assert isinstance(result.created_at, arrow.Arrow)
     assert isinstance(result.updated_at, arrow.Arrow)
 
+    assert result.author == ""
+    assert result.last_updated_date is None
+    assert result.published_date is None
+    assert result.title == ""
+
 
 def test_create_or_update_existing_article_data(article_data_facade, mock_db_session):
     mock_stock = StockFactory(quote_stock_symbol="DIS")
@@ -139,6 +144,14 @@ def test_create_or_update_existing_article_data(article_data_facade, mock_db_ses
 
     result = ArticleData.model_validate(article_data_db)
 
-    assert result.quote_stock_symbol == updated_article_data_dict["quote_stock_symbol"]
+    assert result.quote_stock_symbol == mock_article_data.quote_stock_symbol
+    assert result.source_group_id == mock_article_data.source_group_id
+    assert result.source_url == mock_article_data.source_url
     assert result.raw_content == updated_article_data_dict["raw_content"]
     assert result.sentence_tokens == updated_article_data_dict["sentence_tokens"]
+
+    assert result.author == ""
+    assert result.last_updated_date is None
+    assert result.published_date is None
+    assert result.thumbnail_image_url == ""
+    assert result.title == ""
