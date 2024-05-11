@@ -26,5 +26,6 @@ class ArticleDataDB(Base, TimestampsMixin):
     last_updated_date: Mapped[ArrowType] = mapped_column(ArrowDate(), nullable=True)
     published_date: Mapped[ArrowType] = mapped_column(ArrowDate(), nullable=True)
     raw_content: Mapped[str] = mapped_column(String(), nullable=True)
-    sentence_tokens: Mapped[str] = mapped_column(String, nullable=True)
-    title: Mapped[str] = mapped_column(String, nullable=True)
+    sentence_tokens: Mapped[str] = mapped_column(String(), nullable=True)
+    thumbnail_image_url: Mapped[str] = mapped_column(String(), nullable=True)
+    title: Mapped[str] = mapped_column(String(), nullable=True)
