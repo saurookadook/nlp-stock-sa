@@ -1,5 +1,6 @@
 import pytest
 
+from api.routes.api.article_data.models import GroupedArticleData
 from api.routes.api.article_data.route_handlers import (
     get_all_article_data,
     get_article_data_by_stock_slug,
@@ -82,9 +83,9 @@ def test_get_all_article_data_one_stock(
     results = get_all_article_data(db_session=mock_db_session)
 
     expected = [
-        dict(
-            stock_symbol=ntdof_stock.quote_stock_symbol,
-            data=[
+        GroupedArticleData(
+            quote_stock_symbol=ntdof_stock.quote_stock_symbol,
+            article_data=[
                 ArticleData.model_validate(ntdof_article_data_3),
                 ArticleData.model_validate(ntdof_article_data_2),
                 ArticleData.model_validate(ntdof_article_data_1),
@@ -112,21 +113,21 @@ def test_get_all_article_data_multiple_stocks(
     results = get_all_article_data(db_session=mock_db_session)
 
     expected = [
-        dict(
-            stock_symbol=tsla_stock.quote_stock_symbol,
-            data=[
+        GroupedArticleData(
+            quote_stock_symbol=ntdof_stock.quote_stock_symbol,
+            article_data=[
+                ArticleData.model_validate(ntdof_article_data_3),
+                ArticleData.model_validate(ntdof_article_data_2),
+                ArticleData.model_validate(ntdof_article_data_1),
+            ],
+        ),
+        GroupedArticleData(
+            quote_stock_symbol=tsla_stock.quote_stock_symbol,
+            article_data=[
                 ArticleData.model_validate(tsla_article_data_4),
                 ArticleData.model_validate(tsla_article_data_3),
                 ArticleData.model_validate(tsla_article_data_2),
                 ArticleData.model_validate(tsla_article_data_1),
-            ],
-        ),
-        dict(
-            stock_symbol=ntdof_stock.quote_stock_symbol,
-            data=[
-                ArticleData.model_validate(ntdof_article_data_3),
-                ArticleData.model_validate(ntdof_article_data_2),
-                ArticleData.model_validate(ntdof_article_data_1),
             ],
         ),
     ]
