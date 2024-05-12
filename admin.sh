@@ -224,6 +224,15 @@ scriptController() {
             echo ""
             docker compose build frontend --no-cache && docker compose up frontend -d
         fi
+    elif [ "$1" == "run" ]; then
+        if [ "$2" == "scraper" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "Rebuilding and running scraper..."
+            echo "======================================================================================"
+            echo ""
+            docker compose up scraper --build -d
+        fi
     elif [ "$1" == "test" ]; then
         if [ "$2" == "server" ]; then
             echo ""
