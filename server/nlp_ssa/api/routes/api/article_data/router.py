@@ -1,8 +1,8 @@
 import logging
 from fastapi import APIRouter
-from sqlalchemy import select
 
 from api.routes.api.article_data.models import ArticleDataResponse
+from api.routes.api.article_data.route_handlers import get_all_article_data, get_article_data_by_stock_slug
 from config import configure_logging
 from db import db_session
 
@@ -13,22 +13,31 @@ router = APIRouter()
 
 @router.get("/api/article-data/{stock_slug}", response_model=ArticleDataResponse)
 async def read_article_data_by_slug(stock_slug: str):
-    from models.article_data import ArticleDataFacade
+    article_data_rows = []
 
-    article_data_rows = ArticleDataFacade(
-        db_session=db_session
-    ).get_all_by_stock_symbol(stock_slug)
+    try:
+        article_data_rows = get_article_data_by_stock_slug(db_session=db_session, stock_slug=stock_slug)
+    except Exception as e:
+        logger.error(e)
 
     return {"data": article_data_rows}
 
 
 @router.get("/api/article-data", response_model=ArticleDataResponse)
-async def read_all_article_data():
-    """Query results limited to 30"""
-    from models.article_data import ArticleDataDB
+async def read_article_data():
+    """Endpoint for getting all article data.
 
-    all_article_data_rows = (
-        db_session.execute(select(ArticleDataDB).limit(30)).scalars().all()
-    )
+    Query results are
+    - limited to 30
+    - grouped by stock slug
+    - ordered by date_modified (published date?) descending
+    """
+    all_article_data_rows = []
+
+    try:
+        all_article_data_rows = get_all_article_data(db_session=db_session)
+    except Exception as e:
+        logger.error(e)
+        # raise
 
     return {"data": all_article_data_rows}
