@@ -27,7 +27,7 @@ class ArticleDataFacade:
         return ArticleData.model_validate(article_data)
 
     def get_all_by_stock_symbol(self, quote_stock_symbol: str):
-        return (
+        results = (
             self.db_session.execute(
                 select(ArticleDataDB).where(
                     ArticleDataDB.quote_stock_symbol == quote_stock_symbol
@@ -36,6 +36,8 @@ class ArticleDataFacade:
             .scalars()
             .all()
         )
+
+        return [ArticleData.model_validate(result) for result in results]
 
     def create_or_update(self, *, payload: Dict) -> ArticleData:
         insert_stmt = insert(ArticleDataDB).values(**payload)
