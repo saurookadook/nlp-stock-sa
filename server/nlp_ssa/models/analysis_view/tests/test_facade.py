@@ -1,6 +1,7 @@
 import pytest
 
-from models.analysis_view import AnalysisView, AnalysisViewFacade, AnalysisViewFactory
+from models.analysis_view import AnalysisView, AnalysisViewFacade
+from models.analysis_view.factories import AnalysisViewFactory
 
 
 @pytest.fixture
