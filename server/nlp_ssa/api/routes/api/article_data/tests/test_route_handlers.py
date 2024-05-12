@@ -25,15 +25,15 @@ def mock_ntdof_article_data(mock_db_session, mock_stocks, mock_utcnow):
 
     ntdof_article_data_1 = ArticleDataFactory(
         quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-        date_modified=mock_utcnow.shift(days=-20),
+        updated_at=mock_utcnow.shift(days=-20),
     )
     ntdof_article_data_2 = ArticleDataFactory(
         quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-        date_modified=mock_utcnow.shift(days=-17),
+        updated_at=mock_utcnow.shift(days=-17),
     )
     ntdof_article_data_3 = ArticleDataFactory(
         quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-        date_modified=mock_utcnow.shift(days=-11),
+        updated_at=mock_utcnow.shift(days=-11),
     )
     mock_db_session.commit()
 
@@ -46,19 +46,19 @@ def mock_tsla_article_data(mock_db_session, mock_stocks, mock_utcnow):
 
     tsla_article_data_1 = ArticleDataFactory(
         quote_stock_symbol=tsla_stock.quote_stock_symbol,
-        date_modified=mock_utcnow.shift(days=-18),
+        updated_at=mock_utcnow.shift(days=-18),
     )
     tsla_article_data_2 = ArticleDataFactory(
         quote_stock_symbol=tsla_stock.quote_stock_symbol,
-        date_modified=mock_utcnow.shift(days=-13),
+        updated_at=mock_utcnow.shift(days=-13),
     )
     tsla_article_data_3 = ArticleDataFactory(
         quote_stock_symbol=tsla_stock.quote_stock_symbol,
-        date_modified=mock_utcnow.shift(days=-12),
+        updated_at=mock_utcnow.shift(days=-12),
     )
     tsla_article_data_4 = ArticleDataFactory(
         quote_stock_symbol=tsla_stock.quote_stock_symbol,
-        date_modified=mock_utcnow.shift(days=-6),
+        updated_at=mock_utcnow.shift(days=-6),
     )
     mock_db_session.commit()
 
@@ -81,7 +81,7 @@ def test_get_all_article_data_one_stock(
 
     results = get_all_article_data(db_session=mock_db_session)
 
-    expected_data = [
+    expected = [
         dict(
             stock_symbol=ntdof_stock.quote_stock_symbol,
             data=[
@@ -92,7 +92,7 @@ def test_get_all_article_data_one_stock(
         )
     ]
 
-    assert results.data == expected_data
+    assert results == expected
 
 
 def test_get_all_article_data_multiple_stocks(
@@ -111,7 +111,7 @@ def test_get_all_article_data_multiple_stocks(
 
     results = get_all_article_data(db_session=mock_db_session)
 
-    expected_data = [
+    expected = [
         dict(
             stock_symbol=tsla_stock.quote_stock_symbol,
             data=[
@@ -131,7 +131,7 @@ def test_get_all_article_data_multiple_stocks(
         ),
     ]
 
-    assert results.data == expected_data
+    assert results == expected
 
 
 def test_get_all_article_data_no_results(mock_db_session):
@@ -152,9 +152,9 @@ def test_get_article_data_by_stock_slug(mock_db_session):
         db_session=mock_db_session, stock_slug=only_stock.quote_stock_symbol
     )
 
-    expected_data = [ArticleData.model_validate(only_article_data)]
+    expected = [ArticleData.model_validate(only_article_data)]
 
-    assert results.data == expected_data
+    assert results == expected
 
 
 def test_get_article_data_by_stock_slug_multiple_results(
@@ -172,14 +172,14 @@ def test_get_article_data_by_stock_slug_multiple_results(
         db_session=mock_db_session, stock_slug=tsla_stock.quote_stock_symbol
     )
 
-    expected_data = [
+    expected = [
         ArticleData.model_validate(tsla_article_data_4),
         ArticleData.model_validate(tsla_article_data_3),
         ArticleData.model_validate(tsla_article_data_2),
         ArticleData.model_validate(tsla_article_data_1),
     ]
 
-    assert results.data == expected_data
+    assert results == expected
 
 
 def test_get_article_data_by_stock_slug_no_results(mock_db_session):
