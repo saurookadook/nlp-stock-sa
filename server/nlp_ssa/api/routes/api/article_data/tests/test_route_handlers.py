@@ -1,4 +1,3 @@
-import arrow
 import pytest
 
 from api.routes.api.article_data.route_handlers import (
@@ -82,7 +81,7 @@ def test_get_all_article_data_one_stock(
 
     results = get_all_article_data(db_session=mock_db_session)
 
-    expected = [
+    expected_data = [
         dict(
             stock_symbol=ntdof_stock.quote_stock_symbol,
             data=[
@@ -93,7 +92,7 @@ def test_get_all_article_data_one_stock(
         )
     ]
 
-    assert results == expected
+    assert results.data == expected_data
 
 
 def test_get_all_article_data_multiple_stocks(
@@ -112,7 +111,7 @@ def test_get_all_article_data_multiple_stocks(
 
     results = get_all_article_data(db_session=mock_db_session)
 
-    expected = [
+    expected_data = [
         dict(
             stock_symbol=tsla_stock.quote_stock_symbol,
             data=[
@@ -132,7 +131,7 @@ def test_get_all_article_data_multiple_stocks(
         ),
     ]
 
-    assert results == expected
+    assert results.data == expected_data
 
 
 def test_get_all_article_data_no_results(mock_db_session):
@@ -142,12 +141,53 @@ def test_get_all_article_data_no_results(mock_db_session):
 
 
 def test_get_article_data_by_stock_slug(mock_db_session):
-    pass
+    only_stock = StockFactory(quote_stock_symbol="ONLY")
+    mock_db_session.commit()
+    only_article_data = ArticleDataFactory(
+        quote_stock_symbol=only_stock.quote_stock_symbol
+    )
+    mock_db_session.commit()
+
+    results = get_article_data_by_stock_slug(
+        db_session=mock_db_session, stock_slug=only_stock.quote_stock_symbol
+    )
+
+    expected_data = [ArticleData.model_validate(only_article_data)]
+
+    assert results.data == expected_data
 
 
-def test_get_article_data_by_stock_slug_multiple_results(mock_db_session):
-    pass
+def test_get_article_data_by_stock_slug_multiple_results(
+    mock_db_session, mock_stocks, mock_tsla_article_data
+):
+    _, tsla_stock = mock_stocks
+    (
+        tsla_article_data_1,
+        tsla_article_data_2,
+        tsla_article_data_3,
+        tsla_article_data_4,
+    ) = mock_tsla_article_data
+
+    results = get_article_data_by_stock_slug(
+        db_session=mock_db_session, stock_slug=tsla_stock.quote_stock_symbol
+    )
+
+    expected_data = [
+        ArticleData.model_validate(tsla_article_data_4),
+        ArticleData.model_validate(tsla_article_data_3),
+        ArticleData.model_validate(tsla_article_data_2),
+        ArticleData.model_validate(tsla_article_data_1),
+    ]
+
+    assert results.data == expected_data
 
 
 def test_get_article_data_by_stock_slug_no_results(mock_db_session):
-    pass
+    nope_stock = StockFactory(quote_stock_symbol="NOPE")
+    mock_db_session.commit()
+
+    results = get_article_data_by_stock_slug(
+        db_session=mock_db_session, stock_slug=nope_stock.quote_stock_symbol
+    )
+
+    assert results == []
