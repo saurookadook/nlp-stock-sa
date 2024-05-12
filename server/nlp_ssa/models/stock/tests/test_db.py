@@ -4,7 +4,8 @@ from sqlalchemy import select, and_
 from unittest import mock
 from uuid import UUID
 
-from models.stock import StockFactory, StockDB
+from models.stock import StockDB
+from models.stock.factories import StockFactory
 
 
 @pytest.fixture(autouse=True)

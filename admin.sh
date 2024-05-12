@@ -11,7 +11,7 @@ getDatabaseHost() {
 DATABASE_NAME="the_money_maker"
 TEST_DATABASE_NAME="test_the_money_maker"
 # https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS
-PSQL_CONNECTION="postgresql://postgres:example@database"
+PSQL_CONNECTION="postgresql://postgres:example@database:5432"
 LAST_RETURN_STATUS_CODE=$?
 
 
@@ -26,7 +26,7 @@ dbIsNotReady() {
 }
 
 isDbReady() {
-    # docker-compose up -d database 1> /dev/null &
+    # docker compose up -d database 1> /dev/null &
     echo ""
     echo "======================================================================================"
     echo "Starting ready loop..."
@@ -52,7 +52,7 @@ dropDatabase() {
     echo "Dropping $DATABASE_NAME database..."
     echo "======================================================================================"
     echo ""
-    psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
+    docker compose exec database psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
 }
 
 dropTestDatabase() {
@@ -61,8 +61,7 @@ dropTestDatabase() {
     echo "Dropping $TEST_DATABASE_NAME database..."
     echo "======================================================================================"
     echo ""
-    # psql "postgresql://postgres:example@database" -c "DROP DATABASE IF EXISTS test_the_money_maker"
-    psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $TEST_DATABASE_NAME"
+    docker compose exec database psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $TEST_DATABASE_NAME"
 }
 
 createDatabase() {
@@ -70,8 +69,8 @@ createDatabase() {
         dropDatabase
     fi
 
-    psql $PSQL_CONNECTION -f "db/init_db.sql"
-    docker-compose run --rm server python nlp_ssa/scripts/db/initialize.py
+    docker compose exec database psql $PSQL_CONNECTION -f "/opt/db/scripts/init_db.sql"
+    docker compose run --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
 createTestDatabase() {
@@ -79,9 +78,8 @@ createTestDatabase() {
         dropTestDatabase
     fi
 
-    # psql "postgresql://postgres:example@database" -f "db/init_test_db.sql"
-    psql $PSQL_CONNECTION -f "db/init_test_db.sql"
-    docker-compose run -e DATABASE_NAME=$TEST_DATABASE_NAME -e ENV=test --rm server python nlp_ssa/scripts/db/initialize.py
+    docker compose exec database psql $PSQL_CONNECTION -f "/opt/db/scripts/init_test_db.sql"
+    docker compose run -e DATABASE_NAME=$TEST_DATABASE_NAME -e ENV=test --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
 initDatabase() {
@@ -135,7 +133,7 @@ seedDatabase() {
     isDbReady
 
     if [[ ! $(dbExists) ]]; then
-        docker-compose run --rm server python nlp_ssa/scripts/db/seed_db.py
+        docker compose run --rm server python nlp_ssa/scripts/db/seed_db.py
     fi
 }
 
@@ -164,7 +162,7 @@ scriptController() {
             case ${arg} in
                 m)
                     echo "m: "${$OPTARG}
-                    docker-compose run --rm server alembic revision --autogenerate -m "$OPTARG"
+                    docker compose run --rm server alembic revision --autogenerate -m "$OPTARG"
                     exit 0
                     ;;
             esac
@@ -226,6 +224,15 @@ scriptController() {
             echo ""
             docker compose build frontend --no-cache && docker compose up frontend -d
         fi
+    elif [ "$1" == "run" ]; then
+        if [ "$2" == "scraper" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "Rebuilding and running scraper..."
+            echo "======================================================================================"
+            echo ""
+            docker compose up scraper --build -d
+        fi
     elif [ "$1" == "test" ]; then
         if [ "$2" == "server" ]; then
             echo ""
@@ -233,7 +240,7 @@ scriptController() {
             echo "Running server tests! :D"
             echo "======================================================================================"
             echo ""
-            docker-compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server python -m pytest -s --import-mode=append ${@:3}
+            docker compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server python -m pytest -s --import-mode=append ${@:3}
         fi
     elif [ "$1" == "clean" ]; then
         echo ""
@@ -245,7 +252,7 @@ scriptController() {
             cleanDocker
         fi
     elif [ "$1" == "reset-server" ]; then
-        docker-compose down && docker-compose build database server --no-cache && docker-compose up -d database server
+        docker compose down && docker compose build database server --no-cache && docker compose up -d database server
     elif [ "$1" == "test" ]; then
         echo "testing..."
         # for testing individual things :]

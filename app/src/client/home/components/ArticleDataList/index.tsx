@@ -17,9 +17,33 @@ import type { ArticleDataEntry } from '@nlpssa-app-types/common/main';
 import { BaseLink } from 'client/common/components';
 import { toTitleCase } from 'client/common/utils';
 
+function getTitleWithFallback(articleRecordArg) {
+    return (
+        articleRecordArg.title ||
+        articleRecordArg.sourceUrl
+            .replace(/^https:\/\/finance.yahoo.com\/(news\/|m\/[^\/]+?[\/])|\.html$/gim, '')
+            .replace(/-/g, ' ')
+            .toUpperCase()
+    );
+}
+
 function getMetadataLabelFromKey(metadataKey: string) {
     const key = metadataKey.replace(/Date$/i, '');
     return toTitleCase(key);
+}
+
+function ArticleAccordianHeading({ articleRecord }: React.PropsWithChildren<{ articleRecord: ArticleDataEntry }>) {
+    return (
+        <Heading>
+            <AccordionButton>
+                <Box as="span" fontWeight="700" display="inline-flex" textAlign="left" whiteSpace="pre-wrap">
+                    {getTitleWithFallback(articleRecord)}
+                </Box>
+                <Spacer />
+                <AccordionIcon />
+            </AccordionButton>
+        </Heading>
+    );
 }
 
 function ArticleMetadata({ articleRecord }) {
@@ -53,68 +77,56 @@ function ArticleMetadata({ articleRecord }) {
     );
 }
 
-function ArticleDataList({ articleData }: React.PropsWithChildren<{ articleData: ArticleDataEntry[] }>) {
-    function getTitleWithFallback(articleRecord) {
-        return (
-            articleRecord.title ||
-            articleRecord.sourceUrl
-                .replace(/^https:\/\/finance.yahoo.com\/(news\/|m\/[^\/]+?[\/])|\.html$/gim, '')
-                .replace(/-/g, ' ')
-                .toUpperCase()
-        );
-    }
+function ArticleAccordianPanel({ articleRecord }) {
+    return (
+        <AccordionPanel>
+            <Flex flexDirection="column" justifyContent="center">
+                <ArticleMetadata articleRecord={articleRecord} />
+            </Flex>
+            <Flex // force formatting
+                alignItems="flex-start"
+                flexDirection="row"
+                justifyContent="space-evenly"
+                width="100%"
+            >
+                <Box // force formatting
+                    className="raw-content"
+                    display="inline-flex"
+                    flexDirection="column"
+                    maxWidth="45%"
+                >
+                    <h2 style={{ fontWeight: 'bold' }}>Raw Content</h2>
+                    <Text>{articleRecord.rawContent}</Text>
+                </Box>
+                <Box // force formatting
+                    className="sentence-tokens"
+                    display="inline-flex"
+                    flexDirection="column"
+                    maxWidth="45%"
+                >
+                    <h2 style={{ fontWeight: 'bold' }}>Sentence Tokens</h2>
+                    <Text>{articleRecord.sentenceTokens}</Text>
+                </Box>
+            </Flex>
+        </AccordionPanel>
+    );
+}
 
+function ArticleDataListItem({ articleRecord }: React.PropsWithChildren<{ articleRecord: ArticleDataEntry }>) {
+    return (
+        <AccordionItem>
+            <ArticleAccordianHeading articleRecord={articleRecord} />
+            <ArticleAccordianPanel articleRecord={articleRecord} />
+        </AccordionItem>
+    );
+}
+
+function ArticleDataList({ articleData }: React.PropsWithChildren<{ articleData: ArticleDataEntry[] }>) {
     return (
         // TODO: maybe this should use `ul` and `li` elements?
         <Accordion allowMultiple>
             {articleData.map((record, i) => (
-                <AccordionItem key={`article-record-${i}`}>
-                    <Heading>
-                        <AccordionButton>
-                            <Box as="span" display="inline-flex" marginRight="1rem" textAlign="left">
-                                <b>Stock</b>: {record.quoteStockSymbol}
-                            </Box>
-                            <Box as="span" display="inline-flex" textAlign="left" whiteSpace="pre-wrap">
-                                <b>Title</b>
-                                {': '}
-                                {/* TODO: replace with actual title lol */}
-                                {getTitleWithFallback(record)}
-                            </Box>
-                            <Spacer />
-                            <AccordionIcon />
-                        </AccordionButton>
-                    </Heading>
-                    <AccordionPanel>
-                        <Flex flexDirection="column" justifyContent="center">
-                            <ArticleMetadata articleRecord={record} />
-                        </Flex>
-                        <Flex // force formatting
-                            alignItems="flex-start"
-                            flexDirection="row"
-                            justifyContent="space-evenly"
-                            width="100%"
-                        >
-                            <Box // force formatting
-                                className="raw-content"
-                                display="inline-flex"
-                                flexDirection="column"
-                                maxWidth="45%"
-                            >
-                                <h2 style={{ fontWeight: 'bold' }}>Raw Content</h2>
-                                <Text>{record.rawContent}</Text>
-                            </Box>
-                            <Box // force formatting
-                                className="sentence-tokens"
-                                display="inline-flex"
-                                flexDirection="column"
-                                maxWidth="45%"
-                            >
-                                <h2 style={{ fontWeight: 'bold' }}>Sentence Tokens</h2>
-                                <Text>{record.sentenceTokens}</Text>
-                            </Box>
-                        </Flex>
-                    </AccordionPanel>
-                </AccordionItem>
+                <ArticleDataListItem key={`article-record-${i}`} articleRecord={record} />
             ))}
         </Accordion>
     );

@@ -1,23 +1,36 @@
 import React, { useContext, useEffect } from 'react';
-import { Button, Center, Container, Flex, Spacer } from '@chakra-ui/react';
+import { Box, Button, Center, Container, Flex, Heading, Spacer } from '@chakra-ui/react';
 
-import { ArticleDataEntry } from '@nlpssa-app-types/common/main';
+import { GroupedArticleData } from '@nlpssa-app-types/common/main';
 import { BasePage } from 'client/common/layouts';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { ArticleDataList } from 'client/home/components';
 import { fetchArticleData } from 'client/home/store/actions';
 
-type PageData = Record<string, unknown>[];
+type PageData = GroupedArticleData[] | null;
 
 interface InitialPageData {
-    data: PageData | null;
+    data: PageData;
+}
+
+function StockArticleDataGroup({ quoteStockSymbol, articleData }) {
+    return (
+        <Box>
+            <Heading backgroundColor="teal" color="white" padding="0.5rem 1rem">
+                <Box as="span" fontWeight="700">
+                    {quoteStockSymbol}
+                </Box>
+            </Heading>
+            <ArticleDataList articleData={articleData} />
+        </Box>
+    );
 }
 
 function App({ initialPageData }: { initialPageData: InitialPageData }): React.ReactElement {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
 
-    const pageData = initialPageData.data || state.pageData;
+    const pageData = (initialPageData.data || state.pageData) as PageData;
 
     useEffect(() => {
         if (state.pageData == null) {
@@ -54,11 +67,18 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
                     w="100%"
                 >
                     <Flex className="article-data-list-wrapper" alignSelf="stretch" flexDirection="column">
-                        {pageData != null && (pageData as PageData).length > 0 ? (
-                            <ArticleDataList articleData={pageData as ArticleDataEntry[]} />
-                        ) : (
-                            'No data :['
-                        )}
+                        {pageData != null && pageData.length > 0
+                            ? pageData.map((groupedData, i) => {
+                                  const { quoteStockSymbol, articleData } = groupedData;
+                                  return (
+                                      <StockArticleDataGroup
+                                          key={`${quoteStockSymbol}-${i}`}
+                                          quoteStockSymbol={quoteStockSymbol}
+                                          articleData={articleData}
+                                      />
+                                  );
+                              })
+                            : 'No data :['}
                     </Flex>
                 </Center>
             </Container>

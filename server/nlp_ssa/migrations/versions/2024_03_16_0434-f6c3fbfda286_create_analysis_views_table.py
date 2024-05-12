@@ -25,7 +25,7 @@ def upgrade() -> None:
         "analysis_views",
         sa.Column("id", sa.UUID(), nullable=False),
         sa.Column("source_group_id", sa.UUID(), nullable=False),
-        sa.Column("owner_id", sa.UUID(), nullable=False),
+        # sa.Column("owner_id", sa.UUID(), nullable=False),
         sa.Column("user_id", sa.UUID(), nullable=True),
         sa.Column(
             "created_at",

@@ -12,11 +12,11 @@ from models.article_data.factories import ArticleDataFactory
 from models.stock.factories import StockFactory
 
 
-@pytest.fixture()
+@pytest.fixture(autouse=True)
 def mock_facade_now(mocker, mock_utcnow):
-    # mock_facade_urcnow = mocker.patch("nlp_ssa.models.article_data.facade.arrow.utcnow")
-    mock_facade_urcnow = mocker.patch("nlp_ssa.models.article_data.facade.arrow.utcnow")
-    mock_facade_urcnow.return_value = mock_utcnow
+    return mocker.patch(
+        "nlp_ssa.models.article_data.facade.arrow.utcnow", return_value=mock_utcnow
+    )
 
 
 @pytest.fixture
@@ -61,7 +61,10 @@ def test_get_all_by_stock_symbol(article_data_facade, mock_db_session):
         mock_stock_1.quote_stock_symbol
     )
 
-    assert results == [mock_article_data_1, mock_article_data_3]
+    assert results == [
+        ArticleData.model_validate(mock_article_data_1),
+        ArticleData.model_validate(mock_article_data_3),
+    ]
 
 
 def test_get_all_by_stock_symbol_no_results(article_data_facade):
@@ -85,10 +88,10 @@ def test_create_or_update_new_article_data(
             "meow meow meow meow meow meow business meow meow meow business business meow "
             "business meow meow meow woof woof meow"
         ),
-        "sentence_tokens": [
-            "                              business                business",
-            " business      business                              ",
-        ],
+        "sentence_tokens": (
+            "                              business                business"
+            " business      business                              "
+        ),
     }
 
     result = article_data_facade.create_or_update(payload=article_data_dict)
@@ -103,6 +106,11 @@ def test_create_or_update_new_article_data(
     # assert result.updated_at == mock_utcnow
     assert isinstance(result.created_at, arrow.Arrow)
     assert isinstance(result.updated_at, arrow.Arrow)
+
+    assert result.author == ""
+    assert result.last_updated_date is None
+    assert result.published_date is None
+    assert result.title == ""
 
 
 def test_create_or_update_existing_article_data(article_data_facade, mock_db_session):
@@ -124,10 +132,10 @@ def test_create_or_update_existing_article_data(article_data_facade, mock_db_ses
             "mickey goofy donald good business star wars theme parks amazing"
             " returns big castle epcot cinderella little mermaid"
         ),
-        "sentence_tokens": [
-            "                    good business                       amazing",
-            " returns                                           ",
-        ],
+        "sentence_tokens": (
+            "                    good business                       amazing"
+            " returns                                           "
+        ),
     }
 
     article_data_facade.create_or_update(payload=updated_article_data_dict)
@@ -139,6 +147,14 @@ def test_create_or_update_existing_article_data(article_data_facade, mock_db_ses
 
     result = ArticleData.model_validate(article_data_db)
 
-    assert result.quote_stock_symbol == updated_article_data_dict["quote_stock_symbol"]
+    assert result.quote_stock_symbol == mock_article_data.quote_stock_symbol
+    assert result.source_group_id == mock_article_data.source_group_id
+    assert result.source_url == mock_article_data.source_url
     assert result.raw_content == updated_article_data_dict["raw_content"]
     assert result.sentence_tokens == updated_article_data_dict["sentence_tokens"]
+
+    assert result.author == ""
+    assert result.last_updated_date is None
+    assert result.published_date is None
+    assert result.thumbnail_image_url == ""
+    assert result.title == ""

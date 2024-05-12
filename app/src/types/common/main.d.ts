@@ -53,13 +53,21 @@ interface FinalReducers {
  * Article Data
  **********************************************************************/
 type ArticleDataEntry = {
+    id: string;
     quoteStockSymbol: string;
-    sourceUrl: string;
-    rawContent: string;
-    sentenceTokens: string;
+    sourceGroupId: string;
+    createdAt: string;
+    updatedAt: string;
     author?: string;
     lastUpdatedDate?: string;
     publishedDate?: string;
-    title?: string;
+    rawContent?: string;
+    sentenceTokens?: string;
     thumbnailImageUrl?: string;
+    title?: string;
+};
+
+type GroupedArticleData = {
+    quoteStockSymbol: string;
+    articleData: ArticleDataEntry[];
 };

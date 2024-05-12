@@ -4,7 +4,8 @@ from sqlalchemy import select, and_
 from unittest import mock
 from uuid import UUID
 
-from models.analysis_view import AnalysisViewFactory, AnalysisViewDB
+from models.analysis_view import AnalysisViewDB
+from models.analysis_view.factories import AnalysisViewFactory
 
 
 mock_source_group_id = UUID("16ec77ca-7dd0-483d-be53-f625618d66ab")

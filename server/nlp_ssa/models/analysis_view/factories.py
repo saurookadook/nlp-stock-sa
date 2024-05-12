@@ -4,7 +4,7 @@ import uuid
 from db import db_session
 from models.analysis_view import AnalysisViewDB
 from models.mixins import TimestampsMixinFactory
-from models.user import UserFactory
+from models.user.factories import UserFactory
 
 
 class AnalysisViewFactory(

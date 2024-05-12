@@ -50,15 +50,18 @@ def http_requests_mock():
         yield mock
 
 
-@pytest.fixture
-def mock_utcnow():
+def get_mock_utcnow():
     return arrow.get(2024, 4, 19).to("utc")
 
 
+@pytest.fixture
+def mock_utcnow():
+    return get_mock_utcnow()
+
+
 @pytest.fixture(autouse=True)
-def mock_arrow_utcnow(mocker, mock_utcnow):
-    utcnow_patch = mocker.patch("arrow.utcnow")
-    utcnow_patch.return_value = mock_utcnow
+def mock_arrow_utcnow(mocker):
+    return mocker.patch("arrow.utcnow", return_value=get_mock_utcnow())
 
 
 @pytest.fixture
