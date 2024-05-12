@@ -36,13 +36,7 @@ function ArticleAccordianHeading({ articleRecord }: React.PropsWithChildren<{ ar
     return (
         <Heading>
             <AccordionButton>
-                <Box as="span" display="inline-flex" marginRight="1rem" textAlign="left">
-                    <b>Stock</b>: {articleRecord.quoteStockSymbol}
-                </Box>
-                <Box as="span" display="inline-flex" textAlign="left" whiteSpace="pre-wrap">
-                    <b>Title</b>
-                    {': '}
-                    {/* TODO: replace with actual title lol */}
+                <Box as="span" fontWeight="700" display="inline-flex" textAlign="left" whiteSpace="pre-wrap">
                     {getTitleWithFallback(articleRecord)}
                 </Box>
                 <Spacer />
