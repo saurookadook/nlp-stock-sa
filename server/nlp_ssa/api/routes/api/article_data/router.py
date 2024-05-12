@@ -2,7 +2,10 @@ import logging
 from fastapi import APIRouter
 
 from api.routes.api.article_data.models import ArticleDataResponse
-from api.routes.api.article_data.route_handlers import get_all_article_data, get_article_data_by_stock_slug
+from api.routes.api.article_data.route_handlers import (
+    get_all_article_data,
+    get_article_data_by_stock_slug,
+)
 from config import configure_logging
 from db import db_session
 
@@ -16,7 +19,9 @@ async def read_article_data_by_slug(stock_slug: str):
     article_data_rows = []
 
     try:
-        article_data_rows = get_article_data_by_stock_slug(db_session=db_session, stock_slug=stock_slug)
+        article_data_rows = get_article_data_by_stock_slug(
+            db_session=db_session, stock_slug=stock_slug
+        )
     except Exception as e:
         logger.error(e)
 
@@ -32,12 +37,12 @@ async def read_article_data():
     - grouped by stock slug
     - ordered by date_modified (published date?) descending
     """
-    all_article_data_rows = []
+    article_data_grouped_by_stock_slug = []
 
     try:
-        all_article_data_rows = get_all_article_data(db_session=db_session)
+        article_data_grouped_by_stock_slug = get_all_article_data(db_session=db_session)
     except Exception as e:
         logger.error(e)
         # raise
 
-    return {"data": all_article_data_rows}
+    return {"data": article_data_grouped_by_stock_slug}
