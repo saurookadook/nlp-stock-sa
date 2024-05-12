@@ -12,11 +12,11 @@ from models.article_data.factories import ArticleDataFactory
 from models.stock.factories import StockFactory
 
 
-@pytest.fixture()
+@pytest.fixture(autouse=True)
 def mock_facade_now(mocker, mock_utcnow):
-    # mock_facade_urcnow = mocker.patch("nlp_ssa.models.article_data.facade.arrow.utcnow")
-    mock_facade_urcnow = mocker.patch("nlp_ssa.models.article_data.facade.arrow.utcnow")
-    mock_facade_urcnow.return_value = mock_utcnow
+    return mocker.patch(
+        "nlp_ssa.models.article_data.facade.arrow.utcnow", return_value=mock_utcnow
+    )
 
 
 @pytest.fixture
@@ -61,7 +61,10 @@ def test_get_all_by_stock_symbol(article_data_facade, mock_db_session):
         mock_stock_1.quote_stock_symbol
     )
 
-    assert results == [mock_article_data_1, mock_article_data_3]
+    assert results == [
+        ArticleData.model_validate(mock_article_data_1),
+        ArticleData.model_validate(mock_article_data_3),
+    ]
 
 
 def test_get_all_by_stock_symbol_no_results(article_data_facade):
