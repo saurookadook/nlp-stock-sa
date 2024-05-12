@@ -1,5 +1,5 @@
 import arrow
-from sqlalchemy import literal_column, select
+from sqlalchemy import desc, literal_column, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict, Union
@@ -29,9 +29,9 @@ class ArticleDataFacade:
     def get_all_by_stock_symbol(self, quote_stock_symbol: str):
         results = (
             self.db_session.execute(
-                select(ArticleDataDB).where(
-                    ArticleDataDB.quote_stock_symbol == quote_stock_symbol
-                )
+                select(ArticleDataDB)
+                .where(ArticleDataDB.quote_stock_symbol == quote_stock_symbol)
+                .order_by(desc(ArticleDataDB.updated_at))
             )
             .scalars()
             .all()
