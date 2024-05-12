@@ -4,7 +4,8 @@ from sqlalchemy import select, and_
 from unittest import mock
 from uuid import UUID
 
-from models.user import UserFactory, UserDB
+from models.user import UserDB
+from models.user.factories import UserFactory
 
 
 @pytest.fixture(autouse=True)

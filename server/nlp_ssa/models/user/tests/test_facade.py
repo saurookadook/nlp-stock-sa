@@ -5,8 +5,7 @@ from uuid import UUID, uuid4
 from models.analysis_view.factories import AnalysisViewFactory
 from models.sentiment_analysis.factories import SentimentAnalysisFactory
 from models.stock.factories import StockFactory
-from models.user import User
-from models.user.facade import UserFacade
+from models.user import User, UserFacade
 from models.user.factories import UserFactory
 
 

@@ -1,7 +1,7 @@
 import pytest
 
-from models.stock import Stock, StockFacade, StockFactory
-
+from models.stock import Stock, StockFacade
+from models.stock.factories import StockFactory
 
 @pytest.fixture
 def stock_facade(mock_db_session):
