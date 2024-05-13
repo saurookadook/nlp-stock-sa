@@ -3,7 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
-import { AmbiguousObject } from '@nlpssa-app-types/common/main';
+import { InitialHomePageData } from '@nlpssa-app-types/common/main';
 import { App } from 'client/home/components';
 import AppStateProvider from 'client/home/store/AppStateProvider';
 // import reportWebVitals from 'client/reportWebVitals';
@@ -22,7 +22,7 @@ window.renderApp = async (initialPageData) => {
             <AppStateProvider>
                 <ChakraProvider theme={theme}>
                     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-                    <App initialPageData={initialPageData as { data: AmbiguousObject[] }} />
+                    <App initialPageData={initialPageData as InitialHomePageData} />
                 </ChakraProvider>
             </AppStateProvider>
         </React.StrictMode>,

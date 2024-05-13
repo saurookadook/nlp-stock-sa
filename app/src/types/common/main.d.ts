@@ -56,6 +56,7 @@ type ArticleDataEntry = {
     id: string;
     quoteStockSymbol: string;
     sourceGroupId: string;
+    sourceUrl: string;
     createdAt: string;
     updatedAt: string;
     author?: string;
@@ -70,4 +71,8 @@ type ArticleDataEntry = {
 type GroupedArticleData = {
     quoteStockSymbol: string;
     articleData: ArticleDataEntry[];
+};
+
+type InitialHomePageData = {
+    data: GroupedArticleData[];
 };

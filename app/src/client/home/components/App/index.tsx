@@ -38,7 +38,7 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
         }
     });
 
-    console.log('home - App', { initialPageData, pageData });
+    console.log('home - App', { initialPageData, pageData: state.pageData });
     return (
         <BasePage
             headingChildren={
