@@ -43,6 +43,7 @@ class ArrowDateClass(TypeDecorator):
     """
 
     impl = TIMESTAMP
+    cache_ok = False
 
     def process_bind_param(self, value: Any | None, dialect: Dialect) -> Any | None:
         # return super().process_bind_param(value, dialect)
