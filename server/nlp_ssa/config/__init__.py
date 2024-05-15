@@ -1,4 +1,18 @@
 import os
+from pathlib import Path
+from dotenv import dotenv_values  # new
+
+
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
+# ENV_FILE = f"{str(Path(BASE_DIR))}/.env"
+# myvars = dotenv_values(ENV_FILE)
+
+
+GITHUB_OAUTH_CLIENT_ID = os.getenv("GITHUB_OAUTH_CLIENT_ID", default="")
+GITHUB_OAUTH_SECRET = os.getenv("GITHUB_OAUTH_CLIENT_SECRET", default="")
+GITHUB_OAUTH_CALLBACK_URL = os.getenv("GITHUB_OAUTH_CALLBACK_URL", default="")
+GITHUB_OAUTH_SCOPES = []
 
 env_config = dict(
     csrf_secret=os.getenv("CSRF_SECRET", "TMP"),
