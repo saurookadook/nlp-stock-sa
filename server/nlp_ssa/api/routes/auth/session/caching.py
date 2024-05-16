@@ -1,9 +1,9 @@
 import json
 import logging
+from fastapi import Request
 from pymemcache import Client
 from pymemcache.client.retrying import RetryingClient
 from pymemcache.exceptions import MemcacheUnexpectedCloseError
-from starlette.requests import Request
 from typing import Dict, Union
 
 from config import env_vars
@@ -54,7 +54,7 @@ def safe_update_in_session_cache(
 
 def get_user_from_session_cache(request: Request):
 
-    session_id = request.cookies.get("nlp-ssa-auth")
+    session_id = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
     cache_key = build_cache_key(session_id)
 
     cache_value = safe_get_from_session_cache(cache_key)
