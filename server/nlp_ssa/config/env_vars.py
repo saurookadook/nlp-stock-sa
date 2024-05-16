@@ -11,6 +11,7 @@ LOG_LEVEL = (os.getenv("LOG_LEVEL", "DEBUG"),)
 LOG_SQL = (os.getenv("LOG_SQL", False),)
 
 # Auth
+AUTH_COOKIE_KEY = os.getenv("AUTH_COOKIE_KEY", default="nlp-ssa-auth")
 GITHUB_OAUTH_CLIENT_ID = os.getenv("GITHUB_OAUTH_CLIENT_ID", default="")
 GITHUB_OAUTH_CLIENT_SECRET = os.getenv("GITHUB_OAUTH_CLIENT_SECRET", default="")
 GITHUB_OAUTH_CALLBACK_URL = os.getenv("GITHUB_OAUTH_CALLBACK_URL", default="")
