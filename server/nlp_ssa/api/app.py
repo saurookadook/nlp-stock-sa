@@ -11,10 +11,9 @@ from api.routes.api.article_data import router as api_article_data
 from api.routes.api.stocks import router as api_stocks
 from api.routes.api.users import router as api_users
 from api.routes.login import router as login
-from config import configure_logging, env_config
+from config import env_config
 
 
-configure_logging(app_name="nlp_ssa.api")
 logger = logging.getLogger(__name__)
 
 
@@ -52,4 +51,4 @@ app.include_router(api_analysis_views.router)
 app.include_router(api_article_data.router)
 app.include_router(api_stocks.router)
 app.include_router(api_users.router)
-app.include_router(login.router)
+app.include_router(login.router, prefix="/api/auth")

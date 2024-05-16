@@ -1,19 +1,156 @@
-# TODO: make these routes work :]
-from fastapi import APIRouter, Depends, Request
+import logging
+import requests
+import secrets
+from urllib import parse
+from fastapi import APIRouter, Depends, Request, HTTPException, status
+from fastapi.responses import RedirectResponse
+from fastapi.security import OAuth2AuthorizationCodeBearer
 from fastapi_csrf_protect import CsrfProtect
 
+# from jose import JWTError, jwt
+from oauthlib.oauth2 import WebApplicationClient
+from typing import Annotated
 
+from api.routes.login.models import LoginResponse
+from config import env_vars
+from db import db_session
+from models.user import User, UserFacade
+
+
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
+from rich import inspect
 
-@router.get("/login")
-async def read_login():
-    return {"message": "YOU GOTTA LOGIN, SON"}
+GITHUB_OAUTH_URL = "https://github.com/login/oauth/authorize"
+GITHUB_OAUTH_TOKEN_URL = "https://github.com/login/oauth/access_token"
+
+oauth2_auth_code_scheme = OAuth2AuthorizationCodeBearer(
+    authorizationUrl=GITHUB_OAUTH_URL,
+    tokenUrl=GITHUB_OAUTH_TOKEN_URL,
+    # scopes=["read:user"],
+)
+github_client = WebApplicationClient(env_vars.GITHUB_OAUTH_CLIENT_ID)
 
 
-@router.post("/login")
-async def attempt_login(
+def exchange_code(code):
+    params = {
+        "client_id": env_vars.GITHUB_OAUTH_CLIENT_ID,
+        "client_secret": env_vars.GITHUB_OAUTH_CLIENT_SECRET,
+        "code": code,
+    }
+
+    result = requests.post(
+        GITHUB_OAUTH_TOKEN_URL + parse.urlencode(params),
+        headers={"Accept": "application/json"},
+    )
+
+    inspect(result, methods=True, sort=True)
+
+    try:
+        response = result.json()
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Nope :["
+        )
+
+    return response
+
+
+@router.get("/github-callback")
+async def github_oauth_callback(
+    fast_api_request: Request = None,
+    # token: str = Depends(oauth2_auth_code_scheme),
+):
+    inspect(fast_api_request, sort=True)
+    inspect(fast_api_request.query_params, methods=True, sort=True)
+
+    token_data = exchange_code(fast_api_request.query_params.get("code"))
+
+    inspect(token_data)
+
+    return RedirectResponse("https://nlp-ssa.dev/app")
+
+
+@router.get("/login", response_model=LoginResponse)
+async def read_login(
+    fast_api_request: Request = None,
+    csrf_protect: CsrfProtect = Depends(),
+):
+    # await csrf_protect.validate_csrf(fast_api_request)
+
+    fast_api_request.state.github_oauth_state = secrets.token_urlsafe(16)
+
+    github_url = github_client.prepare_request_uri(
+        GITHUB_OAUTH_URL,
+        redirect_uri="https://nlp-ssa.dev/api/auth/github-callback",
+        scope=["read:user"],
+        state=fast_api_request.state.github_oauth_state,
+        allow_signup="true",
+    )
+
+    logger.info(f"github_url: '{github_url}'")
+
+    return {"github_url": github_url}
+
+
+@router.post("/login/google")
+async def attempt_google_login(
     fast_api_request: Request = None, csrf_protect: CsrfProtect = Depends()
 ):
-    await csrf_protect.validate_csrf(fast_api_request)
-    return {"message": "YOU GOTTA LOGIN, SON"}
+    # await csrf_protect.validate_csrf(fast_api_request)
+    return {"message": "woohoooo"}
+    # fast_api_request.session["state"] = secrets.token_urlsafe(16)
+
+    # github_url = github_client.prepare_request_uri(
+    #     GITHUB_OAUTH_URL,
+    #     redirect_uri=env_vars.GITHUB_OAUTH_CALLBACK_URL,
+    #     scope=["read:user"],
+    #     state=fast_api_request.session["state"],
+    #     allow_signup="true",
+    # )
+
+    # logger.info(f"github_url: '{github_url}'")
+
+    # return {"github_url": github_url}
+
+
+# TODO: these might get removed :)
+def user_facade_dependency():
+    return UserFacade(db_session=db_session)
+
+
+def fake_decode_token(token):
+    return User(
+        username=token + "_fakedecoded",
+        email="maskiella@gmail.com",
+        first_name="Andy",
+        last_name="Maskiell",
+    )
+
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_auth_code_scheme)]):
+    user = fake_decode_token(token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user
+
+
+async def get_current_active_user(
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+
+@router.get("/users/me")
+async def read_users_me(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+):
+    return current_user
