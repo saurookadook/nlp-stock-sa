@@ -1,4 +1,3 @@
-// import '@nlpssa-app-types/common';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
@@ -18,14 +17,12 @@ window.renderApp = async (initialPageData) => {
     });
 
     root.render(
-        <React.StrictMode>
-            <AppStateProvider>
-                <ChakraProvider theme={theme}>
-                    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-                    <App initialPageData={initialPageData as InitialHomePageData} />
-                </ChakraProvider>
-            </AppStateProvider>
-        </React.StrictMode>,
+        <AppStateProvider>
+            <ChakraProvider theme={theme}>
+                <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+                <App initialPageData={initialPageData as InitialHomePageData} />
+            </ChakraProvider>
+        </AppStateProvider>,
     );
 };
 
