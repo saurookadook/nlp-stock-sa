@@ -10,6 +10,7 @@ services:
       - frontend
       - nginx
       - server
+      - session-cache
 
   database:
     image: postgres:16.2-bullseye # higher than this?
@@ -83,6 +84,11 @@ services:
     volumes:
       - ./server:/opt/nlp-stock-sa/server
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
+
+  session-cache:
+    image: memcached:1.6.10
+    ports:
+      - '11211:11211'
 
   scraper:
     depends_on:
