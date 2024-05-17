@@ -4,12 +4,16 @@ import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
 import { NavHeader } from 'client/common/components';
 
-function BasePage({
-    headingChildren,
-    pageTitle,
-    children,
-    ...props
-}: React.PropsWithChildren<{ headingChildren?: React.ReactNode; pageTitle?: string | JSX.Element }>) {
+function BasePage(
+    {
+        headingChildren,
+        pageTitle,
+        children,
+        ...props
+    }: React.PropsWithChildren<{ headingChildren?: React.ReactNode; pageTitle?: string | JSX.Element }> & {
+        className?: string;
+    }, // TODO: there must be a better way to fix this type issue
+) {
     const { colorMode, toggleColorMode } = useColorMode();
 
     const prompts = [
