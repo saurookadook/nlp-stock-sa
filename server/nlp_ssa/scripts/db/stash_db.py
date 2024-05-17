@@ -15,6 +15,7 @@ from models.stock import StockDB
 from models.user import UserDB
 
 
+configure_logging(app_name="stash_db")
 logger = logging.getLogger(__name__)
 raw_window_width, _ = os.get_terminal_size()
 window_width = (
