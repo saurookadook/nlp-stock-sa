@@ -38,7 +38,7 @@ async def read_login(
     github_url = github_client.prepare_request_uri(
         env_vars.GITHUB_OAUTH_AUTH_URL,
         redirect_uri="https://nlp-ssa.dev/api/auth/github-callback",
-        scope=["read:user"],
+        scope=["read:user", "user:email"],
         # TODO: eventually need this lol
         # state=fast_api_request.state.github_oauth_state,
         allow_signup="true",

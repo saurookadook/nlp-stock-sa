@@ -38,6 +38,7 @@ def exchange_code_for_token(code):
 
 
 async def get_user_info_from_github(token: str):
+    # "https://api.github.com/user/emails"
     github_api_response = requests.get(
         "https://api.github.com/user",
         json={"access_token": token},
