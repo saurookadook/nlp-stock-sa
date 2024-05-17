@@ -1,4 +1,5 @@
-from sqlalchemy import desc, select
+from sqlalchemy import func, select
+from sqlalchemy.orm import aliased
 
 from api.routes.api.article_data.models import ArticleDataEntry, GroupedArticleData
 
@@ -6,12 +7,27 @@ from api.routes.api.article_data.models import ArticleDataEntry, GroupedArticleD
 def get_all_article_data(db_session):
     from models.article_data import ArticleDataDB
 
+    subquery = (
+        select(
+            ArticleDataDB,
+            func.row_number()
+            .over(
+                partition_by=ArticleDataDB.quote_stock_symbol,
+                order_by=ArticleDataDB.updated_at.desc(),
+            )
+            .label("row_number"),
+        )
+        .select_from(ArticleDataDB)
+        .subquery()
+    )
+
+    grouped_data_sq = aliased(ArticleDataDB, subquery)
+
     article_data_row_query = (
-        select(ArticleDataDB)
-        .group_by(ArticleDataDB.id, ArticleDataDB.quote_stock_symbol)
-        .order_by(ArticleDataDB.quote_stock_symbol, desc(ArticleDataDB.updated_at))
+        select(grouped_data_sq)
+        .where(subquery.c.row_number <= 5)
         .limit(30)
-        .execution_options(yield_per=10)
+        .execution_options(yield_per=5)
     )
 
     grouped_article_data_rows = dict()

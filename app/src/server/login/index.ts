@@ -12,7 +12,7 @@ router.use(
         let initialPageData = {};
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await fetch(`/nlp-ssa/internal-api/v1/home`);
+            const pageDataResponse = await fetch(`/api/auth/login`, { method: 'GET' });
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[home route] - caught exception: ${e}`);
@@ -34,6 +34,7 @@ router.use(
                 ...res.locals.manifest['login'],
             });
         } catch (e) {
+            console.warn('\n'.padStart(220, '='), 'login router: render', e, '\n'.padEnd(220, '='));
             return next(e);
         }
     }),

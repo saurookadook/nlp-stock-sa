@@ -1,17 +1,24 @@
-// import '@nlpssa-app-types/common';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
 import { App } from 'client/login/components';
 // import reportWebVitals from 'client/reportWebVitals';
 
 window.renderApp = async (initialPageData) => {
     const root = createRoot(document.getElementById('nlpssa-main'));
+    console.log({ page: 'login', initialPageData });
+
+    const theme = extendTheme({
+        initialColorMode: 'system',
+        useSystemColorMode: true,
+    });
 
     root.render(
-        <React.StrictMode>
-            <App data={initialPageData} />
-        </React.StrictMode>,
+        <ChakraProvider theme={theme}>
+            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+            <App initialPageData={initialPageData} />
+        </ChakraProvider>,
     );
 };
 

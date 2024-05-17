@@ -2,7 +2,6 @@ import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { ArticleDataEntry } from '@nlpssa-app-types/common/main';
 import { getStoryPageData } from 'client/_story-data/articleData';
 import { ArticleDataList } from 'client/home/components';
 
@@ -19,9 +18,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const { articleData } = getStoryPageData().data[0];
+
 export const BaseArticleDataList: Story = {
     args: {
-        articleData: getStoryPageData().data as ArticleDataEntry[],
+        articleData: articleData,
     },
     render: (args) => <ArticleDataList articleData={args.articleData} />,
 };

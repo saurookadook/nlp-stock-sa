@@ -4,11 +4,16 @@ import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
 import { NavHeader } from 'client/common/components';
 
-function BasePage({
-    headingChildren,
-    pageTitle,
-    children,
-}: React.PropsWithChildren<{ headingChildren?: React.ReactNode; pageTitle?: string | JSX.Element }>) {
+function BasePage(
+    {
+        headingChildren,
+        pageTitle,
+        children,
+        ...props
+    }: React.PropsWithChildren<{ headingChildren?: React.ReactNode; pageTitle?: string | JSX.Element }> & {
+        className?: string;
+    }, // TODO: there must be a better way to fix this type issue
+) {
     const { colorMode, toggleColorMode } = useColorMode();
 
     const prompts = [
@@ -29,7 +34,7 @@ function BasePage({
     }
 
     return (
-        <Box>
+        <Box {...props}>
             <NavHeader>
                 {headingChildren}
                 <Button colorScheme="teal" marginLeft="1rem" onClick={annoyingClickHandler}>
@@ -40,7 +45,7 @@ function BasePage({
                 </Button>
             </NavHeader>
             <Box as="section" display="flex" flexDirection="column" paddingY="1rem">
-                <Heading marginY="0.5rem" textAlign="center">
+                <Heading marginTop="0.5rem" marginBottom="1rem" textAlign="center">
                     {pageTitle || `💸 🤑 💸 THE MONEY MAKERRRRR 💸 🤑 💸 `}
                 </Heading>
                 {children}

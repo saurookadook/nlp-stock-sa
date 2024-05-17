@@ -9,7 +9,7 @@ from api.routes.api.article_data.route_handlers import (
 from config import configure_logging
 from db import db_session
 
-configure_logging(app_name="nlp_ssa.api.routes.article_data")
+# configure_logging(app_name="nlp_ssa.api.routes.article_data")
 logger = logging.getLogger(__name__)
 router = APIRouter()
 

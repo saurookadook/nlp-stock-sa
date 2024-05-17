@@ -8,7 +8,7 @@ from typing import Any
 from config import configure_logging, env_config
 
 
-configure_logging(app_name="nlp_ssa.db")
+# configure_logging(app_name="nlp_ssa.db")
 logger = logging.getLogger(__name__)
 
 engine = create_engine(
@@ -43,6 +43,7 @@ class ArrowDateClass(TypeDecorator):
     """
 
     impl = TIMESTAMP
+    cache_ok = False
 
     def process_bind_param(self, value: Any | None, dialect: Dialect) -> Any | None:
         # return super().process_bind_param(value, dialect)
