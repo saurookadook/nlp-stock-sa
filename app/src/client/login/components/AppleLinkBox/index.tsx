@@ -1,18 +1,15 @@
 import React from 'react';
 import { Box, LinkBox, LinkOverlay } from '@chakra-ui/react';
 
-function AppleLinkBox({ href }) {
+function AppleLinkBox({ href, ...props }) {
     return (
         <LinkBox
-            as="button"
             backgroundColor="#ffffff"
             borderColor="gray.500"
-            borderRadius="5px"
+            borderStyle="solid"
+            borderWidth="1px"
             color="#000000"
-            columnGap="0.5rem"
-            display="flex"
-            paddingY="1rem"
-            paddingX="2rem"
+            {...props}
         >
             <LinkOverlay href={href} fontWeight="600">{`Log in with Apple`}</LinkOverlay>
             <Box as="span" display="inline-block" height="1.5rem" width="1.5rem">

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Center, Container, LinkBox, LinkOverlay, Spacer, Spinner } from '@chakra-ui/react';
+import { Box, Center, Container, Spacer, Spinner } from '@chakra-ui/react';
 
 import type { AmbiguousObject } from '@nlpssa-app-types/common/main';
-// import { BaseLink } from 'client/common/components';
 import { BasePage } from 'client/common/layouts';
+import { AppleLinkBox, GitHubLinkBox, GoogleLinkBox, MicrosoftLinkBox } from 'client/login/components';
 
 function App({ initialPageData }: { initialPageData?: Record<string, unknown> | null }) {
     console.log('login - App', { initialPageData });
@@ -29,6 +29,15 @@ function App({ initialPageData }: { initialPageData?: Record<string, unknown> | 
         }
     }, []);
 
+    const sharedLinkBoxProps = {
+        as: 'button',
+        borderRadius: '5px',
+        display: 'flex',
+        justifyContent: 'space-around',
+        paddingY: '1rem',
+        paddingX: '2rem',
+    };
+
     return (
         <BasePage // force formatting
             className="App"
@@ -47,16 +56,12 @@ function App({ initialPageData }: { initialPageData?: Record<string, unknown> | 
                     w="100%"
                 >
                     {isLoginDataLoaded() ? (
-                        <LinkBox
-                            as="button"
-                            backgroundColor="blackAlpha.800"
-                            borderRadius="5px"
-                            color="white"
-                            paddingY="0.5rem"
-                            paddingX="1rem"
-                        >
-                            <LinkOverlay href={loginData.githubUrl as string}>Log in with GitHub</LinkOverlay>
-                        </LinkBox>
+                        <Box display="flex" flexDirection="column" rowGap="1rem">
+                            <AppleLinkBox href={'#'} {...sharedLinkBoxProps} />
+                            <GitHubLinkBox href={loginData.githubUrl} {...sharedLinkBoxProps} />
+                            <GoogleLinkBox href={'#'} {...sharedLinkBoxProps} />
+                            <MicrosoftLinkBox href={'#'} {...sharedLinkBoxProps} />
+                        </Box>
                     ) : (
                         <Spinner // force formatting
                             color="teal"
