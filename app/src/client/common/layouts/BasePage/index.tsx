@@ -8,6 +8,7 @@ function BasePage({
     headingChildren,
     pageTitle,
     children,
+    ...props
 }: React.PropsWithChildren<{ headingChildren?: React.ReactNode; pageTitle?: string | JSX.Element }>) {
     const { colorMode, toggleColorMode } = useColorMode();
 
@@ -29,7 +30,7 @@ function BasePage({
     }
 
     return (
-        <Box>
+        <Box {...props}>
             <NavHeader>
                 {headingChildren}
                 <Button colorScheme="teal" marginLeft="1rem" onClick={annoyingClickHandler}>
