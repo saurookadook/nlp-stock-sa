@@ -45,7 +45,7 @@ function BasePage(
                 </Button>
             </NavHeader>
             <Box as="section" display="flex" flexDirection="column" paddingY="1rem">
-                <Heading marginY="0.5rem" textAlign="center">
+                <Heading marginTop="0.5rem" marginBottom="1rem" textAlign="center">
                     {pageTitle || `💸 🤑 💸 THE MONEY MAKERRRRR 💸 🤑 💸 `}
                 </Heading>
                 {children}

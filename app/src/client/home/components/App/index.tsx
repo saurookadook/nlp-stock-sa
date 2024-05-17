@@ -55,7 +55,7 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
                 </span>
             }
         >
-            <Container className="home" style={{ margin: '0 auto' }} maxWidth="75vw">
+            <Container className="home" margin="0 auto" maxWidth="75vw">
                 <Center
                     borderColor="gray.400"
                     borderRadius="5px"

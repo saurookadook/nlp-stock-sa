@@ -1,15 +1,25 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
 import { App } from 'client/login/components';
 // import reportWebVitals from 'client/reportWebVitals';
 
 window.renderApp = async (initialPageData) => {
+    const root = createRoot(document.getElementById('nlpssa-main'));
     console.log({ page: 'login', initialPageData });
 
-    const root = createRoot(document.getElementById('nlpssa-main'));
+    const theme = extendTheme({
+        initialColorMode: 'system',
+        useSystemColorMode: true,
+    });
 
-    root.render(<App data={initialPageData} />);
+    root.render(
+        <ChakraProvider theme={theme}>
+            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+            <App initialPageData={initialPageData} />
+        </ChakraProvider>,
+    );
 };
 
 // If you want to start measuring performance in your app, pass a function
