@@ -28,7 +28,7 @@ export const BasePageWithTitle: Story = {
     render: (args) => (
         <BasePage {...args}>
             {/* TODO: put some actual stuff here :] */}
-            {getStoryPageData().data.map((data, i) => (
+            {getStoryPageData().data!.map((data, i) => (
                 <pre key={`article-data-${i}`}>{JSON.stringify(data, null, 4)}</pre>
             ))}
         </BasePage>

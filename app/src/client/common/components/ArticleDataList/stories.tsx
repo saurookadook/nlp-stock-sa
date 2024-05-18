@@ -18,7 +18,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const { articleData } = getStoryPageData().data[0];
+const { articleData } = getStoryPageData().data![0];
 
 export const BaseArticleDataList: Story = {
     args: {

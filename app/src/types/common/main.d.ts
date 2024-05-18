@@ -77,6 +77,10 @@ type AbstractPageData = {
     data: GroupedArticleData[] | null;
 };
 
-type InitialArticleDataBySlugPageData = AbstractPageData;
+type InitialArticleDataBySlugPageData = {
+    data: GroupedArticleData | null;
+};
 
-type InitialHomePageData = AbstractPageData;
+type InitialHomePageData = {
+    data: GroupedArticleData[] | null;
+};
