@@ -1,5 +1,5 @@
 import arrow
-from sqlalchemy import desc, literal_column, select
+from sqlalchemy import desc, literal_column, or_, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict, List, Union
@@ -43,6 +43,12 @@ class ArticleDataFacade:
         return [ArticleData.model_validate(result) for result in results]
 
     def create_or_update(self, *, payload: Dict) -> ArticleData:
+        maybe_one = self._find_one_if_exists(
+            id=payload.get("id"), source_url=payload.get("source_url")
+        )
+        if maybe_one:
+            return self.update(payload=payload)
+
         insert_stmt = insert(ArticleDataDB).values(**payload)
 
         full_stmt = insert_stmt.on_conflict_do_update(
@@ -58,3 +64,33 @@ class ArticleDataFacade:
         self.db_session.flush()
 
         return ArticleData.model_validate(article_data)
+
+    def update(self, *, payload: Dict) -> ArticleData:
+        update_stmt = (
+            update(ArticleDataDB)
+            .where(
+                or_(
+                    ArticleDataDB.id == payload.get("id"),
+                    ArticleDataDB.source_url == payload.get("source_url"),
+                )
+            )
+            .values(**payload)
+        ).returning(literal_column("*"))
+
+        updated_record = self.db_session.execute(update_stmt).fetchone()
+        self.db_session.flush()
+
+        return ArticleData.model_validate(updated_record)
+
+    def _find_one_if_exists(self, *, id, source_url):
+        try:
+            return self.get_one_by_id(id)
+        except ArticleDataFacade.NoResultFound:
+            pass
+
+        try:
+            return self.get_one_by_source_url(source_url)
+        except ArticleDataFacade.NoResultFound:
+            pass
+
+        return None

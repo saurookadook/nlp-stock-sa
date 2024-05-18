@@ -63,7 +63,7 @@ def test_get_one_by_source_url(article_data_facade, mock_db_session):
 def test_get_one_by_source_url_no_result(article_data_facade):
     with pytest.raises(ArticleDataFacade.NoResultFound):
         article_data_facade.get_one_by_source_url(
-            id="2cad8f15-795e-44b8-bf4d-ce81d586594a"
+            source_url="https://best-news-ever.com/news/does-not-exist.html"
         )
 
 

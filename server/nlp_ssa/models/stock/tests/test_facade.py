@@ -68,7 +68,7 @@ def test_create_or_update_new_stock(mock_db_session, stock_facade):
 
 
 def test_create_or_update_existing_stock(mock_db_session, stock_facade):
-    StockFactory(
+    mock_stock = StockFactory(
         id=UUID("d1bf5370-460b-40d5-90b0-47d711faea8e"),
         quote_stock_symbol="MEOW",
         full_stock_symbol="Meow Inc.",
@@ -76,6 +76,7 @@ def test_create_or_update_existing_stock(mock_db_session, stock_facade):
     mock_db_session.commit()
 
     stock_dict = {
+        "id": mock_stock.id,
         "quote_stock_symbol": "NTDOF",
         "full_stock_symbol": "Nintendo",
     }
