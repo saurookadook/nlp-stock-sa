@@ -26,6 +26,16 @@ class StockFacade:
 
         return Stock.model_validate(stock)
 
+    def get_one_by_quote_stock_symbol(self, quote_stock_symbol):
+        try:
+            stock = self.db_session.execute(
+                select(StockDB).where(StockDB.quote_stock_symbol == quote_stock_symbol)
+            ).scalar_one()
+        except NoResultFound:
+            raise StockFacade.NoResultFound
+
+        return Stock.model_validate(stock)
+
     def create_or_update(self, *, payload: Dict) -> Stock:
         insert_stmt = insert(StockDB).values(**payload)
 
