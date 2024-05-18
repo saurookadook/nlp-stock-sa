@@ -27,7 +27,7 @@ function StockArticleDataGroup({ quoteStockSymbol, articleData }) {
     );
 }
 
-function App({ initialPageData }: { initialPageData: InitialPageData }): React.ReactElement {
+function HomeApp({ initialPageData }: { initialPageData: InitialPageData }): React.ReactElement {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
 
@@ -39,7 +39,7 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
         }
     });
 
-    console.log('home - App', { initialPageData, pageData });
+    console.log('home - HomeApp', { initialPageData, pageData });
     return (
         <BasePage
             headingChildren={
@@ -88,4 +88,4 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
     );
 }
 
-export default App;
+export default HomeApp;
