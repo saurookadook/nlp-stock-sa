@@ -42,6 +42,7 @@ const buildConfig = (env, argv) => ({
         //     import: path.resolve(__dirname, 'src/client/login/entry.tsx'),
         //     dependOn: 'react-vendors',
         // },
+        articleData: ['@babel/polyfill', path.resolve(__dirname, 'src/client/article-data/entry.tsx')],
         home: ['@babel/polyfill', path.resolve(__dirname, 'src/client/home/entry.tsx')],
         login: ['@babel/polyfill', path.resolve(__dirname, 'src/client/login/entry.tsx')],
     },
