@@ -27,7 +27,14 @@ class ArticleDataFacade:
         return ArticleData.model_validate(article_data)
 
     def get_one_by_source_url(self, source_url: str) -> ArticleData:
-        return None
+        try:
+            article_data = self.db_session.execute(
+                select(ArticleDataDB).where(ArticleDataDB.source_url == source_url)
+            ).scalar_one()
+        except NoResultFound:
+            raise ArticleDataFacade.NoResultFound
+
+        return ArticleData.model_validate(article_data)
 
     def get_all_by_stock_symbol(self, quote_stock_symbol: str) -> List[ArticleData]:
         results = (
