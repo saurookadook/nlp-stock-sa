@@ -26,6 +26,22 @@ def test_get_one_by_id_no_result(stock_facade):
         stock_facade.get_one_by_id(id="415c5a59-942b-4f08-acb5-2c16f2b37c9b")
 
 
+def test_get_one_by_quote_stock_symbol(mock_db_session, stock_facade):
+    mock_stock = StockFactory()
+    mock_db_session.commit()
+
+    result = stock_facade.get_one_by_quote_stock_symbol(
+        quote_stock_symbol=mock_stock.quote_stock_symbol
+    )
+
+    assert result == Stock.model_validate(mock_stock)
+
+
+def test_get_one_by_quote_stock_symbol_no_result(stock_facade):
+    with pytest.raises(StockFacade.NoResultFound):
+        stock_facade.get_one_by_quote_stock_symbol(quote_stock_symbol="NOPE")
+
+
 def test_create_or_update_new_stock(mock_db_session, stock_facade):
     stock_dict = {
         "id": UUID("5cabc780-62bb-406a-9f63-b97cf7f181b8"),
