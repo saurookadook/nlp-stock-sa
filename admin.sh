@@ -169,6 +169,8 @@ scriptController() {
         done
     elif [ "$1" == "stash-db" ]; then
         docker compose run --rm server python nlp_ssa/scripts/db/stash_db.py
+    elif [ "$1" == "pop-db" ]; then
+        docker compose run --rm server python nlp_ssa/scripts/db/pop_db.py
     elif [ "$1" == "ad-to-csv" ]; then
         docker compose run --rm server python nlp_ssa/scripts/downloads/article_data_as_csv.py
     elif [ "$1" == "db" ]; then
