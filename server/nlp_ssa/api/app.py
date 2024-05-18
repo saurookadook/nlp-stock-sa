@@ -15,7 +15,7 @@ from api.routes.auth.login import router as login
 from config import env_config
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 
 
 @asynccontextmanager

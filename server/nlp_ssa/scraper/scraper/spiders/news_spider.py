@@ -26,7 +26,7 @@ nltk.download("punkt")
 nltk.download("stopwords")
 nltk.download("wordnet")
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 
 
 class NewsSpider(scrapy.Spider):

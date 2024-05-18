@@ -9,7 +9,7 @@ from config import configure_logging, env_config
 
 
 # configure_logging(app_name="nlp_ssa.db")
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 
 engine = create_engine(
     f"postgresql+psycopg2://{env_config['database_user']}:{env_config['database_password']}"

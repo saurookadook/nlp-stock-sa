@@ -8,7 +8,7 @@ from typing import Dict, Union
 
 from config import env_vars
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 
 base_client = Client((env_vars.MEMCACHED_HOST, env_vars.MEMCACHED_PORT))
 retry_client = RetryingClient(
