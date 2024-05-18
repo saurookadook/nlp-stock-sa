@@ -1,33 +1,15 @@
 import React, { useContext, useEffect } from 'react';
-import { Box, Button, Center, Container, Flex, Heading, Spacer } from '@chakra-ui/react';
+import { Button, Center, Container, Flex, Spacer } from '@chakra-ui/react';
 
-import type { GroupedArticleData } from '@nlpssa-app-types/common/main';
-import { BaseLink } from 'client/common/components';
+import type { GroupedArticleData, InitialHomePageData } from '@nlpssa-app-types/common/main';
+import { BaseLink, StockArticleDataGroup } from 'client/common/components';
 import { BasePage } from 'client/common/layouts';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
-import { ArticleDataList } from 'client/home/components';
 import { fetchArticleData } from 'client/home/store/actions';
 
 type PageData = GroupedArticleData[] | null;
 
-interface InitialPageData {
-    data: PageData;
-}
-
-function StockArticleDataGroup({ quoteStockSymbol, articleData }) {
-    return (
-        <Box>
-            <Heading backgroundColor="teal" color="white" padding="0.5rem 1rem">
-                <Box as="span" fontWeight="700">
-                    {quoteStockSymbol}
-                </Box>
-            </Heading>
-            <ArticleDataList articleData={articleData} />
-        </Box>
-    );
-}
-
-function HomeApp({ initialPageData }: { initialPageData: InitialPageData }): React.ReactElement {
+function HomeApp({ initialPageData }: { initialPageData: InitialHomePageData }): React.ReactElement {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
 
