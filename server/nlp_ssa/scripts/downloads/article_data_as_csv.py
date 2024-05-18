@@ -9,7 +9,7 @@ from models.article_data import ArticleDataDB
 
 
 configure_logging(app_name="stash_db")
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 raw_window_width, _ = os.get_terminal_size()
 window_width = (
     raw_window_width - 100
@@ -55,11 +55,9 @@ def download_article_data_as_csv():
 
             article_data.append(ad)
 
-            if i % 20 == 0:
-                logger.info(f" Writing '{i}' rows... ".center(window_width, "="))
-                csv_writer.writerows(article_data)
-                article_data.clear()
-                total_count = i
+            logger.info(f" Writing '{i}' rows... ".center(window_width, "="))
+            csv_writer.writerow(ad)
+            total_count = i
 
         print_section_end("article_data", total_count)
 

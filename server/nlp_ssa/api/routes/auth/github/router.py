@@ -9,7 +9,7 @@ from rich import inspect
 from config import env_vars
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 router = APIRouter()
 
 
