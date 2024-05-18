@@ -1,5 +1,5 @@
 import arrow
-from sqlalchemy import literal_column, select
+from sqlalchemy import literal_column, or_, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict
@@ -37,6 +37,12 @@ class StockFacade:
         return Stock.model_validate(stock)
 
     def create_or_update(self, *, payload: Dict) -> Stock:
+        maybe_one = self._find_one_if_exists(
+            id=payload.get("id"), quote_stock_symbol=payload.get("quote_stock_symbol")
+        )
+        if maybe_one:
+            return self.update(payload=payload)
+
         insert_stmt = insert(StockDB).values(**payload)
 
         full_stmt = insert_stmt.on_conflict_do_update(
@@ -48,7 +54,37 @@ class StockFacade:
             },
         ).returning(literal_column("*"))
 
-        article_data = self.db_session.execute(full_stmt).fetchone()
+        stock = self.db_session.execute(full_stmt).fetchone()
         self.db_session.flush()
 
-        return Stock.model_validate(article_data)
+        return Stock.model_validate(stock)
+
+    def update(self, *, payload: Dict) -> Stock:
+        update_stmt = (
+            update(StockDB)
+            .where(
+                or_(
+                    StockDB.id == payload.get("id"),
+                    StockDB.quote_stock_symbol == payload.get("quote_stock_symbol"),
+                )
+            )
+            .values(**payload)
+        ).returning(literal_column("*"))
+
+        updated_record = self.db_session.execute(update_stmt).fetchone()
+        self.db_session.flush()
+
+        return Stock.model_validate(updated_record)
+
+    def _find_one_if_exists(self, *, id, quote_stock_symbol):
+        try:
+            return self.get_one_by_id(id)
+        except StockFacade.NoResultFound:
+            pass
+
+        try:
+            return self.get_one_by_quote_stock_symbol(quote_stock_symbol)
+        except StockFacade.NoResultFound:
+            pass
+
+        return None
