@@ -2,7 +2,7 @@ import arrow
 from sqlalchemy import desc, literal_column, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm.exc import NoResultFound
-from typing import Dict, Union
+from typing import Dict, List, Union
 from uuid import UUID
 
 from models.article_data import ArticleDataDB, ArticleData
@@ -26,7 +26,10 @@ class ArticleDataFacade:
 
         return ArticleData.model_validate(article_data)
 
-    def get_all_by_stock_symbol(self, quote_stock_symbol: str):
+    def get_one_by_source_url(self, source_url: str) -> ArticleData:
+        return None
+
+    def get_all_by_stock_symbol(self, quote_stock_symbol: str) -> List[ArticleData]:
         results = (
             self.db_session.execute(
                 select(ArticleDataDB)
