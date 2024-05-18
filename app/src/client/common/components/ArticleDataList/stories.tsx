@@ -3,7 +3,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { getStoryPageData } from 'client/_story-data/articleData';
-import { ArticleDataList } from 'client/home/components';
+import { ArticleDataList } from 'client/common/components';
 
 const meta = {
     title: 'Home/ArticleDataList',
