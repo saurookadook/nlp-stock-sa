@@ -25,7 +25,7 @@ function ArticleDataApp({
         }
     });
 
-    console.log('article-data - ArticleDataApp', { initialPageData, pageData });
+    console.log('article-data - ArticleDataApp', { initialPageData, state, pageData });
     return (
         <BasePage>
             <Container className="home" margin="0 auto" maxWidth="75vw">

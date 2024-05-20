@@ -4,14 +4,14 @@ import { combineReducers } from 'client/common/store/utils';
 
 interface PageDataReducerAction {
     type: string;
-    payload: GroupedArticleData[];
+    payload: GroupedArticleData;
 }
 
-const pageData: GenericStateSliceReducer<GroupedArticleData[] | null, PageDataReducerAction> = [
+const pageData: GenericStateSliceReducer<GroupedArticleData | null, PageDataReducerAction> = [
     (stateSlice, action) => {
         switch (action.type) {
             case SET_ARTICLE_DATA:
-                return [...action.payload];
+                return action.payload;
             default:
                 return stateSlice;
         }
