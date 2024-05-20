@@ -1,15 +1,15 @@
 import React from 'react';
-import { Flex, Heading, Link } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 
-import { NavHeader_nav } from './styled';
+import { NavHeader_nav, HomeLink_a } from './styled';
 
 function NavHeader({ ...props }) {
     return (
         <NavHeader_nav>
             <Flex alignItems="center" flexDirection="row" {...props}>
-                <Link href="/app">
+                <HomeLink_a href="/app">
                     <Heading>{`💸 🤑 💸 Welcome to NLP SSA 💸 🤑 💸`}</Heading>
-                </Link>
+                </HomeLink_a>
                 {props.children}
             </Flex>
         </NavHeader_nav>
