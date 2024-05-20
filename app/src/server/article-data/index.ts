@@ -34,7 +34,7 @@ router.use(
                 layout: 'index',
                 initialPageData: JSON.stringify(initialPageData),
                 ...res.locals.manifest['common'],
-                ...res.locals.manifest['article-data'],
+                ...res.locals.manifest['articleData'],
             });
         } catch (e) {
             return next(e);
@@ -65,7 +65,7 @@ router.use(
                 layout: 'index',
                 initialPageData: JSON.stringify(initialPageData),
                 ...res.locals.manifest['common'],
-                ...res.locals.manifest['article-data'],
+                ...res.locals.manifest['articleData'],
             });
         } catch (e) {
             return next(e);
