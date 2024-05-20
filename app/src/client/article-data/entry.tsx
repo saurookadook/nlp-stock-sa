@@ -2,8 +2,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
+import type { InitialArticleDataBySlugPageData } from '@nlpssa-app-types/common/main';
 import { ArticleDataApp } from 'client/article-data/components';
-import { InitialArticleDataBySlugPageData } from '@nlpssa-app-types/common/main';
+import AppStateProvider from 'client/article-data/store/AppStateProvider';
 // import reportWebVitals from 'client/reportWebVitals';
 
 // type ArticlePageData = InitialArticleDataBySlugPageData & {
@@ -23,13 +24,15 @@ window.renderApp = async (initialPageData) => {
         (initialPageData.stockSlug as string) || window.location.pathname.replace(/^\/\S+\/(?=[^\/]+$)/gim, '');
 
     root.render(
-        <ChakraProvider theme={theme}>
-            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-            <ArticleDataApp
-                initialPageData={initialPageData as InitialArticleDataBySlugPageData}
-                stockSlug={stockSlug}
-            />
-        </ChakraProvider>,
+        <AppStateProvider>
+            <ChakraProvider theme={theme}>
+                <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+                <ArticleDataApp
+                    initialPageData={initialPageData as InitialArticleDataBySlugPageData}
+                    stockSlug={stockSlug}
+                />
+            </ChakraProvider>
+        </AppStateProvider>,
     );
 };
 
