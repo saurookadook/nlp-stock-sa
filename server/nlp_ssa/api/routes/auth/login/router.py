@@ -14,7 +14,7 @@ from db import db_session
 from models.user import User, UserFacade
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 router = APIRouter()
 
 

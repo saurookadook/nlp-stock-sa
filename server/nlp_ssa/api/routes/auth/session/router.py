@@ -7,7 +7,7 @@ from api.routes.auth.session.caching import get_user_from_session_cache
 from config import env_vars
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 router = APIRouter()
 
 

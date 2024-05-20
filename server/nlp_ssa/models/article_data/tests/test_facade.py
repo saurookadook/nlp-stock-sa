@@ -24,7 +24,7 @@ def article_data_facade(mock_db_session):
     return ArticleDataFacade(db_session=mock_db_session)
 
 
-def test_get_one_by_id(mock_db_session, article_data_facade):
+def test_get_one_by_id(article_data_facade, mock_db_session):
     mock_stock = StockFactory()
     mock_db_session.commit()
 
@@ -41,6 +41,30 @@ def test_get_one_by_id(mock_db_session, article_data_facade):
 def test_get_one_by_id_no_result(article_data_facade):
     with pytest.raises(ArticleDataFacade.NoResultFound):
         article_data_facade.get_one_by_id(id="2cad8f15-795e-44b8-bf4d-ce81d586594a")
+
+
+def test_get_one_by_source_url(article_data_facade, mock_db_session):
+    mock_stock = StockFactory()
+    mock_db_session.commit()
+
+    mock_article_data = ArticleDataFactory(
+        quote_stock_symbol=mock_stock.quote_stock_symbol,
+        source_url="https://best-news-ever.com/news/article-about-a-stock.html",
+    )
+    mock_db_session.commit()
+
+    result = article_data_facade.get_one_by_source_url(
+        source_url=mock_article_data.source_url
+    )
+
+    assert result == ArticleData.model_validate(mock_article_data)
+
+
+def test_get_one_by_source_url_no_result(article_data_facade):
+    with pytest.raises(ArticleDataFacade.NoResultFound):
+        article_data_facade.get_one_by_source_url(
+            source_url="https://best-news-ever.com/news/does-not-exist.html"
+        )
 
 
 def test_get_all_by_stock_symbol(article_data_facade, mock_db_session):
