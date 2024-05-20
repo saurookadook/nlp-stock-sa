@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-import { Button, Center, Container, Flex, Spacer } from '@chakra-ui/react';
+import { Button, Center, Container, Flex } from '@chakra-ui/react';
 
 import type { AbstractPageData, InitialHomePageData } from '@nlpssa-app-types/common/main';
-import { BaseLink, StockArticleDataGroup } from 'client/common/components';
+import { StockArticleDataGroup } from 'client/common/components';
 import { BasePage } from 'client/common/layouts';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchArticleData } from 'client/home/store/actions';
@@ -19,16 +19,10 @@ function HomeApp({ initialPageData }: { initialPageData: InitialHomePageData }):
         }
     });
 
-    console.log('home - HomeApp', { initialPageData, pageData });
+    console.log('home - HomeApp', { initialPageData, state, pageData });
     return (
         <BasePage
-            headingChildren={
-                <>
-                    <Spacer />
-                    <BaseLink href="/">Home</BaseLink>
-                    <Button>I&nbsp;AM BUTTON</Button>
-                </>
-            }
+            headingChildren={<Button>I&nbsp;AM BUTTON</Button>}
             pageTitle={
                 <span>
                     <b>Home</b>: Article Data
