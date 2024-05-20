@@ -1,5 +1,4 @@
 import React from 'react';
-import { ChakraProvider } from '@chakra-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { getStoryArticleDataBySlug } from 'client/_story-data/articleDataBySlug';
@@ -9,7 +8,6 @@ import { AppStateProvider } from 'client/article-data/store';
 const meta = {
     title: 'ArticleData/ArticleDataApp',
     component: ArticleDataApp,
-    decorators: [(story) => <ChakraProvider>{story()}</ChakraProvider>],
     parameters: {
         // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
         layout: 'fullscreen',
