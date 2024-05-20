@@ -13,5 +13,9 @@ class GroupedArticleData(BaseResponseModel):
     article_data: List[ArticleDataEntry]
 
 
+class ArticleDataBySlugResponse(BaseResponseModel):
+    data: GroupedArticleData
+
+
 class ArticleDataResponse(BaseResponseModel):
     data: List[GroupedArticleData]
