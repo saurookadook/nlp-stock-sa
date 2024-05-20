@@ -32,7 +32,10 @@ router.use(
         try {
             return res.render('index', {
                 layout: 'index',
-                initialPageData: JSON.stringify(initialPageData),
+                initialPageData: JSON.stringify({
+                    stockSlug: stockSlug,
+                    initialPageData,
+                }),
                 ...res.locals.manifest['common'],
                 ...res.locals.manifest['articleData'],
             });
