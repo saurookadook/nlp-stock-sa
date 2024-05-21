@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
-import { App } from 'client/login/components';
+import { LoginApp } from 'client/login/components';
 // import reportWebVitals from 'client/reportWebVitals';
 
 window.renderApp = async (initialPageData) => {
@@ -17,7 +17,7 @@ window.renderApp = async (initialPageData) => {
     root.render(
         <ChakraProvider theme={theme}>
             <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-            <App initialPageData={initialPageData} />
+            <LoginApp initialPageData={initialPageData} />
         </ChakraProvider>,
     );
 };

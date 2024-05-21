@@ -1,7 +1,10 @@
 import logging
 from fastapi import APIRouter
 
-from api.routes.api.article_data.models import ArticleDataResponse
+from api.routes.api.article_data.models import (
+    ArticleDataResponse,
+    ArticleDataBySlugResponse,
+)
 from api.routes.api.article_data.route_handlers import (
     get_all_article_data,
     get_article_data_by_stock_slug,
@@ -14,7 +17,7 @@ logger = logging.getLogger(__file__)
 router = APIRouter()
 
 
-@router.get("/api/article-data/{stock_slug}", response_model=ArticleDataResponse)
+@router.get("/api/article-data/{stock_slug}", response_model=ArticleDataBySlugResponse)
 async def read_article_data_by_slug(stock_slug: str):
     article_data_rows = []
 
@@ -25,7 +28,9 @@ async def read_article_data_by_slug(stock_slug: str):
     except Exception as e:
         logger.error(e)
 
-    return {"data": article_data_rows}
+    return {
+        "data": {"quote_stock_symbol": stock_slug, "article_data": article_data_rows}
+    }
 
 
 @router.get("/api/article-data", response_model=ArticleDataResponse)

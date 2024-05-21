@@ -1,37 +1,17 @@
 import React, { useContext, useEffect } from 'react';
-import { Box, Button, Center, Container, Flex, Heading, Spacer } from '@chakra-ui/react';
+import { Button, Center, Container, Flex } from '@chakra-ui/react';
 
-import type { GroupedArticleData } from '@nlpssa-app-types/common/main';
-import { BaseLink } from 'client/common/components';
+import type { AbstractPageData, InitialHomePageData } from '@nlpssa-app-types/common/main';
+import { StockArticleDataGroup } from 'client/common/components';
 import { BasePage } from 'client/common/layouts';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
-import { ArticleDataList } from 'client/home/components';
 import { fetchArticleData } from 'client/home/store/actions';
 
-type PageData = GroupedArticleData[] | null;
-
-interface InitialPageData {
-    data: PageData;
-}
-
-function StockArticleDataGroup({ quoteStockSymbol, articleData }) {
-    return (
-        <Box>
-            <Heading backgroundColor="teal" color="white" padding="0.5rem 1rem">
-                <Box as="span" fontWeight="700">
-                    {quoteStockSymbol}
-                </Box>
-            </Heading>
-            <ArticleDataList articleData={articleData} />
-        </Box>
-    );
-}
-
-function App({ initialPageData }: { initialPageData: InitialPageData }): React.ReactElement {
+function HomeApp({ initialPageData }: { initialPageData: InitialHomePageData }): React.ReactElement {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
 
-    const pageData = (initialPageData.data || state.pageData) as PageData;
+    const pageData = (initialPageData.data || state.pageData) as AbstractPageData['data'];
 
     useEffect(() => {
         if (state.pageData == null) {
@@ -39,16 +19,10 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
         }
     });
 
-    console.log('home - App', { initialPageData, pageData });
+    console.log('home - HomeApp', { initialPageData, state, pageData });
     return (
         <BasePage
-            headingChildren={
-                <>
-                    <Spacer />
-                    <BaseLink href="/">Home</BaseLink>
-                    <Button>I&nbsp;AM BUTTON</Button>
-                </>
-            }
+            headingChildren={<Button>I&nbsp;AM BUTTON</Button>}
             pageTitle={
                 <span>
                     <b>Home</b>: Article Data
@@ -88,4 +62,4 @@ function App({ initialPageData }: { initialPageData: InitialPageData }): React.R
     );
 }
 
-export default App;
+export default HomeApp;

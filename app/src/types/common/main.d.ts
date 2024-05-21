@@ -73,6 +73,14 @@ type GroupedArticleData = {
     articleData: ArticleDataEntry[];
 };
 
+type AbstractPageData = {
+    data: GroupedArticleData[] | null;
+};
+
+type InitialArticleDataBySlugPageData = {
+    data: GroupedArticleData | null;
+};
+
 type InitialHomePageData = {
-    data: GroupedArticleData[];
+    data: GroupedArticleData[] | null;
 };

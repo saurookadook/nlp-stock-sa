@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-import { App } from 'client/login/components';
+import { LoginApp } from 'client/login/components';
 
-describe('login - App component', () => {
+describe('login - LoginApp component', () => {
     it('renders correctly', () => {
-        render(<App />);
+        render(<LoginApp />);
 
         expect(screen.getByText('Login', { exact: false })).toBeVisible();
     });

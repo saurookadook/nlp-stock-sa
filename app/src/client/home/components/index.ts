@@ -1,4 +1,3 @@
-import App from 'client/home/components/App';
-import ArticleDataList from 'client/home/components/ArticleDataList';
+import HomeApp from 'client/home/components/HomeApp';
 
-export { App, ArticleDataList };
+export { HomeApp };

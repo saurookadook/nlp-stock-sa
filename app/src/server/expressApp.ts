@@ -4,11 +4,12 @@ import cors from 'cors';
 import express, { RequestHandler } from 'express';
 import { engine } from 'express-handlebars';
 
+import articleData from './article-data';
 import homeRouter from './home';
 import loginRouter from './login';
 
 const __dirname = path.resolve();
-console.log('\n'.padStart(220, '='), `dirname: ${__dirname}`, '\n'.padEnd(220, '='));
+// console.log('\n'.padStart(220, '='), `dirname: ${__dirname}`, '\n'.padEnd(220, '='));
 
 const expressApp = express();
 
@@ -57,6 +58,7 @@ if (process.env.ENV !== 'production') {
     expressApp.use('/dist', express.static(path.join(__dirname, 'dist')));
 }
 
+expressApp.use('/app/article-data', articleData);
 expressApp.use('/app/login', loginRouter);
 expressApp.use('/app/', homeRouter);
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Heading, useColorMode } from '@chakra-ui/react';
+import { Box, Button, Heading, Spacer, useColorMode } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
 import { NavHeader } from 'client/common/components';
@@ -36,6 +36,7 @@ function BasePage(
     return (
         <Box {...props}>
             <NavHeader>
+                <Spacer />
                 {headingChildren}
                 <Button colorScheme="teal" marginLeft="1rem" onClick={annoyingClickHandler}>
                     Want&nbsp;free&nbsp;Money? Click&nbsp;Me!

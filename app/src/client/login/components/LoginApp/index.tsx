@@ -5,8 +5,8 @@ import type { AmbiguousObject } from '@nlpssa-app-types/common/main';
 import { BasePage } from 'client/common/layouts';
 import { AppleLinkBox, GitHubLinkBox, GoogleLinkBox, MicrosoftLinkBox } from 'client/login/components';
 
-function App({ initialPageData }: { initialPageData?: Record<string, unknown> | null }) {
-    console.log('login - App', { initialPageData });
+function LoginApp({ initialPageData }: { initialPageData?: Record<string, unknown> | null }) {
+    console.log('login - LoginApp', { initialPageData });
 
     const [loginData, setLoginData] = useState({} as AmbiguousObject);
 
@@ -77,4 +77,4 @@ function App({ initialPageData }: { initialPageData?: Record<string, unknown> | 
     );
 }
 
-export default App;
+export default LoginApp;
