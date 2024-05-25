@@ -2,7 +2,6 @@ import arrow
 import gzip
 import json
 import logging
-import os
 from sqlalchemy import select
 from uuid import UUID
 
@@ -17,22 +16,6 @@ from models.user import UserDB
 
 configure_logging(app_name="stash_db")
 logger = logging.getLogger(__file__)
-raw_window_width, _ = os.get_terminal_size()
-window_width = (
-    raw_window_width - 80
-)  # to account for characters added by logging handlers
-
-
-def print_section_start(entity_name: str):
-    logger.info(f" 'Getting `{entity_name}` records...' ".center(window_width, "="))
-
-
-def print_section_end(entity_name: str, entity_count: int):
-    logger.info(
-        f" 'Done retrieving `{entity_name}` records! Total: {entity_count}' ".center(
-            window_width, "="
-        )
-    )
 
 
 def stash_db():
@@ -44,39 +27,39 @@ def stash_db():
         "users": [],
     }
 
-    print_section_start("article_data")
+    logger.log_info_section_start("article_data")
     article_data_records = db_session.execute(select(ArticleDataDB)).scalars().all()
     # TODO: is there something else from SQLAlchemy that would be better than __dict__
     data["article_data"] = [ad.__dict__ for ad in article_data_records]
-    print_section_end("article_data", len(data["article_data"]))
+    logger.log_info_section_end("article_data", len(data["article_data"]))
 
-    print_section_start("analysis_view")
+    logger.log_info_section_start("analysis_view")
     analysis_view_records = db_session.execute(select(AnalysisViewDB)).scalars().all()
     data["analysis_view"] = [ad.__dict__ for ad in analysis_view_records]
-    print_section_end("analysis_view", len(data["analysis_view"]))
+    logger.log_info_section_end("analysis_view", len(data["analysis_view"]))
 
-    print_section_start("sentiment_analysis")
+    logger.log_info_section_start("sentiment_analysis")
     sentiment_analysis_records = (
         db_session.execute(select(SentimentAnalysisDB)).scalars().all()
     )
     data["sentiment_analyses"] = [ad.__dict__ for ad in sentiment_analysis_records]
-    print_section_end("sentiment_analysis", len(data["sentiment_analyses"]))
+    logger.log_info_section_end("sentiment_analysis", len(data["sentiment_analyses"]))
 
-    print_section_start("stock")
+    logger.log_info_section_start("stock")
     stock_records = db_session.execute(select(StockDB)).scalars().all()
     data["stocks"] = [ad.__dict__ for ad in stock_records]
-    print_section_end("stock", len(data["stocks"]))
+    logger.log_info_section_end("stock", len(data["stocks"]))
 
-    print_section_start("user")
+    logger.log_info_section_start("user")
     user_records = db_session.execute(select(UserDB)).scalars().all()
     data["users"] = [ad.__dict__ for ad in user_records]
-    print_section_end("user", len(data["users"]))
+    logger.log_info_section_end("user", len(data["users"]))
 
     db_session.close()
 
     enum_types_tuple = SentimentEnum
 
-    logger.info(" 'Making the data serializable...'  ".center(window_width, "="))
+    logger.log_info_centered(" 'Making the data serializable...'  ")
     for key in data:
         for x in data.get(key):
             try:

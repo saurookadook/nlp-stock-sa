@@ -32,7 +32,7 @@ class ExtendedLogger(logging.getLoggerClass()):
         self, entity_name: str, entity_count: int, *args, **kwargs
     ):
         self.info(
-            f" 'Done retrieving `{entity_name}` records! Total: {entity_count}' ".center(
+            f" 'Done with `{entity_name}` records! Total: {entity_count}' ".center(
                 self.window_width, "="
             ),
             *args,

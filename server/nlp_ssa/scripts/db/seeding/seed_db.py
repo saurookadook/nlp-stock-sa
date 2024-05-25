@@ -11,8 +11,8 @@ from rich import inspect
 from db import db_session
 from models.analysis_view import AnalysisViewDB
 from models.sentiment_analysis import SentimentAnalysisDB
-from models.stock import StockDB
-from models.user import UserDB
+from models.stock import StockDB, StockFacade
+from models.user import UserDB, UserFacade
 
 window_width, _ = os.get_terminal_size()
 
@@ -56,15 +56,14 @@ def seed_db():
     # local_db_session.flush()
 
     print(" Seeding users... ".center(window_width, "-"))
+    user_facade = UserFacade(db_session=db_session)
     for user in users:
-        insert_or_update(
-            db_session=local_db_session,
-            DBModel=UserDB,
-            col_values=dict(
+        user_facade.create_or_update(
+            payload=dict(
                 **user,
                 created_at=arrow.utcnow(),
                 updated_at=arrow.utcnow(),
-            ),
+            )
         )
         local_db_session.commit()
 
@@ -72,6 +71,8 @@ def seed_db():
     with open(
         "nlp_ssa/scripts/db/seeding/seed_data/mixed_seed_data.csv", newline=""
     ) as stocks_csv:
+        stock_facade = StockFacade(db_session=db_session)
+
         dict_reader = csv.DictReader(stocks_csv)
         for row in dict_reader:
             try:
@@ -88,16 +89,15 @@ def seed_db():
                     id=uuid4(),
                     quote_stock_symbol=row["QuoteStockSymbol"],
                     full_stock_symbol=row["FullStockSymbol"],
+                    exchange_name=row["ExchangeName"],
                     created_at=arrow.get(row["CreatedAt"]).to("utc"),
                 )
 
-                insert_or_update(
-                    db_session=local_db_session,
-                    DBModel=StockDB,
-                    col_values=dict(
+                stock_facade.create_or_update(
+                    payload=dict(
                         **stock_dict,
                         updated_at=arrow.utcnow(),
-                    ),
+                    )
                 )
                 local_db_session.commit()
 
