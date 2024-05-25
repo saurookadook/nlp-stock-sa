@@ -8,7 +8,7 @@ const router = express.Router();
 router.use(manifestMiddleware);
 
 router.use(
-    '/{stockSlug}',
+    '/article-data/{stockSlug}',
     asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
         const { stockSlug } = req.params;
 
@@ -46,11 +46,13 @@ router.use(
 );
 
 router.use(
+    '/article-data',
     asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
         let initialPageData = {};
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/article-data');
+            // const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/article-data');
+            const pageDataResponse = await global.fetch('/api/article-data');
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[article-data route] - caught exception: ${e}`);
