@@ -6,6 +6,43 @@ from config import env_config
 root_logger = logging.getLogger()
 
 
+class ExtendedLogger(logging.getLoggerClass()):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        import os
+
+        raw_window_width, _ = os.get_terminal_size()
+        self.raw_window_width = raw_window_width
+        self.window_width = (
+            raw_window_width - 80
+        )  # to account for characters added by logging handlers
+
+    def log_info_centered(self, msg, *args, **kwargs):
+        self.info(msg.center(self.window_width, "-"), *args, **kwargs)
+
+    def log_info_section_start(self, entity_name: str, *args, **kwargs):
+        self.info(
+            f" 'Getting `{entity_name}` records...' ".center(self.window_width, "="),
+            *args,
+            **kwargs,
+        )
+
+    def log_info_section_end(
+        self, entity_name: str, entity_count: int, *args, **kwargs
+    ):
+        self.info(
+            f" 'Done retrieving `{entity_name}` records! Total: {entity_count}' ".center(
+                self.window_width, "="
+            ),
+            *args,
+            **kwargs,
+        )
+
+
+logging.setLoggerClass(ExtendedLogger)
+
+
 def is_prod():
     return env_config["env"].lower() == "prod"
 
