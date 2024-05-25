@@ -1,8 +1,9 @@
-UserID,FullStockSymbol,QuoteStockSymbol,Score,Sentiment,Output,SourceGroupID,CreatedAt,UpdatedAt
-863cc20f-758a-4de8-ab92-04f1909a1014,Tesla Inc,TSLA,0.762,Positive,"{'neg': 0.0, 'neu': 0.238, 'pos': 0.762, 'compound': 0.6369}",b9ce1c57-60de-4a93-b02e-9e0465d2cc4e,2024-04-15,2024-04-15
-863cc20f-758a-4de8-ab92-04f1909a1014,Nintendo LTD ORD,NTDOF,0.901,Positive,"{'neg': 0.0, 'neu': 0.238, 'pos': 0.901, 'compound': 0.6369}",50cd9c0a-f9ff-4f93-8150-be42cbdfcb64,2024-04-15,2024-04-15
-e3777f01-48f2-43a5-8448-a7f6aecb1b34,"Verb Technology Company, Inc. ",VERB,0.8393,Compound,"{'neg': 0.0, 'neu': 0.417, 'pos': 0.583, 'compound': 0.8393}",23c48dcd-6c9c-4ba9-ac2d-4c9e42ad1dc9,2024-04-15,2024-04-15
-e3777f01-48f2-43a5-8448-a7f6aecb1b34,Rent the Runway Inc.,RENT,0.98,Negative ,"{'neg': 0.98, 'neu': 0.417, 'pos': 0.583, 'compound': 0.9393}",62a33f32-beff-457a-88ed-7647285bc9a8,2024-04-15,2024-04-15
-e3777f01-48f2-43a5-8448-a7f6aecb1b34,Data Dog Inc,DDOG,0.917,Neutral ,"{'neg': 0.8, 'neu': 0.917, 'pos': 0.583, 'compound': 0.1393}",3adf91af-dfa6-4473-a2fd-e963e1fc4548,2024-04-15,2024-04-15
-e3777f01-48f2-43a5-8448-a7f6aecb1b34,Kosmos Energy ltd,KOS,0.917,Neutral ,"{'neg': 0.6, 'neu': 0.917, 'pos': 0.0, 'compound': 0.13}",515d9323-f8a8-403f-81a8-8cf3230b6e51,2024-04-15,2024-04-15
-e3777f01-48f2-43a5-8448-a7f6aecb1b34,Indonesia Energy Corporation ltd,INDO,0.999,Positive,"{'neg': 0.6, 'neu': 0.917, 'pos': 0.999, 'compound': 0.13}",633799a1-e6ed-46fa-b3b3-5fe3608e9812,2024-04-15,2024-04-15
+UserID,FullStockSymbol,QuoteStockSymbol,ExchangeName,Score,Sentiment,Output,SourceGroupID,CreatedAt,UpdatedAt
+863cc20f-758a-4de8-ab92-04f1909a1014,Tesla Inc,TSLA,NASDAQ Stock Exchange,0.762,Positive,"{'neg': 0.0, 'neu': 0.238, 'pos': 0.762, 'compound': 0.6369}",b9ce1c57-60de-4a93-b02e-9e0465d2cc4e,2024-04-15,2024-04-15
+863cc20f-758a-4de8-ab92-04f1909a1014,Nintendo LTD ORD,NTDOF,OTC Pink Limited,0.901,Positive,"{'neg': 0.0, 'neu': 0.238, 'pos': 0.901, 'compound': 0.6369}",50cd9c0a-f9ff-4f93-8150-be42cbdfcb64,2024-04-15,2024-04-15
+863cc20f-758a-4de8-ab92-04f1909a1014,Advanced Micro Devices Inc Com,AMD,NASDAQ Stock Exchange,0.901,Positive,"{'neg': 0.0, 'neu': 0.238, 'pos': 0.901, 'compound': 0.6369}",50cd9c0a-f9ff-4f93-8150-be42cbdfcb64,2024-04-15,2024-04-15
+e3777f01-48f2-43a5-8448-a7f6aecb1b34,"Verb Technology Company, Inc.",VERB,NASDAQ Stock Exchange,0.8393,Compound,"{'neg': 0.0, 'neu': 0.417, 'pos': 0.583, 'compound': 0.8393}",23c48dcd-6c9c-4ba9-ac2d-4c9e42ad1dc9,2024-04-15,2024-04-15
+e3777f01-48f2-43a5-8448-a7f6aecb1b34,Rent the Runway Inc.,RENT,NASDAQ Stock Exchange,0.98,Negative ,"{'neg': 0.98, 'neu': 0.417, 'pos': 0.583, 'compound': 0.9393}",62a33f32-beff-457a-88ed-7647285bc9a8,2024-04-15,2024-04-15
+e3777f01-48f2-43a5-8448-a7f6aecb1b34,Data Dog Inc,DDOG,NASDAQ Stock Exchange,0.917,Neutral ,"{'neg': 0.8, 'neu': 0.917, 'pos': 0.583, 'compound': 0.1393}",3adf91af-dfa6-4473-a2fd-e963e1fc4548,2024-04-15,2024-04-15
+e3777f01-48f2-43a5-8448-a7f6aecb1b34,Kosmos Energy ltd,KOS,New York Stock Exchange,0.917,Neutral ,"{'neg': 0.6, 'neu': 0.917, 'pos': 0.0, 'compound': 0.13}",515d9323-f8a8-403f-81a8-8cf3230b6e51,2024-04-15,2024-04-15
+e3777f01-48f2-43a5-8448-a7f6aecb1b34,Indonesia Energy Corporation ltd,INDO,New York Stock Exchange,0.999,Positive,"{'neg': 0.6, 'neu': 0.917, 'pos': 0.999, 'compound': 0.13}",633799a1-e6ed-46fa-b3b3-5fe3608e9812,2024-04-15,2024-04-15
