@@ -55,7 +55,7 @@ def seed_db():
     # local_db_session.execute(delete(UserDB))
     # local_db_session.flush()
 
-    print(" Seeding stocks from stocks_seed_data.csv... ".center(window_width, "-"))
+    print(" Seeding users... ".center(window_width, "-"))
     for user in users:
         insert_or_update(
             db_session=local_db_session,
@@ -69,7 +69,9 @@ def seed_db():
         local_db_session.commit()
 
     print(" Seeding stocks from mixed_seed_data.csv... ".center(window_width, "-"))
-    with open("nlp_ssa/seed_data/mixed_seed_data.csv", newline="") as stocks_csv:
+    with open(
+        "nlp_ssa/scripts/db/seeding/seed_data/mixed_seed_data.csv", newline=""
+    ) as stocks_csv:
         dict_reader = csv.DictReader(stocks_csv)
         for row in dict_reader:
             try:
