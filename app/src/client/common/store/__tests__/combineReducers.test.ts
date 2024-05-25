@@ -3,6 +3,7 @@ import { combineReducers } from 'client/common/store/utils';
 const mockActions = {
     ADD_FLASH_MESSAGE: 'ADD_FLASH_MESSAGE',
     INIT_PAGE: 'INIT_PAGE',
+    SET_IT_ON_FIRE: 'SET_IT_ON_FIRE',
     UPDATE_USER_IS_BLOCKED: 'UPDATE_USER_IS_BLOCKED',
 };
 
@@ -164,6 +165,43 @@ describe('combineReducers utility', () => {
                 };
 
                 expect(stateAfterInitPage).toEqual(expectedUpdatedState);
+            });
+        });
+
+        describe('handles problems as expected', () => {
+            it('raises error for non-function reducers', () => {
+                expect(() => {
+                    const [combinedWoopsReducer, combinedWoopsState] = combineReducers({
+                        woops: ['enchantment?', { excitedGreeting: 'enchantment!' }],
+                    });
+                }).toThrow();
+            });
+
+            it('logs error and returns existing state slice if error is encountered in reducer', () => {
+                const mockProblematicReducer = (stateSlice = {}, action) => {
+                    switch (action.type) {
+                        case mockActions.SET_IT_ON_FIRE:
+                            return JSON.parse('{"lolz": "woooooooppppppppsssiiiiieeeeeeeeeeez",');
+                        default:
+                            return stateSlice;
+                    }
+                };
+
+                const [combinedWoopsReducer, combinedWoopsState] = combineReducers({
+                    woops: [mockProblematicReducer, { excitedGreeting: 'enchantment!', query: 'enchantment?' }],
+                });
+                const expectedWoopsState = {
+                    woops: { excitedGreeting: 'enchantment!', query: 'enchantment?' },
+                };
+
+                expect(combinedWoopsState).toEqual(expectedWoopsState);
+
+                const uhOhBrokenWoopsState = combinedWoopsReducer(combinedWoopsState, {
+                    type: mockActions.SET_IT_ON_FIRE,
+                    payload: { worriedGreeting: 'enchantment...?' },
+                });
+
+                expect(uhOhBrokenWoopsState).toEqual(combinedWoopsState);
             });
         });
     });
