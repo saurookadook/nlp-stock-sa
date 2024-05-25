@@ -1,5 +1,21 @@
 import { SET_ARTICLE_DATA } from 'client/common/constants/actionTypes';
 
+export const fetchAllArticleData = async ({ dispatch }) => {
+    try {
+        const apiResponse = await fetch(`/api/article-data`);
+        const apiData = await apiResponse.json();
+
+        if (apiData.detail) {
+            throw new Error(apiData.detail);
+        }
+
+        console.log('fetchAllArticleData - apiData: ', { apiData });
+        return setArticleData({ dispatch, articleData: apiData.data });
+    } catch (e) {
+        console.warn('[data-explorers.article-data : fetchAllArticleData] - caught exception', e);
+    }
+};
+
 export const fetchArticleDataByStockSlug = async ({ dispatch, stockSlug }) => {
     try {
         // http://localhost:3000/api/article-data
@@ -13,7 +29,7 @@ export const fetchArticleDataByStockSlug = async ({ dispatch, stockSlug }) => {
         console.log('fetchArticleDataByStockSlug - apiData: ', { apiData });
         return setArticleData({ dispatch, articleData: apiData.data });
     } catch (e) {
-        console.warn('[home fetchArticleDataByStockSlug] - caught exception', e);
+        console.warn('[data-explorers.article-data : fetchArticleDataByStockSlug] - caught exception', e);
     }
 };
 
