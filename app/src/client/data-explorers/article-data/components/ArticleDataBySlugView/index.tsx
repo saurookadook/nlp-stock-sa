@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react';
 
 import type { InitialArticleDataBySlugPageData } from '@nlpssa-app-types/common/main';
@@ -8,9 +8,10 @@ import { BaseStateContext, BaseDispatchContext } from 'client/common/store/conte
 import { fetchArticleDataByStockSlug } from 'client/data-explorers/store/actions';
 
 function ArticleDataBySlugView() {
-    const location = useLocation();
+    // const location = useLocation();
+    const params = useParams();
     // TODO: maybe use `useMemo`?
-    const stockSlug = location.pathname.replace(/^\/\S+\/(?=[^\/]+$)/gim, '');
+    // const stockSlug = location.pathname.replace(/^\/\S+\/(?=[^\/]+$)/gim, '');
 
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
@@ -19,7 +20,7 @@ function ArticleDataBySlugView() {
 
     useEffect(() => {
         if (state.pageData == null) {
-            fetchArticleDataByStockSlug({ dispatch, stockSlug });
+            fetchArticleDataByStockSlug({ dispatch, stockSlug: params.stockSlug });
         }
     });
 
