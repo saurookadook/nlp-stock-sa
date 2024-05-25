@@ -2,35 +2,31 @@ import React, { useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react';
 
-import type { InitialArticleDataBySlugPageData } from '@nlpssa-app-types/common/main';
+import { GroupedArticleData } from '@nlpssa-app-types/common/main';
 import { StockArticleDataGroup } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchArticleDataByStockSlug } from 'client/data-explorers/store/actions';
 
 function ArticleDataBySlugView() {
-    // const location = useLocation();
-    const params = useParams();
-    // TODO: maybe use `useMemo`?
-    // const stockSlug = location.pathname.replace(/^\/\S+\/(?=[^\/]+$)/gim, '');
-
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
+    const params = useParams();
 
-    const pageData = state.pageData as InitialArticleDataBySlugPageData['data'];
+    const { articleDataBySlug } = state as { articleDataBySlug: GroupedArticleData };
 
     useEffect(() => {
-        if (state.pageData == null) {
+        if (articleDataBySlug == null) {
             fetchArticleDataByStockSlug({ dispatch, stockSlug: params.stockSlug });
         }
-    });
+    }, [params.stockSlug]);
 
-    console.log('data-explorers.article-data - ArticleDataBySlugView', { state, pageData });
+    console.log('data-explorers.article-data - ArticleDataBySlugView', { state });
     return (
         <Flex className="article-data-list-wrapper" alignSelf="stretch" flexDirection="column">
-            {pageData != null ? (
+            {articleDataBySlug != null ? (
                 <StockArticleDataGroup
-                    quoteStockSymbol={pageData.quoteStockSymbol}
-                    articleData={pageData.articleData}
+                    quoteStockSymbol={articleDataBySlug.quoteStockSymbol}
+                    articleData={articleDataBySlug.articleData}
                 />
             ) : (
                 'No data :['
