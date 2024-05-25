@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
 import type { InitialArticleDataBySlugPageData } from '@nlpssa-app-types/common/main';
-import { ArticleDataApp } from 'client/article-data/components';
-import AppStateProvider from 'client/article-data/store/AppStateProvider';
+import { ArticleDataApp } from 'client/data-explorers/article-data/components';
+import AppStateProvider from 'client/data-explorers/store/AppStateProvider';
 // import reportWebVitals from 'client/reportWebVitals';
 
 // type ArticlePageData = InitialArticleDataBySlugPageData & {

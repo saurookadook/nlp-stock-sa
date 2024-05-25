@@ -5,7 +5,7 @@ import type { InitialArticleDataBySlugPageData } from '@nlpssa-app-types/common/
 import { StockArticleDataGroup } from 'client/common/components';
 import { BasePage } from 'client/common/layouts';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
-import { fetchArticleDataByStockSlug } from 'client/article-data/store/actions';
+import { fetchArticleDataByStockSlug } from 'client/data-explorers/store/actions';
 
 function ArticleDataApp({
     initialPageData,

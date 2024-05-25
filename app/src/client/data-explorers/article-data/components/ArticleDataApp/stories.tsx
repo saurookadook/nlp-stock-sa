@@ -2,8 +2,8 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { getStoryArticleDataBySlug } from 'client/_story-data/articleDataBySlug';
-import { ArticleDataApp } from 'client/article-data/components';
-import { AppStateProvider } from 'client/article-data/store';
+import { ArticleDataApp } from 'client/data-explorers/article-data/components';
+import { AppStateProvider } from 'client/data-explorers/store';
 
 const meta = {
     title: 'ArticleData/ArticleDataApp',

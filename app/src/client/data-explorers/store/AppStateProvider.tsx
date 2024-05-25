@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react';
 
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
-import combinedReducer from 'client/article-data/store/reducer';
+import combinedReducer from 'client/data-explorers/store/reducer';
 
 // TODO: fix type - React.Provider<typeof StateContext>
 function AppStateProvider({ children, initialState }: { children: React.ReactElement; initialState?: any }): any {

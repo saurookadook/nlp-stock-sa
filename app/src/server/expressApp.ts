@@ -4,7 +4,7 @@ import cors from 'cors';
 import express, { RequestHandler } from 'express';
 import { engine } from 'express-handlebars';
 
-import articleData from './article-data';
+import articleData from './data-explorers';
 import homeRouter from './home';
 import loginRouter from './login';
 
