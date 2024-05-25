@@ -133,7 +133,15 @@ seedDatabase() {
     isDbReady
 
     if [[ ! $(dbExists) ]]; then
-        docker compose run --rm server python nlp_ssa/scripts/db/seed_db.py
+        docker compose run --rm server python nlp_ssa/scripts/db/seeding/seed_db.py
+    fi
+}
+
+seedStocks() {
+    isDbReady
+
+    if [[ ! $(dbExists) ]]; then
+        docker compose run --rm server python nlp_ssa/scripts/db/seeding/seed_stocks.py
     fi
 }
 
@@ -214,12 +222,21 @@ scriptController() {
             echo ""
             createTestDatabase
         elif [ "$2" == "seed" ]; then
-            echo ""
-            echo "======================================================================================"
-            echo "Seeding database..."
-            echo "======================================================================================"
-            echo ""
-            seedDatabase
+            if [ "$3" == "stocks" ]; then
+                echo ""
+                echo "======================================================================================"
+                echo "Seeding stocks data..."
+                echo "======================================================================================"
+                echo ""
+                seedStocks
+            else
+                echo ""
+                echo "======================================================================================"
+                echo "Seeding database..."
+                echo "======================================================================================"
+                echo ""
+                seedDatabase
+            fi
         fi
     elif [ "$1" == "frontend" ]; then
         if [ "$2" == "rebuild" ]; then
