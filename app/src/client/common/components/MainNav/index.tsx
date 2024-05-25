@@ -9,6 +9,7 @@ import {
     Link,
 } from '@chakra-ui/react';
 
+// TODO: move this to `constants` shared between `client` and `server`
 const basePathPrefix = '/app';
 
 function MainNav({ isOpen, onClose }) {

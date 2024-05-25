@@ -8,8 +8,122 @@ const router = express.Router();
 router.use(manifestMiddleware);
 
 router.use(
+    asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
+        console.log(' data-explorers handler [generic] '.padStart(120, '=').padEnd(240, '='));
+        console.log({ url: req.url, params: req.params });
+
+        if (/^\/\S+/im.test(req.url)) {
+            return next();
+        }
+
+        let initialPageData = {};
+        try {
+            // TODO: add some user-specific thing to request?
+            // const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/article-data');
+            const pageDataResponse = await global.fetch('/api/article-data');
+            initialPageData = await pageDataResponse.json();
+        } catch (e) {
+            console.warn(`[data-explorers route] - caught exception: ${e}`);
+        }
+
+        console.log(
+            '\n'.padStart(220, '='),
+            'data-explorers router: ',
+            { localsManifest: res.locals.manifest },
+            '\n'.padEnd(220, '='),
+        );
+
+        try {
+            return res.render('index', {
+                layout: 'index',
+                initialPageData: JSON.stringify(initialPageData),
+                ...res.locals.manifest['common'],
+                ...res.locals.manifest['dataExplorers'],
+            });
+        } catch (e) {
+            return next(e);
+        }
+    }),
+);
+
+router.use(
+    '/stocks/{stockSlug}',
+    asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
+        console.log(' data-explorers handler [single stock view] '.padStart(120, '=').padEnd(240, '='));
+        console.log({ url: req.url, params: req.params });
+        const { stockSlug } = req.params;
+
+        let initialPageData = {};
+        try {
+            // TODO: add some user-specific thing to request?
+            // const pageDataResponse = await global.fetch(`https://nlp-ssa.dev/api/stocks/${stockSlug}`);
+            const pageDataResponse = await global.fetch(`/api/stocks/${stockSlug}`);
+            initialPageData = await pageDataResponse.json();
+        } catch (e) {
+            console.warn(`[data-explorers - single stock view] - caught exception: ${e}`);
+        }
+
+        console.log(
+            '\n'.padStart(220, '='),
+            'data-explorers - single stock view router: ',
+            { localsManifest: res.locals.manifest },
+            '\n'.padEnd(220, '='),
+        );
+
+        try {
+            return res.render('index', {
+                layout: 'index',
+                initialPageData: JSON.stringify(initialPageData),
+                ...res.locals.manifest['common'],
+                ...res.locals.manifest['dataExplorers'],
+            });
+        } catch (e) {
+            return next(e);
+        }
+    }),
+);
+
+router.use(
+    '/stocks',
+    asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
+        console.log(' data-explorers handler [stocks list] '.padStart(120, '=').padEnd(240, '='));
+        console.log({ url: req.url, params: req.params });
+
+        let initialPageData = {};
+        try {
+            // TODO: add some user-specific thing to request?
+            // const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/stocks');
+            const pageDataResponse = await global.fetch('/api/stocks');
+            initialPageData = await pageDataResponse.json();
+        } catch (e) {
+            console.warn(`[data-explorers - stocks list] - caught exception: ${e}`);
+        }
+
+        console.log(
+            '\n'.padStart(220, '='),
+            'data-explorers - stocks list router: ',
+            { localsManifest: res.locals.manifest },
+            '\n'.padEnd(220, '='),
+        );
+
+        try {
+            return res.render('index', {
+                layout: 'index',
+                initialPageData: JSON.stringify(initialPageData),
+                ...res.locals.manifest['common'],
+                ...res.locals.manifest['dataExplorers'],
+            });
+        } catch (e) {
+            return next(e);
+        }
+    }),
+);
+
+router.use(
     '/article-data/{stockSlug}',
     asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
+        console.log(' data-explorers handler [article-data by stockSlug] '.padStart(120, '=').padEnd(240, '='));
+        console.log({ url: req.url, params: req.params });
         const { stockSlug } = req.params;
 
         let initialPageData = {};
@@ -19,12 +133,12 @@ router.use(
             const pageDataResponse = await global.fetch(`/api/article-data/${stockSlug}`);
             initialPageData = await pageDataResponse.json();
         } catch (e) {
-            console.warn(`[article-data route] - caught exception: ${e}`);
+            console.warn(`[article-data by stock route] - caught exception: ${e}`);
         }
 
         // console.log(
         //     '\n'.padStart(220, '='),
-        //     'article-data router: ',
+        //     'article-data by stock router: ',
         //     { localsManifest: res.locals.manifest },
         //     '\n'.padEnd(220, '='),
         // );
@@ -37,7 +151,7 @@ router.use(
                     initialPageData,
                 }),
                 ...res.locals.manifest['common'],
-                ...res.locals.manifest['articleData'],
+                ...res.locals.manifest['dataExplorers'],
             });
         } catch (e) {
             return next(e);
@@ -48,6 +162,8 @@ router.use(
 router.use(
     '/article-data',
     asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
+        console.log(' data-explorers handler [article-data list] '.padStart(120, '=').padEnd(240, '='));
+        console.log({ url: req.url, params: req.params });
         let initialPageData = {};
         try {
             // TODO: add some user-specific thing to request?
@@ -70,7 +186,7 @@ router.use(
                 layout: 'index',
                 initialPageData: JSON.stringify(initialPageData),
                 ...res.locals.manifest['common'],
-                ...res.locals.manifest['articleData'],
+                ...res.locals.manifest['dataExplorers'],
             });
         } catch (e) {
             return next(e);
