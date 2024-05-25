@@ -77,8 +77,12 @@ type AbstractPageData = {
     data: GroupedArticleData | GroupedArticleData[] | null;
 };
 
+type ArticleDataBySlugViewStore = {
+    articleDataBySlug: GroupedArticleData;
+};
+
 type ArticleDataViewStore = {
-    pageData: GroupedArticleData[];
+    articleData: GroupedArticleData[];
 };
 
 type InitialArticleDataBySlugPageData = {

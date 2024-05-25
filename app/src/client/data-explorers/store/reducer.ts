@@ -2,15 +2,12 @@ import type { GenericStateSliceReducer, GroupedArticleData } from '@nlpssa-app-t
 import { SET_ARTICLE_DATA } from 'client/common/constants/actionTypes';
 import { combineReducers } from 'client/common/store/utils';
 
-type PageData = GroupedArticleData | GroupedArticleData[];
-
-interface PageDataReducerAction {
+interface ArticleDataBySlugPageDataReducerAction {
     type: string;
-    payload: PageData;
+    payload: GroupedArticleData;
 }
 
-// TODO: maybe this should be separated by each data entity?
-const pageData: GenericStateSliceReducer<PageData | null, PageDataReducerAction> = [
+const articleDataBySlug: GenericStateSliceReducer<GroupedArticleData | null, ArticleDataBySlugPageDataReducerAction> = [
     (stateSlice, action) => {
         switch (action.type) {
             case SET_ARTICLE_DATA:
@@ -22,4 +19,21 @@ const pageData: GenericStateSliceReducer<PageData | null, PageDataReducerAction>
     null,
 ];
 
-export default combineReducers({ pageData });
+interface ArticleDataPageDataReducerAction {
+    type: string;
+    payload: GroupedArticleData[];
+}
+
+const articleData: GenericStateSliceReducer<GroupedArticleData[] | null, ArticleDataPageDataReducerAction> = [
+    (stateSlice, action) => {
+        switch (action.type) {
+            case SET_ARTICLE_DATA:
+                return action.payload;
+            default:
+                return stateSlice;
+        }
+    },
+    null,
+];
+
+export default combineReducers({ articleDataBySlug, articleData });
