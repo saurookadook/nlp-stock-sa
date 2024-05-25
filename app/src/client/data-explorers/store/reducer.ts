@@ -1,5 +1,5 @@
 import type { GenericStateSliceReducer, GroupedArticleData } from '@nlpssa-app-types/common/main';
-import { SET_ARTICLE_DATA } from 'client/common/constants/actionTypes';
+import { SET_ARTICLE_DATA_BY_SLUG, SET_ARTICLE_DATA } from 'client/common/constants/actionTypes';
 import { combineReducers } from 'client/common/store/utils';
 
 interface ArticleDataBySlugPageDataReducerAction {
@@ -10,7 +10,7 @@ interface ArticleDataBySlugPageDataReducerAction {
 const articleDataBySlug: GenericStateSliceReducer<GroupedArticleData | null, ArticleDataBySlugPageDataReducerAction> = [
     (stateSlice, action) => {
         switch (action.type) {
-            case SET_ARTICLE_DATA:
+            case SET_ARTICLE_DATA_BY_SLUG:
                 return action.payload;
             default:
                 return stateSlice;
