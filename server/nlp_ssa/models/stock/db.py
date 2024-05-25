@@ -19,3 +19,4 @@ class StockDB(Base, TimestampsMixin):
     full_stock_symbol: Mapped[str] = mapped_column(
         String(length=255), nullable=False, unique=True
     )
+    exchange_name: Mapped[str] = mapped_column(String(255), nullable=True, unique=False)
