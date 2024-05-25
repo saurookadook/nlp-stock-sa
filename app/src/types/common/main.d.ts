@@ -21,7 +21,7 @@ declare global {
  * Generic State Store Types
  **********************************************************************/
 type StateSlice = {
-    [key: string]: AmbiguousObject;
+    [key: string]: AmbiguousObject | AmbiguousObject[];
 };
 
 interface CombinedState extends StateSlice {
@@ -74,7 +74,11 @@ type GroupedArticleData = {
 };
 
 type AbstractPageData = {
-    data: GroupedArticleData[] | null;
+    data: GroupedArticleData | GroupedArticleData[] | null;
+};
+
+type ArticleDataViewStore = {
+    pageData: GroupedArticleData[];
 };
 
 type InitialArticleDataBySlugPageData = {
