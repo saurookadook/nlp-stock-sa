@@ -12,7 +12,10 @@ class ExtendedLogger(logging.getLoggerClass()):
 
         import os
 
-        raw_window_width, _ = os.get_terminal_size()
+        try:
+            raw_window_width, _ = os.get_terminal_size()
+        except OSError:
+            raw_window_width = 200
         self.raw_window_width = raw_window_width
         self.window_width = (
             raw_window_width - 80
