@@ -23,10 +23,13 @@ function MainNav({ isOpen, onClose }) {
                         <Link href={basePathPrefix}>Home</Link>
                     </nav>
                     <nav>
-                        <Link href={`${basePathPrefix}/stocks`}>Stocks</Link>
+                        <Link href={`${basePathPrefix}/data-explorers`}>Data Explorers</Link>
                     </nav>
                     <nav>
-                        <Link href={`${basePathPrefix}/article-data-explorer`}>Article Data Explorer</Link>
+                        <Link href={`${basePathPrefix}/data-explorers/stocks`}>Stocks</Link>
+                    </nav>
+                    <nav>
+                        <Link href={`${basePathPrefix}/data-explorers/article-data`}>Article Data</Link>
                     </nav>
                     {/* TODO: add links for other pages :] */}
                 </DrawerBody>
