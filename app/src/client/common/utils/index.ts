@@ -1,5 +1,5 @@
-import { usePrevious } from 'client/common/utils/hooks';
-import renderWithContext from 'client/common/utils/renderWithContext';
+import { usePrevious } from './hooks';
+import renderWithContext from './renderWithContext';
 
 const capitalize = (string: string) => {
     return string[0].toUpperCase() + string.slice(1);

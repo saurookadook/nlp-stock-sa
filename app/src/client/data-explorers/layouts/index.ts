@@ -1,4 +1,4 @@
-import BaseDataExplorer from 'client/data-explorers/layouts/BaseDataExplorer';
-import DataExplorerView from 'client/data-explorers/layouts/DataExplorerView';
+import BaseDataExplorer from './BaseDataExplorer';
+import DataExplorerView from './DataExplorerView';
 
 export { BaseDataExplorer, DataExplorerView };

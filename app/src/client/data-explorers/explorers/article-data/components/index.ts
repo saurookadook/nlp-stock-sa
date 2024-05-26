@@ -1,4 +1,4 @@
-import ArticleDataBySlugExplorer from 'client/data-explorers/explorers/article-data/components/ArticleDataBySlugExplorer';
-import ArticleDataExplorer from 'client/data-explorers/explorers/article-data/components/ArticleDataExplorer';
+import ArticleDataBySlugExplorer from './ArticleDataBySlugExplorer';
+import ArticleDataExplorer from './ArticleDataExplorer';
 
 export { ArticleDataBySlugExplorer, ArticleDataExplorer };

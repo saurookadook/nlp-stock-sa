@@ -1,3 +1,3 @@
-import GitHubOctocat from 'client/common/icons/GitHub';
+import GitHubOctocat from './GitHub';
 
 export { GitHubOctocat };
