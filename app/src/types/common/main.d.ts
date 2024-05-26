@@ -73,22 +73,27 @@ type GroupedArticleData = {
     articleData: ArticleDataEntry[];
 };
 
-type AbstractPageData = {
-    data: GroupedArticleData | GroupedArticleData[] | null;
-};
-
-type ArticleDataBySlugViewStore = {
+type DataExplorersStore = {
     articleDataBySlug: GroupedArticleData;
+    articleData: GroupedArticleData[];
 };
 
-type ArticleDataViewStore = {
-    articleData: GroupedArticleData[];
+type HomeStore = {
+    pageData: GroupedArticleData[] | null;
 };
 
 type InitialArticleDataBySlugPageData = {
     data: GroupedArticleData | null;
 };
 
+type InitialArticleDataViewPageData = {
+    data: GroupedArticleData[] | null;
+};
+
 type InitialHomePageData = {
     data: GroupedArticleData[] | null;
+};
+
+type AbstractPageData = {
+    data: GroupedArticleData | GroupedArticleData[] | null;
 };
