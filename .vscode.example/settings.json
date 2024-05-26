@@ -1,5 +1,23 @@
 {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+    "editor.formatOnType": false, // required
+    "editor.formatOnPaste": false, // optional
+    "editor.formatOnSave": true, // optional
+    "editor.formatOnSaveMode": "file", // required to format on save
+    // "files.autoSave": "onFocusChange", // optional but recommended
+    "vs-code-prettier-eslint.prettierLast": true, // set as "true" to run 'prettier' last not first
+    "editor.tabSize": 4,
+    "[sql]": {
+        "editor.formatOnSave": false
+    },
     "python.analysis.extraPaths": [
-        "./ssa/.poetry-cache/virtualenvs/ssa-8ttJgVzC-py3.11/lib/python3.11/site-packages"
-    ]
+        // NOTE: you should change `1aaBcDeF` in the path below to whatever hash is used in your local poetry-cache
+        "./ssa/.poetry-cache/virtualenvs/nlp-stock-sa-1aaBcDeF-py3.10/lib/python3.10/site-packages"
+    ],
+    "path-autocomplete.pathMappings": {
+        "__mocks__": "app/src/__mocks__",
+        "client": "app/src/client",
+        "server": "app/src/server",
+        "types": "app/src/types"
+    }
 }
