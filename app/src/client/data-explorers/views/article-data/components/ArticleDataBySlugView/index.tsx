@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react';
 
-import { GroupedArticleData } from '@nlpssa-app-types/common/main';
+import { DataExplorersStore } from '@nlpssa-app-types/common/main';
 import { StockArticleDataGroup } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchArticleDataByStockSlug } from 'client/data-explorers/store/actions';
@@ -12,7 +12,7 @@ function ArticleDataBySlugView() {
     const dispatch = useContext(BaseDispatchContext);
     const params = useParams();
 
-    const { articleDataBySlug } = state as { articleDataBySlug: GroupedArticleData };
+    const { articleDataBySlug } = state as DataExplorersStore;
 
     useEffect(() => {
         if (articleDataBySlug == null) {
