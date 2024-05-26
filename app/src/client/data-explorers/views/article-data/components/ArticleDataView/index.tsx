@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { Flex } from '@chakra-ui/react';
 
-import { type ArticleDataViewStore } from '@nlpssa-app-types/common/main';
+import { type DataExplorersStore } from '@nlpssa-app-types/common/main';
 import { StockArticleDataGroup } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchAllArticleData } from 'client/data-explorers/store/actions';
@@ -10,7 +10,7 @@ function ArticleDataView() {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
 
-    const pageData = (state as ArticleDataViewStore).pageData;
+    const { articleData } = state as DataExplorersStore;
 
     useEffect(() => {
         if (state.pageData == null) {
@@ -18,11 +18,11 @@ function ArticleDataView() {
         }
     });
 
-    console.log('data-explorers.article-data - ArticleDataView', { state, pageData });
+    console.log('data-explorers.article-data - ArticleDataView', { state, articleData });
     return (
         <Flex className="article-data-list-wrapper" alignSelf="stretch" flexDirection="column">
-            {pageData != null && pageData.length > 0
-                ? pageData.map((groupedData, i) => {
+            {articleData != null && articleData.length > 0
+                ? articleData.map((groupedData, i) => {
                       const { quoteStockSymbol, articleData } = groupedData;
                       return (
                           <StockArticleDataGroup

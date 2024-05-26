@@ -1,27 +1,31 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { getStoryArticleDataBySlug } from 'client/_story-data/articleDataBySlug';
-import { ArticleDataApp } from 'client/data-explorers/article-data/components';
+import { InitialArticleDataViewPageData } from '@nlpssa-app-types/common/main';
+import { getStoryPageData } from 'client/_story-data/articleData';
+import { ArticleDataView } from 'client/data-explorers/views/article-data/components';
 import { AppStateProvider } from 'client/data-explorers/store';
 
 const meta = {
-    title: 'ArticleData/ArticleDataApp',
-    component: ArticleDataApp,
+    title: 'Data Explorers/ArticleData/ArticleDataView',
+    component: ArticleDataView,
     parameters: {
         // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
         layout: 'fullscreen',
     },
-} satisfies Meta<typeof ArticleDataApp>;
+} satisfies Meta<typeof ArticleDataView>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const BaseApp: Story = {
-    args: getStoryArticleDataBySlug(),
-    render: (args) => (
-        <AppStateProvider>
-            <ArticleDataApp initialPageData={args.initialPageData} stockSlug={args.stockSlug} />
-        </AppStateProvider>
-    ),
+export const BaseArticleDataView: Story = {
+    args: getStoryPageData(),
+    render: (args) => {
+        const { data } = args as InitialArticleDataViewPageData;
+        return (
+            <AppStateProvider initialState={{ articleData: data }}>
+                <ArticleDataView />
+            </AppStateProvider>
+        );
+    },
 };
