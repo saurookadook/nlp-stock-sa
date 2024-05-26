@@ -8,5 +8,9 @@ class StockEntry(BaseResponseModel, Stock):
     pass
 
 
+class SingularStockResponse(BaseResponseModel):
+    data: StockEntry
+
+
 class AllStocksResponse(BaseResponseModel):
     data: List[StockEntry]
