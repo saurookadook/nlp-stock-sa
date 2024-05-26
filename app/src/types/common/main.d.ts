@@ -33,6 +33,11 @@ interface BaseReducerAction {
     payload?: StateSlice;
 }
 
+type GenericReducerAction<T> = {
+    type: string;
+    payload?: T;
+};
+
 type GenericReducerFunc<S, A> = (state: S, action: A) => S;
 
 type StateSliceReducerFunc = (state: StateSlice, action: BaseReducerAction) => StateSlice;
@@ -73,15 +78,6 @@ type GroupedArticleData = {
     articleData: ArticleDataEntry[];
 };
 
-type DataExplorersStore = {
-    articleDataBySlug: GroupedArticleData;
-    articleData: GroupedArticleData[];
-};
-
-type HomeStore = {
-    pageData: GroupedArticleData[] | null;
-};
-
 type InitialArticleDataBySlugExplorerPageData = {
     data: GroupedArticleData | null;
 };
@@ -116,4 +112,26 @@ type AllStockData = {
 
 type SingularStockData = {
     data: StockDataEntry | null;
+};
+
+/**********************************************************************
+ * Data Explorers
+ **********************************************************************/
+type ArticleDataBySlugStateSlice = GroupedArticleData;
+type ArticleDataStateSlice = GroupedArticleData[];
+type StockDataAllStateSlice = StockDataEntry[];
+type StockDataSingularStateSlice = StockDataEntry;
+
+type DataExplorersStore = {
+    articleDataBySlug: ArticleDataBySlugStateSlice;
+    articleData: ArticleDataStateSlice;
+    stockDataAll: StockDataAllStateSlice;
+    stockDataSingular: StockDataSingularStateSlice;
+};
+
+/**********************************************************************
+ * Home
+ **********************************************************************/
+type HomeStore = {
+    pageData: GroupedArticleData[] | null;
 };
