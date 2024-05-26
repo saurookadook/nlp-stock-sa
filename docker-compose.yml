@@ -38,6 +38,7 @@ services:
       target: frontend-dev
     networks:
       - main_app
+    platform: linux/amd64
     ports:
       - "8080:8080"
       - "9229:9229"
@@ -57,6 +58,7 @@ services:
     networks:
       - main_app
       - scraper
+    platform: linux/amd64
     ports:
       - "80:80"
       - "443:443"
@@ -81,6 +83,7 @@ services:
       target: server-dev
     networks:
       - main_app
+    platform: linux/amd64
     ports:
       - "3000:3000"
     volumes:
@@ -89,6 +92,7 @@ services:
 
   session-cache:
     image: memcached:1.6.10
+    platform: linux/amd64
     ports:
       - '11211:11211'
 
@@ -106,6 +110,7 @@ services:
       target: scraper-dev
     networks:
       - scraper
+    platform: linux/amd64
     ports:
       - "3001:3001"
     volumes:

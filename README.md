@@ -50,7 +50,7 @@ Add following to `/etc/hosts`
 
 > _**TODO**: this might not be necessary still?_
 ```
-127.0.0.1 nlp-stock-sa.com database
+127.0.0.1 nlp-ssa.dev *.nlp-ssa.dev database
 ```
 
 > **NOTE: For M1 Macs only**

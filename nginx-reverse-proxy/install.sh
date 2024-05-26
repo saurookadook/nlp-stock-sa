@@ -17,7 +17,8 @@ if [ ! -f /etc/resolver/nlp-ssa.dev ]; then
 fi
 
 echo "Starting nlp-ssa-proxy and dnsmasq..."
-docker-compose up dnsmasq nginx --build -d
+# docker-compose up dnsmasq nginx --build -d
+docker compose up nginx --build -d
 
 echo "All done!"
 echo "........."
