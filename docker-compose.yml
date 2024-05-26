@@ -6,6 +6,7 @@ services:
   all:
     image: alpine
     command: sh -C "echo start"
+    platform: linux/amd64
     depends_on:
       - frontend
       - nginx
@@ -20,6 +21,7 @@ services:
     networks:
       - main_app
       - scraper
+    platform: linux/amd64
     ports:
       - 5432:5432
     volumes:
@@ -114,6 +116,7 @@ services:
     image: scrapinghub/splash:latest
     networks:
       - scraper
+    platform: linux/amd64
     ports:
       - "8050:8050"
     volumes:
