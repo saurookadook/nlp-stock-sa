@@ -6,7 +6,9 @@ import { BasePage, ErrorElement } from 'client/common/layouts';
 import {
     ArticleDataBySlugExplorer,
     ArticleDataExplorer,
-} from 'client/data-explorers/explorers/article-data/components';
+    AllStocksExplorer,
+    SingleStockExplorer,
+} from 'client/data-explorers/explorers';
 import { DataExplorerView } from 'client/data-explorers/layouts';
 import AppStateProvider from 'client/data-explorers/store/AppStateProvider';
 
@@ -25,14 +27,14 @@ function BaseDataExplorer({ initialPageData }: { initialPageData: AbstractPageDa
                     path: 'article-data',
                     element: <ArticleDataExplorer />,
                 },
-                // {
-                //     path: 'stocks/:stockSlug',
-                //     element: <ArticleDataBySlugExplorer />,
-                // },
-                // {
-                //     path: 'stocks',
-                //     element: <ArticleDataExplorer />,
-                // },
+                {
+                    path: 'stocks/:stockSlug',
+                    element: <SingleStockExplorer />,
+                },
+                {
+                    path: 'stocks',
+                    element: <AllStocksExplorer />,
+                },
             ],
         },
     ]);
