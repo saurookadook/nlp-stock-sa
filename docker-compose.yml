@@ -118,6 +118,8 @@ services:
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
   splash-server:
+    # Currently open issue related to this not working on M1 Macs
+    # https://github.com/docker/for-mac/issues/7220
     image: scrapinghub/splash:latest
     networks:
       - scraper
