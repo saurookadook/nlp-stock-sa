@@ -2,7 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { InitialArticleDataViewPageData } from '@nlpssa-app-types/common/main';
-import { getStoryPageData } from 'client/_story-data/articleData';
+import storyData from 'client/_story-data';
 import { ArticleDataView } from 'client/data-explorers/views/article-data/components';
 import { AppStateProvider } from 'client/data-explorers/store';
 
@@ -19,7 +19,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const BaseArticleDataView: Story = {
-    args: getStoryPageData(),
+    args: storyData.getStoryArticleData(),
     render: (args) => {
         const { data } = args as InitialArticleDataViewPageData;
         return (

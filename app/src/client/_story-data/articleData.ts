@@ -2,7 +2,7 @@ import { InitialHomePageData } from '@nlpssa-app-types/common/main';
 
 type StoryPageDataFn = () => InitialHomePageData;
 
-const getStoryPageData: StoryPageDataFn = () => ({
+const getStoryArticleData: StoryPageDataFn = () => ({
     data: [
         {
             quoteStockSymbol: 'DOOG',
@@ -397,4 +397,4 @@ const getStoryPageData: StoryPageDataFn = () => ({
     ],
 });
 
-export { getStoryPageData };
+export { getStoryArticleData };
