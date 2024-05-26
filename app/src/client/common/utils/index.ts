@@ -27,6 +27,8 @@ export function deeplyMerge(target, source) {
             targetValue: sourceValue,
         });
     }
+
+    return target;
 }
 
 function handleAssignment({ assignmentTarget, targetValue }) {
