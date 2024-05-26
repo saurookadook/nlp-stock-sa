@@ -171,7 +171,7 @@ router.use(
             const pageDataResponse = await global.fetch('/api/article-data');
             initialPageData = await pageDataResponse.json();
         } catch (e) {
-            console.warn(`[article-data route] - caught exception: ${e}`);
+            console.warn(`[article-data list route] - caught exception: ${e}`);
         }
 
         // console.log(

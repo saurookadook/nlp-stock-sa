@@ -3,14 +3,14 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import type { AbstractPageData } from '@nlpssa-app-types/common/main';
 import { BasePage, ErrorElement } from 'client/common/layouts';
-import { ArticleDataBySlugView, ArticleDataView } from 'client/data-explorers/article-data/components';
+import { ArticleDataBySlugView, ArticleDataView } from 'client/data-explorers/views/article-data/components';
 import { DataExplorerView } from 'client/data-explorers/layouts';
 import AppStateProvider from 'client/data-explorers/store/AppStateProvider';
 
 function BaseDataExplorer({ initialPageData }: { initialPageData: AbstractPageData }) {
     const browserRouter = createBrowserRouter([
         {
-            path: '/data-explorers',
+            path: '/app/data-explorers',
             element: <DataExplorerView />,
             errorElement: <ErrorElement />,
             children: [
