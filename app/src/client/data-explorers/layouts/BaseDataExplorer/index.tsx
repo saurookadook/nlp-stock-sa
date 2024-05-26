@@ -3,7 +3,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import type { AbstractPageData } from '@nlpssa-app-types/common/main';
 import { BasePage, ErrorElement } from 'client/common/layouts';
-import { ArticleDataBySlugExplorer, ArticleDataExplorer } from 'client/data-explorers/views/article-data/components';
+import {
+    ArticleDataBySlugExplorer,
+    ArticleDataExplorer,
+} from 'client/data-explorers/explorers/article-data/components';
 import { DataExplorerView } from 'client/data-explorers/layouts';
 import AppStateProvider from 'client/data-explorers/store/AppStateProvider';
 
