@@ -1,4 +1,4 @@
-import ArticleDataBySlugView from 'client/data-explorers/views/article-data/components/ArticleDataBySlugView';
-import ArticleDataView from 'client/data-explorers/views/article-data/components/ArticleDataView';
+import ArticleDataBySlugExplorer from 'client/data-explorers/views/article-data/components/ArticleDataBySlugExplorer';
+import ArticleDataExplorer from 'client/data-explorers/views/article-data/components/ArticleDataExplorer';
 
-export { ArticleDataBySlugView, ArticleDataView };
+export { ArticleDataBySlugExplorer, ArticleDataExplorer };

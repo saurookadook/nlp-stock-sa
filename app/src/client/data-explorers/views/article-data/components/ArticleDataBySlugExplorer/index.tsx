@@ -7,7 +7,7 @@ import { StockArticleDataGroup } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchArticleDataByStockSlug } from 'client/data-explorers/store/actions';
 
-function ArticleDataBySlugView() {
+function ArticleDataBySlugExplorer() {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
     const params = useParams();
@@ -20,7 +20,7 @@ function ArticleDataBySlugView() {
         }
     }, [params.stockSlug]);
 
-    console.log('data-explorers.article-data - ArticleDataBySlugView', { state });
+    console.log('data-explorers.article-data - ArticleDataBySlugExplorer', { state });
     return (
         <Flex className="article-data-list-wrapper" alignSelf="stretch" flexDirection="column">
             {articleDataBySlug != null ? (
@@ -35,4 +35,4 @@ function ArticleDataBySlugView() {
     );
 }
 
-export default ArticleDataBySlugView;
+export default ArticleDataBySlugExplorer;

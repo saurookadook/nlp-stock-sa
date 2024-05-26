@@ -86,7 +86,7 @@ type InitialArticleDataBySlugPageData = {
     data: GroupedArticleData | null;
 };
 
-type InitialArticleDataViewPageData = {
+type InitialArticleDataExplorerPageData = {
     data: GroupedArticleData[] | null;
 };
 

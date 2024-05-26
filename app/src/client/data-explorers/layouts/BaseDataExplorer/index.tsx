@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import type { AbstractPageData } from '@nlpssa-app-types/common/main';
 import { BasePage, ErrorElement } from 'client/common/layouts';
-import { ArticleDataBySlugView, ArticleDataView } from 'client/data-explorers/views/article-data/components';
+import { ArticleDataBySlugExplorer, ArticleDataExplorer } from 'client/data-explorers/views/article-data/components';
 import { DataExplorerView } from 'client/data-explorers/layouts';
 import AppStateProvider from 'client/data-explorers/store/AppStateProvider';
 
@@ -16,19 +16,19 @@ function BaseDataExplorer({ initialPageData }: { initialPageData: AbstractPageDa
             children: [
                 {
                     path: 'article-data/:stockSlug',
-                    element: <ArticleDataBySlugView />,
+                    element: <ArticleDataBySlugExplorer />,
                 },
                 {
                     path: 'article-data',
-                    element: <ArticleDataView />,
+                    element: <ArticleDataExplorer />,
                 },
                 // {
                 //     path: 'stocks/:stockSlug',
-                //     element: <ArticleDataBySlugView />,
+                //     element: <ArticleDataBySlugExplorer />,
                 // },
                 // {
                 //     path: 'stocks',
-                //     element: <ArticleDataView />,
+                //     element: <ArticleDataExplorer />,
                 // },
             ],
         },
