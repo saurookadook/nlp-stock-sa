@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { InitialArticleDataBySlugPageData } from '@nlpssa-app-types/common/main';
+import { InitialArticleDataBySlugExplorerPageData } from '@nlpssa-app-types/common/main';
 import storyData from 'client/_story-data';
 import { ArticleDataBySlugExplorer } from 'client/data-explorers/explorers/article-data/components';
 import { AppStateProvider } from 'client/data-explorers/store';
@@ -21,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 export const BaseArticleDataBySlugExplorer: Story = {
     args: storyData.getStoryArticleDataBySlug(),
     render: (args) => {
-        const { data } = args as InitialArticleDataBySlugPageData;
+        const { data } = args as InitialArticleDataBySlugExplorerPageData;
         return (
             <AppStateProvider initialState={{ articleDataBySlug: data }}>
                 <ArticleDataBySlugExplorer />

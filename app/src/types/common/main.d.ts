@@ -82,7 +82,7 @@ type HomeStore = {
     pageData: GroupedArticleData[] | null;
 };
 
-type InitialArticleDataBySlugPageData = {
+type InitialArticleDataBySlugExplorerPageData = {
     data: GroupedArticleData | null;
 };
 
@@ -96,4 +96,24 @@ type InitialHomePageData = {
 
 type AbstractPageData = {
     data: GroupedArticleData | GroupedArticleData[] | null;
+};
+
+/**********************************************************************
+ * Stocks
+ **********************************************************************/
+type StockDataEntry = {
+    id: string;
+    quoteStockSymbol: string;
+    fullStockSymbol: string;
+    exchangeName?: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+type AllStockData = {
+    data: StockDataEntry[] | null;
+};
+
+type SingularStockData = {
+    data: StockDataEntry | null;
 };

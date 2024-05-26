@@ -1,6 +1,6 @@
-import { InitialArticleDataBySlugPageData } from '@nlpssa-app-types/common/main';
+import { InitialArticleDataBySlugExplorerPageData } from '@nlpssa-app-types/common/main';
 
-type StoryArticleDataBySlugFn = () => InitialArticleDataBySlugPageData;
+type StoryArticleDataBySlugFn = () => InitialArticleDataBySlugExplorerPageData;
 
 const getStoryArticleDataBySlug: StoryArticleDataBySlugFn = () => ({
     data: {
