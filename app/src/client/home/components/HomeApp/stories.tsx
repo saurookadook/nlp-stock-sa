@@ -2,7 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { InitialHomePageData } from '@nlpssa-app-types/common/main';
-import { getStoryPageData } from 'client/_story-data/articleData';
+import storyData from 'client/_story-data';
 import { HomeApp } from 'client/home/components';
 import { AppStateProvider } from 'client/home/store';
 
@@ -19,7 +19,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const BaseApp: Story = {
-    args: getStoryPageData(),
+    args: storyData.getStoryArticleData(),
     render: (args) => {
         const { data } = args as InitialHomePageData;
         console.log({ args, data });
