@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { Button, Center, Container, Flex } from '@chakra-ui/react';
 
 import type { HomeStore } from '@nlpssa-app-types/common/main';
-import { StockArticleDataGroup } from 'client/common/components';
+import { NoDataMessage, StockArticleDataGroup } from 'client/common/components';
 import { BasePage } from 'client/common/layouts';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchArticleData } from 'client/home/store/actions';
@@ -43,18 +43,20 @@ function HomeApp(): React.ReactElement {
                     w="100%"
                 >
                     <Flex className="article-data-list-wrapper" alignSelf="stretch" flexDirection="column">
-                        {pageData != null && pageData.length > 0
-                            ? pageData.map((groupedData, i) => {
-                                  const { quoteStockSymbol, articleData } = groupedData;
-                                  return (
-                                      <StockArticleDataGroup
-                                          key={`${quoteStockSymbol}-${i}`}
-                                          quoteStockSymbol={quoteStockSymbol}
-                                          articleData={articleData}
-                                      />
-                                  );
-                              })
-                            : 'No data :['}
+                        {pageData != null && pageData.length > 0 ? (
+                            pageData.map((groupedData, i) => {
+                                const { quoteStockSymbol, articleData } = groupedData;
+                                return (
+                                    <StockArticleDataGroup
+                                        key={`${quoteStockSymbol}-${i}`}
+                                        quoteStockSymbol={quoteStockSymbol}
+                                        articleData={articleData}
+                                    />
+                                );
+                            })
+                        ) : (
+                            <NoDataMessage />
+                        )}
                     </Flex>
                 </Center>
             </Container>

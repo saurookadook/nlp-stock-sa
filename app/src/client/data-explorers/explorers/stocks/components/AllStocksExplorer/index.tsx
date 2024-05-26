@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { Flex } from '@chakra-ui/react';
 
 import { type DataExplorersStore } from '@nlpssa-app-types/common/main';
+import { NoDataMessage } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchAllStockData } from 'client/data-explorers/store/stocks/actions';
 
@@ -20,11 +21,13 @@ function AllStocksExplorer() {
     console.log('data-explorers.stocks - AllStocksExplorer', { state, stockDataAll });
     return (
         <Flex className="all-stocks-list-wrapper" alignSelf="stretch" flexDirection="column">
-            {stockDataAll != null && stockDataAll.length > 0
-                ? stockDataAll.map((stockData, i) => {
-                      return <pre key={`stock-li-${i}`}>{JSON.stringify(stockData, null, 4)}</pre>;
-                  })
-                : 'No data :['}
+            {stockDataAll != null && stockDataAll.length > 0 ? (
+                stockDataAll.map((stockData, i) => {
+                    return <pre key={`stock-li-${i}`}>{JSON.stringify(stockData, null, 4)}</pre>;
+                })
+            ) : (
+                <NoDataMessage />
+            )}
         </Flex>
     );
 }

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react';
 
 import { DataExplorersStore } from '@nlpssa-app-types/common/main';
-import { StockArticleDataGroup } from 'client/common/components';
+import { NoDataMessage, StockArticleDataGroup } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchArticleDataByStockSlug } from 'client/data-explorers/store/actions';
 
@@ -29,7 +29,7 @@ function ArticleDataBySlugExplorer() {
                     articleData={articleDataBySlug.articleData}
                 />
             ) : (
-                'No data :['
+                <NoDataMessage />
             )}
         </Flex>
     );
