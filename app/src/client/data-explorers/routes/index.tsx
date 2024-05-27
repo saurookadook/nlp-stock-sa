@@ -1,5 +1,4 @@
 import React from 'react';
-import { createBrowserRouter } from 'react-router-dom';
 
 import { ErrorElement } from 'client/common/layouts';
 import {
@@ -10,7 +9,7 @@ import {
 } from 'client/data-explorers/explorers';
 import { DataExplorerView } from 'client/data-explorers/layouts';
 
-export default createBrowserRouter([
+export const dataExplorersRoutes = [
     {
         path: '/app/data-explorers',
         element: <DataExplorerView />,
@@ -34,4 +33,4 @@ export default createBrowserRouter([
             },
         ],
     },
-]);
+];
