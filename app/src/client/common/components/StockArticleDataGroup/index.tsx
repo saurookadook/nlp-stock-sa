@@ -1,9 +1,17 @@
 import React from 'react';
-import { Box, Heading, Link, Spacer } from '@chakra-ui/react';
-
+import { Link as RouterDomLink } from 'react-router-dom';
+import {
+    Box, // force formatting
+    Heading,
+    Link,
+    Spacer,
+    Text,
+} from '@chakra-ui/react';
 import { ArticleDataList } from 'client/common/components';
 
-function StockArticleDataGroup({ quoteStockSymbol, articleData }) {
+function StockArticleDataGroup({ articleData, quoteStockSymbol, routerDomAware = false }) {
+    const seeAllTarget = `/app/data-explorers/article-data/${quoteStockSymbol}`;
+
     return (
         <Box>
             <Heading alignItems="center" backgroundColor="teal" color="white" display="flex" padding="0.5rem 1rem">
@@ -11,9 +19,17 @@ function StockArticleDataGroup({ quoteStockSymbol, articleData }) {
                     {quoteStockSymbol}
                 </Box>
                 <Spacer />
-                <Link href={`/app/data-explorers/article-data/${quoteStockSymbol}`} fontSize="1rem">
-                    See All
-                </Link>
+                <Text as="span" fontSize="1rem">
+                    {routerDomAware ? (
+                        <RouterDomLink to={seeAllTarget} className="router-dom-link">
+                            See All
+                        </RouterDomLink>
+                    ) : (
+                        <Link href={seeAllTarget} className="chakra-ui-link">
+                            See All
+                        </Link>
+                    )}
+                </Text>
             </Heading>
             <ArticleDataList articleData={articleData} />
         </Box>
