@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Center, Container } from '@chakra-ui/react';
 
-function DataExplorerView() {
+export default function DataExplorerView() {
     return (
         <Container className="data-explorer-view" margin="0 auto" maxWidth="75vw">
             <Center
@@ -22,5 +22,3 @@ function DataExplorerView() {
         </Container>
     );
 }
-
-export default DataExplorerView;
