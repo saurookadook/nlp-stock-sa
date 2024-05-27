@@ -12,6 +12,7 @@ const config: StorybookConfig = {
         '@storybook/addon-essentials',
         '@chromatic-com/storybook',
         '@storybook/addon-interactions',
+        'storybook-addon-remix-react-router',
     ],
     docs: {
         autodocs: 'tag',
@@ -51,4 +52,5 @@ const config: StorybookConfig = {
         return config;
     },
 };
+
 export default config;
