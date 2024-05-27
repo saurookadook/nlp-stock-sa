@@ -27,8 +27,9 @@ function ArticleDataExplorer() {
                     return (
                         <StockArticleDataGroup
                             key={`${quoteStockSymbol}-${i}`}
-                            quoteStockSymbol={quoteStockSymbol}
                             articleData={articleData}
+                            quoteStockSymbol={quoteStockSymbol}
+                            routerDomAware={true}
                         />
                     );
                 })

@@ -25,8 +25,9 @@ function ArticleDataBySlugExplorer() {
         <Flex className="article-data-list-wrapper" alignSelf="stretch" flexDirection="column">
             {articleDataBySlug != null ? (
                 <StockArticleDataGroup
-                    quoteStockSymbol={articleDataBySlug.quoteStockSymbol}
                     articleData={articleDataBySlug.articleData}
+                    quoteStockSymbol={articleDataBySlug.quoteStockSymbol}
+                    routerDomAware={true}
                 />
             ) : (
                 <NoDataMessage />

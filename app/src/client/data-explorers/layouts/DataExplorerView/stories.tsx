@@ -9,8 +9,8 @@ import {
 import type { DataExplorersStore } from '@nlpssa-app-types/common/main';
 import storyData from 'client/_story-data';
 import { DataExplorerView } from 'client/data-explorers/layouts';
-import { AppStateProvider } from 'client/data-explorers/store';
 import { dataExplorersRoutes } from 'client/data-explorers/routes';
+import { AppStateProvider } from 'client/data-explorers/store';
 
 const articleData = storyData.getStoryArticleData().data as DataExplorersStore['articleData'];
 
@@ -21,9 +21,9 @@ const meta = {
     parameters: {
         // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
         layout: 'fullscreen',
-        // reactRouter: reactRouterParameters({
-        //     routing: reactRouterOutlets(dataExplorersRoutes),
-        // }),
+        reactRouter: reactRouterParameters({
+            routing: reactRouterOutlets(dataExplorersRoutes),
+        }),
     },
 } satisfies Meta<typeof DataExplorerView>;
 
@@ -43,7 +43,6 @@ export const DataExplorerViewArticleData: Story = {
             location: {
                 path: '/data-explorers/article-data',
             },
-            routing: reactRouterOutlets(dataExplorersRoutes),
         }),
     },
     render: () => {
@@ -66,7 +65,6 @@ export const DataExplorerViewArticleDataNoData: Story = {
             location: {
                 path: '/data-explorers/article-data',
             },
-            routing: reactRouterOutlets(dataExplorersRoutes),
         }),
     },
     render: () => {
@@ -89,7 +87,6 @@ export const DataExplorerViewAllStocksNoData: Story = {
             location: {
                 path: '/data-explorers/stocks',
             },
-            routing: reactRouterOutlets(dataExplorersRoutes),
         }),
     },
     render: () => {
