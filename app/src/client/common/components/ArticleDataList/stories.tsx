@@ -5,7 +5,7 @@ import storyData from 'client/_story-data';
 import { ArticleDataList } from 'client/common/components';
 
 const meta = {
-    title: 'Home/ArticleDataList',
+    title: 'Common/ArticleDataList',
     component: ArticleDataList,
     parameters: {
         // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
@@ -21,6 +21,13 @@ const { articleData } = storyData.getStoryArticleData().data![0];
 export const BaseArticleDataList: Story = {
     args: {
         articleData: articleData,
+    },
+    render: (args) => <ArticleDataList articleData={args.articleData} />,
+};
+
+export const BaseArticleDataListNoResults: Story = {
+    args: {
+        articleData: [],
     },
     render: (args) => <ArticleDataList articleData={args.articleData} />,
 };
