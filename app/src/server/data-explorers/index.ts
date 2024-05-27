@@ -21,6 +21,12 @@ router.use(
             // TODO: add some user-specific thing to request?
             // const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/article-data');
             const pageDataResponse = await global.fetch('/api/article-data');
+
+            if (pageDataResponse.status >= 400) {
+                const errorMessage = await pageDataResponse.text();
+                throw new Error(errorMessage);
+            }
+
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[data-explorers route] - caught exception: ${e}`);
@@ -36,7 +42,7 @@ router.use(
         try {
             return res.render('index', {
                 layout: 'index',
-                initialPageData: JSON.stringify(initialPageData),
+                initialPageData: JSON.stringify({ articleData: initialPageData }),
                 ...res.locals.manifest['common'],
                 ...res.locals.manifest['dataExplorers'],
             });
@@ -47,7 +53,7 @@ router.use(
 );
 
 router.use(
-    '/stocks/{stockSlug}',
+    '/stocks/:stockSlug',
     asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
         console.log(' data-explorers handler [single stock view] '.padStart(120, '=').padEnd(240, '='));
         console.log({ url: req.url, params: req.params });
@@ -58,6 +64,12 @@ router.use(
             // TODO: add some user-specific thing to request?
             // const pageDataResponse = await global.fetch(`https://nlp-ssa.dev/api/stocks/${stockSlug}`);
             const pageDataResponse = await global.fetch(`/api/stocks/${stockSlug}`);
+
+            if (pageDataResponse.status >= 400) {
+                const errorMessage = await pageDataResponse.text();
+                throw new Error(errorMessage);
+            }
+
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[data-explorers - single stock view] - caught exception: ${e}`);
@@ -73,7 +85,7 @@ router.use(
         try {
             return res.render('index', {
                 layout: 'index',
-                initialPageData: JSON.stringify(initialPageData),
+                initialPageData: JSON.stringify({ stockDataSingular: initialPageData }),
                 ...res.locals.manifest['common'],
                 ...res.locals.manifest['dataExplorers'],
             });
@@ -94,6 +106,12 @@ router.use(
             // TODO: add some user-specific thing to request?
             // const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/stocks');
             const pageDataResponse = await global.fetch('/api/stocks');
+
+            if (pageDataResponse.status >= 400) {
+                const errorMessage = await pageDataResponse.text();
+                throw new Error(errorMessage);
+            }
+
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[data-explorers - stocks list] - caught exception: ${e}`);
@@ -109,7 +127,7 @@ router.use(
         try {
             return res.render('index', {
                 layout: 'index',
-                initialPageData: JSON.stringify(initialPageData),
+                initialPageData: JSON.stringify({ stockDataAll: initialPageData }),
                 ...res.locals.manifest['common'],
                 ...res.locals.manifest['dataExplorers'],
             });
@@ -120,7 +138,7 @@ router.use(
 );
 
 router.use(
-    '/article-data/{stockSlug}',
+    '/article-data/:stockSlug',
     asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
         console.log(' data-explorers handler [article-data by stockSlug] '.padStart(120, '=').padEnd(240, '='));
         console.log({ url: req.url, params: req.params });
@@ -131,6 +149,12 @@ router.use(
             // TODO: add some user-specific thing to request?
             // const pageDataResponse = await global.fetch(`https://nlp-ssa.dev/api/article-data/${stockSlug}`);
             const pageDataResponse = await global.fetch(`/api/article-data/${stockSlug}`);
+
+            if (pageDataResponse.status >= 400) {
+                const errorMessage = await pageDataResponse.text();
+                throw new Error(errorMessage);
+            }
+
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[article-data by stock route] - caught exception: ${e}`);
@@ -146,10 +170,7 @@ router.use(
         try {
             return res.render('index', {
                 layout: 'index',
-                initialPageData: JSON.stringify({
-                    stockSlug: stockSlug,
-                    initialPageData,
-                }),
+                initialPageData: JSON.stringify({ articleDataBySlug: initialPageData }),
                 ...res.locals.manifest['common'],
                 ...res.locals.manifest['dataExplorers'],
             });
@@ -169,6 +190,12 @@ router.use(
             // TODO: add some user-specific thing to request?
             // const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/article-data');
             const pageDataResponse = await global.fetch('/api/article-data');
+
+            if (pageDataResponse.status >= 400) {
+                const errorMessage = await pageDataResponse.text();
+                throw new Error(errorMessage);
+            }
+
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[article-data list route] - caught exception: ${e}`);
@@ -184,7 +211,7 @@ router.use(
         try {
             return res.render('index', {
                 layout: 'index',
-                initialPageData: JSON.stringify(initialPageData),
+                initialPageData: JSON.stringify({ articleData: initialPageData }),
                 ...res.locals.manifest['common'],
                 ...res.locals.manifest['dataExplorers'],
             });
