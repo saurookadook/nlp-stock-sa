@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
-import type { AbstractPageData } from '@nlpssa-app-types/common/main';
+import type { DataExplorersStore, GenericStateStore } from '@nlpssa-app-types/common/main';
 import { BaseDataExplorer } from 'client/data-explorers/layouts';
 // import reportWebVitals from 'client/reportWebVitals';
 
@@ -19,7 +19,7 @@ window.renderApp = async (initialPageData) => {
         <ChakraProvider theme={theme}>
             <ColorModeScript initialColorMode={theme.config.initialColorMode} />
             {/* TODO: change type to be more generic */}
-            <BaseDataExplorer initialPageData={initialPageData as AbstractPageData} />
+            <BaseDataExplorer initialPageData={initialPageData as GenericStateStore<DataExplorersStore>} />
         </ChakraProvider>,
     );
 };

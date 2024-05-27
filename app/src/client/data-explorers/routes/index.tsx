@@ -1,17 +1,16 @@
 import React from 'react';
+import { createBrowserRouter } from 'react-router-dom';
 
 import { ErrorElement } from 'client/common/layouts';
-import {
-    ArticleDataBySlugExplorer,
-    ArticleDataExplorer,
-    AllStocksExplorer,
-    SingleStockExplorer,
-} from 'client/data-explorers/explorers';
-import { DataExplorerView } from 'client/data-explorers/layouts';
+import ArticleDataBySlugExplorer from 'client/data-explorers/explorers/article-data/ArticleDataBySlugExplorer';
+import ArticleDataExplorer from 'client/data-explorers/explorers/article-data/ArticleDataExplorer';
+import AllStocksExplorer from 'client/data-explorers/explorers/stocks/AllStocksExplorer';
+import SingleStockExplorer from 'client/data-explorers/explorers/stocks/SingleStockExplorer';
+import DataExplorerView from 'client/data-explorers/layouts/DataExplorerView';
 
 export const dataExplorersRoutes = [
     {
-        path: '/app/data-explorers',
+        path: '/data-explorers',
         element: <DataExplorerView />,
         errorElement: <ErrorElement />,
         children: [
@@ -34,3 +33,5 @@ export const dataExplorersRoutes = [
         ],
     },
 ];
+
+export default createBrowserRouter(dataExplorersRoutes, { basename: '/app' });

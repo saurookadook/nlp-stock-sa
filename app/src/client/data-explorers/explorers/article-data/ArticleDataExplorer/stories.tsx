@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { InitialArticleDataExplorerPageData } from '@nlpssa-app-types/common/main';
 import storyData from 'client/_story-data';
-import { ArticleDataExplorer } from 'client/data-explorers/explorers/article-data/components';
+import { ArticleDataExplorer } from 'client/data-explorers/explorers';
 import { AppStateProvider } from 'client/data-explorers/store';
 
 const meta = {
