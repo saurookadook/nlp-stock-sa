@@ -2,6 +2,10 @@ import 'react';
 
 type AmbiguousObject = Record<string, unknown>;
 
+type NullableObject<T> = {
+    [K in keyof T]: T[K] | null;
+};
+
 declare module '*.svg' {
     const content: React.FunctionComponent<React.SVGAttributes<SVGElement>>;
     export default content;
@@ -20,6 +24,10 @@ declare global {
 /**********************************************************************
  * Generic State Store Types
  **********************************************************************/
+type GenericStateStore<V> = {
+    [K in keyof V]: V[K] | null;
+};
+
 type StateSlice = {
     [key: string]: AmbiguousObject | AmbiguousObject[];
 };
