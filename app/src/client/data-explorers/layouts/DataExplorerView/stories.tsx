@@ -7,12 +7,12 @@ import {
 } from 'storybook-addon-remix-react-router';
 
 import type { DataExplorersStore } from '@nlpssa-app-types/common/main';
-import storyData from 'client/_story-data';
+import { getStoryArticleData } from 'client/_story-data';
 import { DataExplorerView } from 'client/data-explorers/layouts';
 import { dataExplorersRoutes } from 'client/data-explorers/routes';
 import { AppStateProvider } from 'client/data-explorers/store';
 
-const articleData = storyData.getStoryArticleData().data as DataExplorersStore['articleData'];
+const articleData = getStoryArticleData().data as DataExplorersStore['articleData'];
 
 const meta = {
     title: 'Data Explorers/DataExplorerView',

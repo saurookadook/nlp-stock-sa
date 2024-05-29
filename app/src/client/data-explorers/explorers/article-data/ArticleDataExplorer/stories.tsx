@@ -7,7 +7,7 @@ import {
 } from 'storybook-addon-remix-react-router';
 
 import { InitialArticleDataExplorerPageData } from '@nlpssa-app-types/common/main';
-import storyData from 'client/_story-data';
+import { getStoryArticleData } from 'client/_story-data';
 import { ArticleDataExplorer } from 'client/data-explorers/explorers';
 import { dataExplorersRoutes } from 'client/data-explorers/routes';
 import { AppStateProvider } from 'client/data-explorers/store';
@@ -32,7 +32,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const BaseArticleDataExplorer: Story = {
-    args: storyData.getStoryArticleData(),
+    args: getStoryArticleData(),
     render: (args) => {
         const { data } = args as InitialArticleDataExplorerPageData;
         return (

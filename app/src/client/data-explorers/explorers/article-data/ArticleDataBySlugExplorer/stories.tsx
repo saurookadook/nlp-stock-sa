@@ -7,7 +7,7 @@ import {
     withRouter,
 } from 'storybook-addon-remix-react-router';
 
-import storyData from 'client/_story-data';
+import { getStoryArticleData } from 'client/_story-data';
 import { ArticleDataBySlugExplorer } from 'client/data-explorers/explorers';
 import { dataExplorersRoutes } from 'client/data-explorers/routes';
 import { AppStateProvider } from 'client/data-explorers/store';
@@ -31,7 +31,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const articleData = storyData.getStoryArticleData().data;
+const articleData = getStoryArticleData().data;
 
 // TODO: is it possible to use controls from Storybook to change the slug value?
 export const BaseArticleDataBySlugExplorerDOOG: Story = {

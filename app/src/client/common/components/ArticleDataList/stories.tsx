@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import storyData from 'client/_story-data';
+import { getStoryArticleData } from 'client/_story-data';
 import { ArticleDataList } from 'client/common/components';
 
 const meta = {
@@ -16,7 +16,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const { articleData } = storyData.getStoryArticleData().data![0];
+const { articleData } = getStoryArticleData().data![0];
 
 export const BaseArticleDataList: Story = {
     args: {
