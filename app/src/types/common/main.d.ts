@@ -86,13 +86,17 @@ type GroupedArticleData = {
     articleData: ArticleDataEntry[];
 };
 
-type InitialArticleDataBySlugExplorerPageData = {
+type ArticleDataBySlugApiData = {
     data: GroupedArticleData | null;
 };
 
-type InitialArticleDataExplorerPageData = {
+type InitialArticleDataBySlugExplorerPageData = ArticleDataBySlugApiData;
+
+type ArticleDataApiData = {
     data: GroupedArticleData[] | null;
 };
+
+type InitialArticleDataExplorerPageData = ArticleDataApiData;
 
 type InitialHomePageData = {
     data: GroupedArticleData[] | null;

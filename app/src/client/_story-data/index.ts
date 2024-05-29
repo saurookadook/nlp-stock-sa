@@ -1,7 +1,2 @@
-import * as articleStoryData from './articleData';
-import * as articleStoryDataBySlug from './articleDataBySlug';
-
-export default {
-    ...articleStoryData,
-    ...articleStoryDataBySlug,
-};
+export * from './articleData';
+export * from './stockDataAll';
