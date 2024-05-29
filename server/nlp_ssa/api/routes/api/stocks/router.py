@@ -29,11 +29,11 @@ async def read_singular_stock_by_quote_stock_symbol(stock_slug: str):
 
 @router.get("/api/stocks", response_model=AllStocksResponse)
 async def read_all_stocks():
-    from models.stock import StockDB
+    from models.stock import StockDB, Stock
 
     all_stocks = db_session.execute(select(StockDB).limit(100)).scalars().all()
 
-    return {"data": all_stocks}
+    return {"data": [Stock.model_validate(s) for s in all_stocks]}
 
 
 @router.post("/api/stocks/new")
