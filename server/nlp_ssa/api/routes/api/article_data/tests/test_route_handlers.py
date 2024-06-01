@@ -1,5 +1,3 @@
-import pytest
-
 from api.routes.api.article_data.models import GroupedArticleData
 from api.routes.api.article_data.route_handlers import (
     get_all_article_data,
@@ -8,95 +6,6 @@ from api.routes.api.article_data.route_handlers import (
 from models.article_data import ArticleData
 from models.article_data.factories import ArticleDataFactory
 from models.stock.factories import StockFactory
-
-
-@pytest.fixture
-def mock_stocks(mock_db_session):
-    ntdof_stock = StockFactory(quote_stock_symbol="NTDOF")
-    tsla_stock = StockFactory(quote_stock_symbol="TSLA")
-
-    mock_db_session.commit()
-
-    return ntdof_stock, tsla_stock
-
-
-@pytest.fixture
-def mock_ntdof_article_data(mock_db_session, mock_stocks, mock_utcnow):
-    ntdof_stock, _ = mock_stocks
-
-    ntdof_article_data = [
-        ArticleDataFactory(
-            quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-11),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-17),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-20),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-23),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-30),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-50),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-        ),
-    ]
-
-    mock_db_session.commit()
-
-    return [ArticleData.model_validate(ad) for ad in ntdof_article_data]
-
-
-@pytest.fixture
-def mock_tsla_article_data(mock_db_session, mock_stocks, mock_utcnow):
-    _, tsla_stock = mock_stocks
-
-    tsla_article_data = [
-        ArticleDataFactory(
-            quote_stock_symbol=tsla_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-6),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=tsla_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-12),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=tsla_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-13),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=tsla_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-18),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=tsla_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-22),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=tsla_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-29),
-        ),
-        ArticleDataFactory(
-            quote_stock_symbol=tsla_stock.quote_stock_symbol,
-            updated_at=mock_utcnow.shift(days=-37),
-        ),
-    ]
-
-    mock_db_session.commit()
-
-    return [ArticleData.model_validate(ad) for ad in tsla_article_data]
 
 
 def test_get_all_article_data_one_stock(

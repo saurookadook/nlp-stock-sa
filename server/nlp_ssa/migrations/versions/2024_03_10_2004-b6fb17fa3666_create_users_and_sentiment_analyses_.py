@@ -39,12 +39,14 @@ def upgrade() -> None:
         sa.Column(
             "created_at",
             db.db.ArrowDateClass(timezone=True),
+            # TODO: this should probably use sa.func.now()
             server_default=sa.text("now()"),
             nullable=False,
         ),
         sa.Column(
             "updated_at",
             db.db.ArrowDateClass(timezone=True),
+            # TODO: this should probably use sa.func.now()
             server_default=sa.text("now()"),
             nullable=False,
         ),
@@ -60,12 +62,14 @@ def upgrade() -> None:
         sa.Column(
             "created_at",
             db.db.ArrowDateClass(timezone=True),
+            # TODO: this should probably use sa.func.now()
             server_default=sa.text("now()"),
             nullable=False,
         ),
         sa.Column(
             "updated_at",
             db.db.ArrowDateClass(timezone=True),
+            # TODO: this should probably use sa.func.now()
             server_default=sa.text("now()"),
             nullable=False,
         ),

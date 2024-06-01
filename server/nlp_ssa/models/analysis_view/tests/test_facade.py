@@ -4,11 +4,6 @@ from models.analysis_view import AnalysisView, AnalysisViewFacade
 from models.analysis_view.factories import AnalysisViewFactory
 
 
-@pytest.fixture
-def analysis_view_facade(mock_db_session):
-    return AnalysisViewFacade(db_session=mock_db_session)
-
-
 def test_get_one_by_id(mock_db_session, analysis_view_facade):
     mock_analysis_view = AnalysisViewFactory()
     mock_db_session.commit()

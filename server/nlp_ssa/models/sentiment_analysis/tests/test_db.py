@@ -1,7 +1,6 @@
 import arrow
 import pytest
 from sqlalchemy import select, and_
-from unittest import mock
 from uuid import UUID
 
 from models.sentiment_analysis import (
@@ -10,12 +9,6 @@ from models.sentiment_analysis import (
 )
 from models.sentiment_analysis.factories import SentimentAnalysisFactory
 from models.stock.factories import StockFactory
-
-
-@pytest.fixture(autouse=True)
-def mock_utcnow():
-    mock.patch("arrow.utcnow", return_value=arrow.get(2024, 3, 11))
-    return mock_utcnow
 
 
 @pytest.fixture
@@ -54,5 +47,5 @@ def test_sentiment_analysis_db(mock_db_session, expected_sentiment_analysis_dict
     )
     assert result.score == expected_sentiment_analysis_dict["score"]
     assert result.sentiment.value == expected_sentiment_analysis_dict["sentiment"]
-    assert result.created_at == arrow.get(2020, 4, 15).to("utc")
-    assert result.updated_at == arrow.get(2020, 4, 15).to("utc")
+    assert result.created_at == arrow.get(2024, 4, 1).to("utc")
+    assert result.updated_at == arrow.get(2024, 4, 1).to("utc")

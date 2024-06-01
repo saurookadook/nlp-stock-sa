@@ -1,17 +1,10 @@
 import arrow
 import pytest
 from sqlalchemy import select, and_
-from unittest import mock
 from uuid import UUID
 
 from models.stock import StockDB
 from models.stock.factories import StockFactory
-
-
-@pytest.fixture(autouse=True)
-def mock_utcnow():
-    mock.patch("arrow.utcnow", return_value=arrow.get(2024, 3, 11))
-    return mock_utcnow
 
 
 @pytest.fixture
@@ -39,5 +32,5 @@ def test_stock_db(mock_db_session, expected_stock_dict):
     assert result.id == expected_stock_dict["id"]
     assert result.quote_stock_symbol == expected_stock_dict["quote_stock_symbol"]
     assert result.full_stock_symbol == expected_stock_dict["full_stock_symbol"]
-    assert result.created_at == arrow.get(2020, 4, 15)
-    assert result.updated_at == arrow.get(2020, 4, 15)
+    assert result.created_at == arrow.get(2024, 4, 1).to("utc")
+    assert result.updated_at == arrow.get(2024, 4, 1).to("utc")
