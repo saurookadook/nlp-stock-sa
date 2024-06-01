@@ -1,5 +1,6 @@
 from uuid import UUID
-from sqlalchemy import select
+from sqlalchemy import desc, literal_column, or_, select, update
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict, List
 
@@ -42,7 +43,17 @@ class SentimentAnalysisFacade:
     def get_all_by_stock_symbol(
         self, quote_stock_symbol: str
     ) -> List[SentimentAnalysis]:
-        return []
+        results = (
+            self.db_session.execute(
+                select(SentimentAnalysisDB)
+                .where(SentimentAnalysisDB.quote_stock_symbol == quote_stock_symbol)
+                .order_by(desc(SentimentAnalysisDB.updated_at))
+            )
+            .scalars()
+            .all()
+        )
+
+        return [SentimentAnalysis.model_validate(result) for result in results]
 
     def create_or_update(self, *, payload: Dict) -> SentimentAnalysis:
         pass
