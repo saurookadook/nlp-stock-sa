@@ -28,7 +28,16 @@ class SentimentAnalysisFacade:
     def get_one_by_source_group_id(
         self, source_group_id: str | UUID
     ) -> SentimentAnalysis:
-        pass
+        try:
+            sentiment_analysis = self.db_session.execute(
+                select(SentimentAnalysisDB).where(
+                    SentimentAnalysisDB.source_group_id == source_group_id
+                )
+            ).scalar_one()
+        except NoResultFound:
+            raise SentimentAnalysisFacade.NoResultFound
+
+        return SentimentAnalysis.model_validate(sentiment_analysis)
 
     def get_all_by_stock_symbol(
         self, quote_stock_symbol: str
