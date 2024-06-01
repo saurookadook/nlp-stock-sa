@@ -1,3 +1,4 @@
+import arrow
 from uuid import UUID
 from sqlalchemy import desc, literal_column, or_, select, update
 from sqlalchemy.dialects.postgresql import insert
@@ -56,10 +57,41 @@ class SentimentAnalysisFacade:
         return [SentimentAnalysis.model_validate(result) for result in results]
 
     def create_or_update(self, *, payload: Dict) -> SentimentAnalysis:
-        pass
+        maybe_one = self._find_one_if_exists(
+            row_id=payload.get("id"), source_group_id=payload.get("source_group_id")
+        )
+        if maybe_one:
+            return self.update(payload=payload)
+
+        insert_stmt = insert(SentimentAnalysisDB).values(**payload)
+
+        full_stmt = insert_stmt.on_conflict_do_update(
+            constraint=SentimentAnalysisDB.__table__.primary_key,
+            set_=dict(**payload, updated_at=arrow.utcnow()),
+        ).returning(literal_column("*"))
+
+        sentiment_analysis = self.db_session.execute(full_stmt).fetchone()
+        self.db_session.flush()
+
+        return SentimentAnalysis.model_validate(sentiment_analysis)
 
     def update(self, *, payload: Dict) -> SentimentAnalysis:
-        pass
+        update_stmt = (
+            update(SentimentAnalysisDB)
+            .where(
+                or_(
+                    SentimentAnalysisDB.id == payload.get("id"),
+                    SentimentAnalysisDB.source_group_id
+                    == payload.get("source_group_id"),
+                )
+            )
+            .values(**payload)
+        ).returning(literal_column("*"))
+
+        updated_record = self.db_session.execute(update_stmt).fetchone()
+        self.db_session.flush()
+
+        return SentimentAnalysis.model_validate(updated_record)
 
     def _find_one_if_exists(
         self, *, row_id: str | UUID = None, source_group_id: str | UUID = None
