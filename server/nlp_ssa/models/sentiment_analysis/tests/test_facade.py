@@ -102,10 +102,12 @@ def test_create_or_update_new_article_data(mock_db_session, sentiment_analysis_f
 
     result = sentiment_analysis_facade.create_or_update(payload=sentiment_analysis_dict)
 
-    assert result.quote_stock_symbol == sentiment_analysis_dict["quote_stock_symbol"]
-    assert result.source_group_id == sentiment_analysis_dict["source_group_id"]
-    assert result.score == sentiment_analysis_dict["score"]
-    assert result.sentiment == sentiment_analysis_dict["sentiment"]
+    assert result.quote_stock_symbol == sentiment_analysis_dict.get(
+        "quote_stock_symbol"
+    )
+    assert result.source_group_id == sentiment_analysis_dict.get("source_group_id")
+    assert result.score == sentiment_analysis_dict.get("score")
+    assert result.sentiment == sentiment_analysis_dict.get("sentiment")
     # TODO: find better way to mock server 'now' function
     assert isinstance(result.created_at, arrow.Arrow)
     assert isinstance(result.updated_at, arrow.Arrow)
@@ -137,7 +139,7 @@ def test_create_or_update_existing_article_data(
 
     sentiment_analysis_db = mock_db_session.execute(
         select(SentimentAnalysisDB).where(
-            SentimentAnalysisDB.id == updated_sentiment_analysis_dict["id"]
+            SentimentAnalysisDB.id == updated_sentiment_analysis_dict.get("id")
         )
     ).scalar_one()
 
@@ -146,8 +148,8 @@ def test_create_or_update_existing_article_data(
     assert result.id == mock_sentiment_analysis.id
     assert result.quote_stock_symbol == mock_sentiment_analysis.quote_stock_symbol
     assert result.source_group_id == mock_sentiment_analysis.source_group_id
-    assert result.score == updated_sentiment_analysis_dict["score"]
-    assert result.sentiment == updated_sentiment_analysis_dict["sentiment"]
+    assert result.score == updated_sentiment_analysis_dict.get("score")
+    assert result.sentiment == updated_sentiment_analysis_dict.get("sentiment")
     assert result.created_at == get_mock_utcnow()
     # TODO: find better way to mock server 'now' function
     assert isinstance(result.updated_at, arrow.Arrow)
