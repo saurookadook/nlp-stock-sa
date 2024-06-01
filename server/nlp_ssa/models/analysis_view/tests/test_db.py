@@ -1,7 +1,6 @@
 import arrow
 import pytest
 from sqlalchemy import select, and_
-from unittest import mock
 from uuid import UUID
 
 from models.analysis_view import AnalysisViewDB
@@ -9,12 +8,6 @@ from models.analysis_view.factories import AnalysisViewFactory
 
 
 mock_source_group_id = UUID("16ec77ca-7dd0-483d-be53-f625618d66ab")
-
-
-@pytest.fixture(autouse=True)
-def mock_utcnow():
-    mock.patch("arrow.utcnow", return_value=arrow.get(2024, 3, 11))
-    return mock_utcnow
 
 
 @pytest.fixture
@@ -43,8 +36,8 @@ def test_analysis_view_db_no_user(mock_db_session, expected_analysis_view_dict):
     assert result.source_group_id == expected_analysis_view_dict["source_group_id"]
     # assert result.owner_id == expected_analysis_view_dict["owner_id"]
     assert result.user_id is None
-    assert result.created_at == arrow.get(2020, 4, 15)
-    assert result.updated_at == arrow.get(2020, 4, 15)
+    assert result.created_at == arrow.get(2024, 4, 1).to("utc")
+    assert result.updated_at == arrow.get(2024, 4, 1).to("utc")
 
 
 def test_analysis_view_db_with_user(
@@ -67,5 +60,5 @@ def test_analysis_view_db_with_user(
     assert result.source_group_id == expected_analysis_view_dict["source_group_id"]
     # assert result.owner_id == expected_analysis_view_dict["owner_id"]
     assert result.user_id == mock_user.id
-    assert result.created_at == arrow.get(2020, 4, 15)
-    assert result.updated_at == arrow.get(2020, 4, 15)
+    assert result.created_at == arrow.get(2024, 4, 1).to("utc")
+    assert result.updated_at == arrow.get(2024, 4, 1).to("utc")
