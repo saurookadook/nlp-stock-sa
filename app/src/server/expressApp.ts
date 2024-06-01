@@ -4,7 +4,7 @@ import cors from 'cors';
 import express, { RequestHandler } from 'express';
 import { engine } from 'express-handlebars';
 
-import articleData from './article-data';
+import dataExplorers from './data-explorers';
 import homeRouter from './home';
 import loginRouter from './login';
 
@@ -27,19 +27,6 @@ expressApp.set('views', path.join(__dirname, 'src/server/views'));
 expressApp.use(cors());
 expressApp.use(express.json() as RequestHandler);
 
-// expressApp.post('/api', async function(req: Request, res: Response) {
-//     let body = plainToClass(RequestBody, req.body as Object);
-//     let validationErrors = await validate(body);
-//     if (validationErrors.length == 0) {
-//         const responseBody: ResponseBody = new ResponseBody("Hello, " + body.name);
-//         res.contentType('application/json');
-//         res.status(200);
-//         res.send(responseBody);
-//     } else {
-//         res.sendStatus(400);
-//     }
-// });
-
 // // This code makes sure that any request that does not matches a static file
 // // in the build folder, will just serve index.html. Client side routing is
 // // going to make sure that the correct content will be loaded.
@@ -55,10 +42,14 @@ expressApp.use(express.json() as RequestHandler);
 // });
 
 if (process.env.ENV !== 'production') {
+    // res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    // res.header('Expires', '-1');
+    // res.header('Pragma', 'no-cache');
+    // res.sendFile(path.join(__dirname, 'build', 'index.html'));
     expressApp.use('/dist', express.static(path.join(__dirname, 'dist')));
 }
 
-expressApp.use('/app/article-data', articleData);
+expressApp.use('/app/data-explorers', dataExplorers);
 expressApp.use('/app/login', loginRouter);
 expressApp.use('/app/', homeRouter);
 

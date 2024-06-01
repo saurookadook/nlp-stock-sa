@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { getStoryPageData } from 'client/_story-data/articleData';
+import { getStoryArticleData } from 'client/_story-data';
 import { BasePage } from 'client/common/layouts';
 
 const meta = {
@@ -26,7 +26,7 @@ export const BasePageWithTitle: Story = {
     render: (args) => (
         <BasePage {...args}>
             {/* TODO: put some actual stuff here :] */}
-            {getStoryPageData().data!.map((data, i) => (
+            {getStoryArticleData().data!.map((data, i) => (
                 <pre key={`article-data-${i}`}>{JSON.stringify(data, null, 4)}</pre>
             ))}
         </BasePage>

@@ -13,15 +13,12 @@ class ArticleData(BaseModel):
     source_group_id: UUID
     source_url: str
     created_at: SerializerArrowType
-    # created_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
     updated_at: SerializerArrowType
-    # updated_at: Annotated[str, WrapValidator(convert_to_arrow_instance)]
 
     author: Annotated[Optional[str], Field(default_factory=lambda: "")]
     last_updated_date: Annotated[
         Optional[SerializerArrowType], Field(default_factory=lambda: None)
     ]
-    # last_updated_date: Annotated[Optional[str], WrapValidator(convert_to_arrow_instance)]
     published_date: Annotated[
         Optional[SerializerArrowType], Field(default_factory=lambda: None)
     ]

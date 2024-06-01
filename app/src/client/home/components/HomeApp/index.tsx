@@ -1,17 +1,17 @@
 import React, { useContext, useEffect } from 'react';
 import { Button, Center, Container, Flex } from '@chakra-ui/react';
 
-import type { AbstractPageData, InitialHomePageData } from '@nlpssa-app-types/common/main';
-import { StockArticleDataGroup } from 'client/common/components';
+import type { HomeStore } from '@nlpssa-app-types/common/main';
+import { NoDataMessage, StockArticleDataGroup } from 'client/common/components';
 import { BasePage } from 'client/common/layouts';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchArticleData } from 'client/home/store/actions';
 
-function HomeApp({ initialPageData }: { initialPageData: InitialHomePageData }): React.ReactElement {
+function HomeApp(): React.ReactElement {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
 
-    const pageData = (initialPageData.data || state.pageData) as AbstractPageData['data'];
+    const { pageData } = state as HomeStore;
 
     useEffect(() => {
         if (state.pageData == null) {
@@ -19,7 +19,7 @@ function HomeApp({ initialPageData }: { initialPageData: InitialHomePageData }):
         }
     });
 
-    console.log('home - HomeApp', { initialPageData, state, pageData });
+    console.log('home - HomeApp', { state, pageData });
     return (
         <BasePage
             headingChildren={<Button>I&nbsp;AM BUTTON</Button>}
@@ -43,18 +43,20 @@ function HomeApp({ initialPageData }: { initialPageData: InitialHomePageData }):
                     w="100%"
                 >
                     <Flex className="article-data-list-wrapper" alignSelf="stretch" flexDirection="column">
-                        {pageData != null && pageData.length > 0
-                            ? pageData.map((groupedData, i) => {
-                                  const { quoteStockSymbol, articleData } = groupedData;
-                                  return (
-                                      <StockArticleDataGroup
-                                          key={`${quoteStockSymbol}-${i}`}
-                                          quoteStockSymbol={quoteStockSymbol}
-                                          articleData={articleData}
-                                      />
-                                  );
-                              })
-                            : 'No data :['}
+                        {pageData != null && pageData.length > 0 ? (
+                            pageData.map((groupedData, i) => {
+                                const { quoteStockSymbol, articleData } = groupedData;
+                                return (
+                                    <StockArticleDataGroup
+                                        key={`${quoteStockSymbol}-${i}`}
+                                        quoteStockSymbol={quoteStockSymbol}
+                                        articleData={articleData}
+                                    />
+                                );
+                            })
+                        ) : (
+                            <NoDataMessage />
+                        )}
                     </Flex>
                 </Center>
             </Container>

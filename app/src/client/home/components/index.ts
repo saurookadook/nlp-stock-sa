@@ -1,3 +1,3 @@
-import HomeApp from 'client/home/components/HomeApp';
+import HomeApp from './HomeApp';
 
 export { HomeApp };

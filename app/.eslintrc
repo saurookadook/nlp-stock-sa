@@ -112,6 +112,7 @@
         // "react-hooks/exhaustive-deps": "warn",
         "semi": [1, "always"],
         "space-before-function-paren": 0,
+        "@typescript-eslint/no-unused-vars": 1,
         "wrap-iife": [2, "inside"]
     },
     "settings": {
@@ -147,6 +148,7 @@
         {
             "files": ["./webpack.config.js"],
             "rules": {
+                "@typescript-eslint/no-explicit-any": 1,
                 "@typescript-eslint/no-var-requires": 0
             }
         }

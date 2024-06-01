@@ -2,6 +2,10 @@ import 'react';
 
 type AmbiguousObject = Record<string, unknown>;
 
+type NullableObject<T> = {
+    [K in keyof T]: T[K] | null;
+};
+
 declare module '*.svg' {
     const content: React.FunctionComponent<React.SVGAttributes<SVGElement>>;
     export default content;
@@ -20,8 +24,12 @@ declare global {
 /**********************************************************************
  * Generic State Store Types
  **********************************************************************/
+type GenericStateStore<V> = {
+    [K in keyof V]: V[K] | null;
+};
+
 type StateSlice = {
-    [key: string]: AmbiguousObject;
+    [key: string]: AmbiguousObject | AmbiguousObject[];
 };
 
 interface CombinedState extends StateSlice {
@@ -32,6 +40,11 @@ interface BaseReducerAction {
     type: string;
     payload?: StateSlice;
 }
+
+type GenericReducerAction<T> = {
+    type: string;
+    payload?: T;
+};
 
 type GenericReducerFunc<S, A> = (state: S, action: A) => S;
 
@@ -73,14 +86,64 @@ type GroupedArticleData = {
     articleData: ArticleDataEntry[];
 };
 
-type AbstractPageData = {
-    data: GroupedArticleData[] | null;
-};
-
-type InitialArticleDataBySlugPageData = {
+type ArticleDataBySlugApiData = {
     data: GroupedArticleData | null;
 };
 
+type InitialArticleDataBySlugExplorerPageData = ArticleDataBySlugApiData;
+
+type ArticleDataApiData = {
+    data: GroupedArticleData[] | null;
+};
+
+type InitialArticleDataExplorerPageData = ArticleDataApiData;
+
 type InitialHomePageData = {
     data: GroupedArticleData[] | null;
+};
+
+type AbstractPageData = {
+    data: GroupedArticleData | GroupedArticleData[] | null;
+};
+
+/**********************************************************************
+ * Stocks
+ **********************************************************************/
+type StockDataEntry = {
+    id: string;
+    quoteStockSymbol: string;
+    fullStockSymbol: string;
+    exchangeName?: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+type AllStockData = {
+    data: StockDataEntry[] | null;
+};
+
+type SingularStockData = {
+    data: StockDataEntry | null;
+};
+
+/**********************************************************************
+ * Data Explorers
+ **********************************************************************/
+type ArticleDataBySlugStateSlice = GroupedArticleData;
+type ArticleDataStateSlice = GroupedArticleData[];
+type StockDataAllStateSlice = StockDataEntry[];
+type StockDataSingularStateSlice = StockDataEntry;
+
+type DataExplorersStore = {
+    articleDataBySlug: ArticleDataBySlugStateSlice;
+    articleData: ArticleDataStateSlice;
+    stockDataAll: StockDataAllStateSlice;
+    stockDataSingular: StockDataSingularStateSlice;
+};
+
+/**********************************************************************
+ * Home
+ **********************************************************************/
+type HomeStore = {
+    pageData: GroupedArticleData[] | null;
 };
