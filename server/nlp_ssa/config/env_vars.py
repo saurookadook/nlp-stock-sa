@@ -1,7 +1,8 @@
 import os
 
-BASE_API_URL = os.getenv("BASE_API_URL", default="https://nlp-ssa.dev/api")
-BASE_APP_URL = os.getenv("BASE_APP_URL", default="https://nlp-ssa.dev/app")
+BASE_DOMAIN = os.getenv("BASE_DOMAIN", default="nlp-ssa.dev")
+BASE_API_URL = f"https://{BASE_DOMAIN}/api"
+BASE_APP_URL = f"https://{BASE_DOMAIN}/app"
 
 CSRF_SECRET = os.getenv("CSRF_SECRET", "TMP")
 DATABASE_USER = os.getenv("DATABASE_USER", "postgres")
