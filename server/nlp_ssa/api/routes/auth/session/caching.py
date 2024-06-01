@@ -25,9 +25,9 @@ def build_cache_key(*, entity_id: str, entity_type: str = "session"):
     return f"{entity_type}:{entity_id}"
 
 
-def safe_get_from_session_cache(key: str):
+async def safe_get_from_session_cache(key: str):
     logger.info(f"Attempting to retrieve value for '{key}' from session cache...")
-    cached_value = retry_client.get(key)
+    cached_value = await retry_client.get(key)
     if not cached_value:
         logger.warning(f"No value found for '{key}' in session cache")
         return None
@@ -40,27 +40,29 @@ def safe_get_from_session_cache(key: str):
         return cached_value
 
 
-def safe_update_in_session_cache(
+async def safe_update_in_session_cache(
     cache_key: str, details: Dict[str, Union[str, bool, int, float]]
 ):
     logger.info(
         f"Updating value for key '{cache_key}' in session cache with expiration TTL of '{TTL_SECONDS}'"
     )
 
-    retry_client.set(cache_key, json.dumps(details).encode("utf-8"), expire=TTL_SECONDS)
+    await retry_client.set(
+        cache_key, json.dumps(details).encode("utf-8"), expire=TTL_SECONDS
+    )
 
     return details
 
 
-def get_user_from_session_cache(request: Request):
+async def get_user_from_session_cache(request: Request):
 
     session_id = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
     cache_key = build_cache_key(session_id)
 
-    cache_value = safe_get_from_session_cache(cache_key)
+    cache_value = await safe_get_from_session_cache(cache_key)
 
     if not cache_value:
-        cache_value = safe_update_in_session_cache(
+        cache_value = await safe_update_in_session_cache(
             cache_key=cache_key, details=dict(session_id=session_id)
         )
 
