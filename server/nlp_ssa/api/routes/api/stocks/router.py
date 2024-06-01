@@ -24,6 +24,8 @@ async def read_singular_stock_by_quote_stock_symbol(stock_slug: str):
     except Exception as e:
         logger.error(e)
 
+    # TODO: maybe get some other related data?
+
     return {"data": singular_stock}
 
 
