@@ -7,11 +7,6 @@ from models.stock.stock import Stock
 from models.stock.factories import StockFactory
 
 
-@pytest.fixture
-def stock_facade(mock_db_session):
-    return StockFacade(db_session=mock_db_session)
-
-
 def test_get_one_by_id(mock_db_session, stock_facade):
     mock_stock = StockFactory()
     mock_db_session.commit()

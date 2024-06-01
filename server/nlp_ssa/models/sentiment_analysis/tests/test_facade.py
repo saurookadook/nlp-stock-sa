@@ -8,11 +8,6 @@ from models.sentiment_analysis.factories import SentimentAnalysisFactory
 from models.stock.factories import StockFactory
 
 
-@pytest.fixture
-def sentiment_analysis_facade(mock_db_session):
-    return SentimentAnalysisFacade(db_session=mock_db_session)
-
-
 def test_get_one_by_id(mock_db_session, sentiment_analysis_facade):
     mock_stock = StockFactory()
     mock_db_session.commit()
