@@ -1,7 +1,8 @@
-import arrow
 import factory
+
+from utils.testing_mocks import get_mock_utcnow
 
 
 class TimestampsMixinFactory(factory.alchemy.SQLAlchemyModelFactory):
-    created_at = arrow.get(2020, 4, 15)
-    updated_at = arrow.get(2020, 4, 15)
+    created_at = get_mock_utcnow()
+    updated_at = get_mock_utcnow()

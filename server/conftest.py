@@ -1,4 +1,3 @@
-import arrow
 import os
 import pytest
 import requests_mock
@@ -9,6 +8,7 @@ from starlette.testclient import TestClient
 from api.app import app
 from db import db_session, engine, db_session_dependency
 from models.user.factories import UserFactory
+from utils.testing_mocks import get_mock_utcnow
 
 
 def pytest_sessionstart(session):
@@ -48,10 +48,6 @@ def server_api_client(mock_db_session):
 def http_requests_mock():
     with requests_mock.Mocker(real_http=True) as mock:
         yield mock
-
-
-def get_mock_utcnow():
-    return arrow.get(2024, 4, 19).to("utc")
 
 
 @pytest.fixture
