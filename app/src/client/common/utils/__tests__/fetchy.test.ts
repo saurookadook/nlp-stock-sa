@@ -71,6 +71,41 @@ describe("fetchy - a 'fetch' wrapper", () => {
         jest.restoreAllMocks();
     });
 
+    describe('public configuration APIs', () => {
+        test('fetchy.addHeaders', () => {
+            const defaultHeaders = {
+                Accept: 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8',
+            };
+
+            let fetchyHeaders = fetchy.getHeaders();
+            expect(fetchyHeaders).toStrictEqual(defaultHeaders);
+
+            fetchyHeaders = fetchy.addHeaders({
+                cookie: 'super-duper-secure-cookie',
+                'csrf-token': 'super-secure-token',
+            });
+            expect(fetchyHeaders).toStrictEqual({
+                ...defaultHeaders,
+                cookie: 'super-duper-secure-cookie',
+                'csrf-token': 'super-secure-token',
+            });
+        });
+
+        test('fetchy.getBaseURL', () => {
+            const baseURL = fetchy.getBaseURL();
+            expect(baseURL).toBe('');
+        });
+
+        test('fetchy.setBaseURL', () => {
+            let baseURL = fetchy.getBaseURL();
+            expect(baseURL).toBe('');
+
+            baseURL = fetchy.setBaseURL(baseCatApiURL);
+            expect(baseURL).toBe(baseCatApiURL);
+        });
+    });
+
     describe('GET requests', () => {
         it('should retrieve JSON', async () => {
             const response = await fetchy
