@@ -5,6 +5,7 @@ import { renderWithContext } from 'client/common/utils';
 import { HomeApp } from 'client/home/components';
 import { AppStateProvider } from 'client/home/store';
 
+// TODO: move this to central place for mock data
 const mockGroupedArticleData = [
     {
         quoteStockSymbol: 'DOOG',
