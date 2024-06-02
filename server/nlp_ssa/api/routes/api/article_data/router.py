@@ -9,11 +9,12 @@ from api.routes.api.article_data.route_handlers import (
     get_all_article_data,
     get_article_data_by_stock_slug,
 )
-from config import configure_logging
+from api.routes.auth.session.caching import safe_get_from_session_cache
+from config.logging import ExtendedLogger
 from db import db_session
 
-# configure_logging(app_name="nlp_ssa.api.routes.article_data")
-logger = logging.getLogger(__file__)
+
+logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 
 
@@ -42,6 +43,12 @@ async def read_article_data():
     - grouped by stock slug
     - ordered by date_modified (published date?) descending
     """
+    maybe_user_from_cache = await safe_get_from_session_cache(
+        cache_key="session:saurookadook"
+    )
+    logger.log_info_centered(" maybe_user_from_cache ")
+    logger.info(maybe_user_from_cache)
+
     article_data_grouped_by_stock_slug = []
 
     try:

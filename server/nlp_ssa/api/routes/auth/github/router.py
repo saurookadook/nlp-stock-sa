@@ -1,15 +1,24 @@
 import logging
 import requests
+import secrets
 from fastapi import APIRouter, Depends, Request, HTTPException, status
 from fastapi.responses import RedirectResponse
 from urllib import parse
 
-# TODO: remove
+from pprint import pprint as prettyprint
 from rich import inspect
+
+# TODO: remove
+from api.routes.auth.session.caching import (
+    build_cache_key,
+    safe_update_in_session_cache,
+)
 from config import env_vars
+from config.logging import ExtendedLogger
+from constants import ONE_DAY_IN_SECONDS
 
 
-logger = logging.getLogger(__file__)
+logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 
 
@@ -65,8 +74,6 @@ async def github_oauth_callback(
     fast_api_request: Request = None,
     # token: str = Depends(oauth2_auth_code_scheme),
 ):
-    from pprint import pprint as prettyprint
-
     token_data = exchange_code_for_token(fast_api_request.query_params.get("code"))
 
     # example 'token_data' shape:
@@ -88,4 +95,23 @@ async def github_oauth_callback(
         user_info = await get_user_info_from_github(token=token)
         prettyprint(user_info, indent=4, width=200)
 
-    return RedirectResponse("https://nlp-ssa.dev/app")
+    username = user_info.get("login")
+    # cookie_value = f"{username}:{secrets.token_urlsafe(16)}"
+    session_cookie_config = dict(
+        key=env_vars.AUTH_COOKIE_KEY,
+        value=f"{username}:{secrets.token_urlsafe(17)}",
+        max_age=ONE_DAY_IN_SECONDS,
+        domain=env_vars.BASE_DOMAIN,
+        httponly=True,
+        # samesite='strict'
+    )
+    # TODO: figure out why memcached server doesn't seem to be running
+    await safe_update_in_session_cache(
+        cache_key=build_cache_key(entity_id=username),
+        details=dict(cookie_config=session_cookie_config, token_data=token_data),
+    )
+
+    response = RedirectResponse("https://nlp-ssa.dev/app")
+    response.set_cookie(**session_cookie_config)
+
+    return response
