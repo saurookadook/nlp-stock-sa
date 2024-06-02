@@ -2,8 +2,10 @@ import 'react';
 
 type AmbiguousObject = Record<string, unknown>;
 
+type NullableValue<V> = V | null;
+
 type NullableObject<T> = {
-    [K in keyof T]: T[K] | null;
+    [K in keyof T]: NullableValue<T[K]>;
 };
 
 declare module '*.svg' {
