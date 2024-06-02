@@ -20,7 +20,7 @@ function MockResponsePromise(bodyJson: AmbiguousObject | null, options): Promise
     });
 }
 
-jest.spyOn(fetchy, '_fetch').mockImplementation((url, opts = {}) => {
+jest.spyOn(window, 'fetch').mockImplementation((url, opts = {}) => {
     const { method } = opts;
 
     if (method === 'GET') {
@@ -44,7 +44,7 @@ jest.spyOn(fetchy, '_fetch').mockImplementation((url, opts = {}) => {
             case `${baseCatApiURL}/names/new`:
                 return MockResponsePromise(
                     {
-                        reqBody: opts.body,
+                        reqBody: JSON.parse(opts.body as string),
                         success: true,
                     },
                     opts,
@@ -55,7 +55,7 @@ jest.spyOn(fetchy, '_fetch').mockImplementation((url, opts = {}) => {
             case `${baseCatApiURL}/names/update`:
                 return MockResponsePromise(
                     {
-                        reqBody: opts.body,
+                        reqBody: JSON.parse(opts.body as string),
                         success: true,
                     },
                     opts,
@@ -67,6 +67,10 @@ jest.spyOn(fetchy, '_fetch').mockImplementation((url, opts = {}) => {
 });
 
 describe("fetchy - a 'fetch' wrapper", () => {
+    beforeEach(() => {
+        fetchy.setBaseURL(baseCatApiURL);
+    });
+
     afterAll(() => {
         jest.restoreAllMocks();
     });
@@ -94,14 +98,14 @@ describe("fetchy - a 'fetch' wrapper", () => {
 
         test('fetchy.getBaseURL', () => {
             const baseURL = fetchy.getBaseURL();
-            expect(baseURL).toBe('');
+            expect(baseURL).toBe(baseCatApiURL);
         });
 
-        test('fetchy.setBaseURL', () => {
+        test('fetchy.setBaseURL - does not set URL if baseURL is already defined', () => {
             let baseURL = fetchy.getBaseURL();
-            expect(baseURL).toBe('');
+            expect(baseURL).toBe(baseCatApiURL);
 
-            baseURL = fetchy.setBaseURL(baseCatApiURL);
+            baseURL = fetchy.setBaseURL('http://localhost');
             expect(baseURL).toBe(baseCatApiURL);
         });
     });
@@ -118,6 +122,7 @@ describe("fetchy - a 'fetch' wrapper", () => {
         });
 
         it('should handle relative URLs', async () => {
+            fetchy.setBaseURL(baseCatApiURL);
             const request = await fetchy.get('/all');
             expect(request.status).toBe(200);
 

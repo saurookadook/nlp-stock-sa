@@ -35,6 +35,7 @@ const fetchy = (function () {
                 throw new TypeError("fetchy: argument 'baseURL' must be a non-empty string");
             }
             // TODO: should maybe parse 'baseURL' somehow to make sure it's URL safe?
+            console.log(`fetchy#privateSetBaseURL: '${baseURL}'`);
             _this.baseURL = baseURL;
 
             return _this.baseURL;
@@ -46,6 +47,7 @@ const fetchy = (function () {
      * of the Regular Expression from {@link https://datatracker.ietf.org/doc/html/rfc3986#appendix-B|RFC 3986, Appendix B}
      */
     const isAbsoluteURL = (reqString: string): boolean => {
+        // TODO: this RegEx isn't working :[
         return /^(([^:\/?#]+):)?(\/\/([^\/?#]*))?/im.test(reqString);
     };
 
@@ -56,6 +58,11 @@ const fetchy = (function () {
     const isFrontend = (): boolean => typeof window !== 'undefined';
 
     const isHttps = (): boolean => _this.baseURL.includes('https');
+
+    /**
+     * @description Resolves and forwards arguments to correct `fetch` reference
+     */
+    const $fetch: Window['fetch'] = (...args) => (isFrontend() ? window.fetch(...args) : global.fetch(...args));
 
     function appendSearchParamsToUrl(url: string, searchParams: NullableValue<AmbiguousObject>): string {
         if (searchParams == null || Object.keys(searchParams).length < 1) {
@@ -87,8 +94,16 @@ const fetchy = (function () {
             throw new TypeError("fetchy: argument 'urlOrPath' must be a non-empty string");
         }
 
-        if (isFrontend() && !_this.baseURL && !isAbsoluteURL(urlOrPath)) {
-            _this.privateSetBaseURL(`${window.location.protocol}//${window.location.host}`);
+        console.log(
+            'fetchy#doFetch:\n',
+            `    urlOrPath === ${urlOrPath}\n`,
+            `    _this.baseURL === ${_this.baseURL}\n`,
+            `    isAbsoluteURL === ${isAbsoluteURL(urlOrPath)}\n`,
+        );
+        if (!_this.baseURL && !isAbsoluteURL(urlOrPath)) {
+            // TODO: better solution for this...?
+            const { protocol, host } = isFrontend() ? window.location : { protocol: 'https', host: 'nlp-ssa.dev' };
+            _this.privateSetBaseURL(`${protocol}//${host}`);
         }
 
         // TODO: this feels... inefficient?
@@ -111,13 +126,9 @@ const fetchy = (function () {
         );
 
         // TODO: more to do here...?
+        console.log(`fetchy: making request to '${requestUrl}'`);
         return $fetch(requestUrl, combinedOptions);
     }
-
-    /**
-     * @description Resolves and forwards arguments to correct `fetch` reference
-     */
-    const $fetch: Window['fetch'] = (...args) => (isFrontend() ? window.fetch(...args) : global.fetch(...args));
 
     function $doGET(urlOrPath: string, options = {}) {
         const getOptions = {
@@ -161,6 +172,7 @@ const fetchy = (function () {
     }
 
     function $setBaseURL(baseURL: string) {
+        // TODO: not sure how I feel about this behavior...
         if (!_this.baseURL) {
             _this.baseURL = baseURL;
         }

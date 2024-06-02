@@ -105,7 +105,7 @@ const initialUserStateSlice: UserStateSlice = {
 const initPageAction = ({ dispatch, data }) =>
     dispatch({
         type: mockActions.INIT_PAGE,
-        data,
+        payload: data,
     });
 
 const incrementCountAction = ({ dispatch }) => dispatch({ type: mockActions.INCREMENT_COUNT });
@@ -138,6 +138,7 @@ const renderStateSlices = (state: MockStateStore) => {
 
 const MockComponentUnderTest = () => {
     const { locals, pageData, user } = React.useContext(MockStateContext);
+    console.log('MockComponentUnderTest\n\n', { locals, pageData, user });
     const dispatch = React.useContext(MockDispatchContext);
 
     const hasInitialized = () => pageData != null && user != null;
@@ -185,7 +186,9 @@ describe('renderWithContext utility', () => {
     it('should render the component under test', async () => {
         renderWithContext(<MockComponentUnderTest />, MockProvider);
 
-        expect(screen.getAllByLabelText('Loading...')).toBeVisible();
+        await waitFor(() => {
+            expect(screen.getAllByLabelText('Loading...')).toBeVisible();
+        });
 
         await waitFor(() => {
             const stateSlicesElement = screen.getByLabelText('state slices');
@@ -208,6 +211,10 @@ describe('renderWithContext utility', () => {
                     isBlocked: false,
                 },
             },
+        });
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('state slices')).toBeInTheDocument();
         });
 
         await waitFor(() => {

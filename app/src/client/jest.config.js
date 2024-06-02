@@ -1,7 +1,7 @@
 import path from 'path';
 
 const __dirname = path.resolve();
-console.log(`in jest config: __dirname === ${__dirname}`);
+// console.log(`in jest config: __dirname === ${__dirname}`);
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 const jestConfig = {
