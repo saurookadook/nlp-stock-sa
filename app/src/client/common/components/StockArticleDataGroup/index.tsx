@@ -17,7 +17,7 @@ function StockArticleDataGroup({ articleData, quoteStockSymbol, routerDomAware =
     const seeAllTarget = `/app/data-explorers/article-data/${quoteStockSymbol}`;
 
     return (
-        <Box>
+        <Box id={`${quoteStockSymbol}-data-group`}>
             <Heading
                 alignItems="center" // force formatting
                 backgroundColor={headingBackgroundColor}
@@ -26,7 +26,7 @@ function StockArticleDataGroup({ articleData, quoteStockSymbol, routerDomAware =
                 display="flex"
                 padding="0.5rem 1rem"
             >
-                <Box as="span" fontWeight="700">
+                <Box as="span" fontWeight="700" className="quote-stock-symbol">
                     {quoteStockSymbol}
                 </Box>
                 <Spacer />
