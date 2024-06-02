@@ -20,6 +20,10 @@ const jestConfig = {
         '^types(.*)$': '<rootDir>/types/$1',
     },
     preset: 'ts-jest',
+    randomize: true,
+    // TODO: maybe add this....?
+    // https://github.com/Ashvin-Pal/jest-console-group-reporter
+    reporters: ['default', 'summary'],
     setupFilesAfterEnv: ['<rootDir>/client/setupTests.ts'],
     testEnvironment: 'jsdom',
     // transform: {
