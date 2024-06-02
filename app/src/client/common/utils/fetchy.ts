@@ -8,7 +8,7 @@ type FetchyThis = {
     headers: AmbiguousObject; // TODO
     httpAgent: NullableValue<http.Agent>;
     httpsAgent: NullableValue<https.Agent>;
-    options: AmbiguousObject;
+    options: AmbiguousObject; // TODO
     privateSetBaseURL: (baseURL: string) => string;
 };
 
@@ -111,15 +111,15 @@ const fetchy = (function () {
         );
 
         // TODO: more to do here...?
-        return _fetch(requestUrl, combinedOptions);
+        return $fetch(requestUrl, combinedOptions);
     }
 
     /**
      * @description Resolves and forwards arguments to correct `fetch` reference
      */
-    const _fetch: Window['fetch'] = (...args) => (isFrontend() ? window.fetch(...args) : global.fetch(...args));
+    const $fetch: Window['fetch'] = (...args) => (isFrontend() ? window.fetch(...args) : global.fetch(...args));
 
-    function doGET(urlOrPath: string, options = {}) {
+    function $doGET(urlOrPath: string, options = {}) {
         const getOptions = {
             ...options,
             method: 'GET',
@@ -127,7 +127,7 @@ const fetchy = (function () {
         return doFetch(urlOrPath, getOptions);
     }
 
-    function doPOST(urlOrPath: string, { bodyJson = {}, options = {} }) {
+    function $doPOST(urlOrPath: string, { bodyJson = {}, options = {} }) {
         const postOptions = {
             ...options,
             body: JSON.stringify(bodyJson),
@@ -136,7 +136,7 @@ const fetchy = (function () {
         return doFetch(urlOrPath, postOptions);
     }
 
-    function doPUT(urlOrPath: string, { bodyJson = {}, options = {} }) {
+    function $doPUT(urlOrPath: string, { bodyJson = {}, options = {} }) {
         const putOptions = {
             ...options,
             body: JSON.stringify(bodyJson),
@@ -145,11 +145,22 @@ const fetchy = (function () {
         return doFetch(urlOrPath, putOptions);
     }
 
-    function getBaseURL(): string {
+    function $addHeaders(headers: AmbiguousObject) {
+        for (const [key, value] of Object.entries(headers)) {
+            _this.headers[key] = value;
+        }
+        return _this.headers;
+    }
+
+    function $getHeaders() {
+        return _this.headers;
+    }
+
+    function $getBaseURL(): string {
         return _this.baseURL;
     }
 
-    function setBaseURL(baseURL: string) {
+    function $setBaseURL(baseURL: string) {
         if (!_this.baseURL) {
             _this.baseURL = baseURL;
         }
@@ -157,13 +168,15 @@ const fetchy = (function () {
     }
 
     return {
-        _fetch: _fetch,
-        get: doGET,
-        post: doPOST,
-        put: doPUT,
-        // delete: doDELETE,
-        getBaseURL: getBaseURL,
-        setBaseURL: setBaseURL,
+        _fetch: $fetch,
+        get: $doGET,
+        post: $doPOST,
+        put: $doPUT,
+        // delete: $doDELETE,
+        addHeaders: $addHeaders,
+        getHeaders: $getHeaders,
+        getBaseURL: $getBaseURL,
+        setBaseURL: $setBaseURL,
     };
 })();
 
