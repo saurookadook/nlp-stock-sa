@@ -149,6 +149,7 @@
             "files": ["__tests__/**/*", "**/*.test.{ts,tsx}"],
             "plugins": ["jest"],
             "env": {
+                "jest": true,
                 "jest/globals": true
             }
         },
