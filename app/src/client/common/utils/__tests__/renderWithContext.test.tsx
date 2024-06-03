@@ -138,7 +138,7 @@ const renderStateSlices = (state: MockStateStore) => {
 
 const MockComponentUnderTest = () => {
     const { locals, pageData, user } = useContext(MockStateContext);
-    console.log('MockComponentUnderTest\n\n', { locals, pageData, user });
+    // console.log('MockComponentUnderTest\n\n', { locals, pageData, user });
     const dispatch = useContext(MockDispatchContext);
 
     const hasInitialized = () => pageData != null && user != null;
@@ -184,12 +184,14 @@ describe('renderWithContext utility', () => {
     });
 
     it('should render the component under test', async () => {
+        jest.useFakeTimers();
         renderWithContext(<MockComponentUnderTest />, MockProvider);
 
-        // TODO: maybe need to use fake timers...?
         await waitFor(() => {
-            expect(screen.getAllByLabelText('Loading...')).toBeVisible();
+            expect(screen.getByLabelText('Loading...')).toBeVisible();
         });
+
+        jest.runOnlyPendingTimers();
 
         await waitFor(() => {
             const stateSlicesElement = screen.getByLabelText('state slices');
@@ -197,6 +199,7 @@ describe('renderWithContext utility', () => {
             expect(stateSlicesElement.querySelectorAll('#pageData > li')).toHaveLength(4);
             expect(stateSlicesElement.querySelectorAll('#user > li')).toHaveLength(3);
         });
+        jest.useRealTimers();
     });
 
     it("should render the component correctly based on the passed 'state'", async () => {
