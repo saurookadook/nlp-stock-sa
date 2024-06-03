@@ -187,6 +187,10 @@ describe('renderWithContext utility', () => {
         jest.useFakeTimers();
         renderWithContext(<MockComponentUnderTest />, MockProvider);
 
+        /**
+         * TODO: not sure why this test is throwing this warning:
+         * Warning: An update to MockProvider inside a test was not wrapped in act(...).
+         */
         await waitFor(() => {
             expect(screen.getByLabelText('Loading...')).toBeVisible();
         });
