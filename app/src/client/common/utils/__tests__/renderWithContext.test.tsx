@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import * as React from 'react';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { cleanup, screen, waitFor } from '@testing-library/react';
 
 import { BaseReducerAction } from '@nlpssa-app-types/common/main';
@@ -18,12 +18,12 @@ type MockStateStore = {
     user: UserStateSlice;
 };
 
-const MockStateContext = React.createContext<MockStateStore>({
+const MockStateContext = createContext<MockStateStore>({
     locals: { count: 0 },
     pageData: {},
     user: {},
 });
-const MockDispatchContext = React.createContext<React.Dispatch<BaseReducerAction>>((action) => action);
+const MockDispatchContext = createContext<React.Dispatch<BaseReducerAction>>((action) => action);
 
 const mockLocalsStateSlice = [
     (stateSlice, action) => {
@@ -105,14 +105,14 @@ const initialUserStateSlice: UserStateSlice = {
 const initPageAction = ({ dispatch, data }) =>
     dispatch({
         type: mockActions.INIT_PAGE,
-        data,
+        payload: data,
     });
 
 const incrementCountAction = ({ dispatch }) => dispatch({ type: mockActions.INCREMENT_COUNT });
 
 const MockProvider = ({ children, initialState }) => {
-    const recursivelyMergedState = deeplyMerge(mockCombinedDefaultState, initialState);
-    const [state, dispatch] = React.useReducer(mockCombinedReducer, recursivelyMergedState);
+    const recursivelyMergedState = deeplyMerge(deeplyMerge({}, mockCombinedDefaultState), initialState);
+    const [state, dispatch] = useReducer(mockCombinedReducer, recursivelyMergedState);
 
     return (
         <MockStateContext.Provider value={state}>
@@ -137,12 +137,13 @@ const renderStateSlices = (state: MockStateStore) => {
 };
 
 const MockComponentUnderTest = () => {
-    const { locals, pageData, user } = React.useContext(MockStateContext);
-    const dispatch = React.useContext(MockDispatchContext);
+    const { locals, pageData, user } = useContext(MockStateContext);
+    // console.log('MockComponentUnderTest\n\n', { locals, pageData, user });
+    const dispatch = useContext(MockDispatchContext);
 
     const hasInitialized = () => pageData != null && user != null;
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!hasInitialized()) {
             setTimeout(() => {
                 return initPageAction({
@@ -152,7 +153,7 @@ const MockComponentUnderTest = () => {
                         user: initialUserStateSlice,
                     },
                 });
-            });
+            }, 100);
         }
     }, [locals.count, pageData, user]);
 
@@ -183,9 +184,18 @@ describe('renderWithContext utility', () => {
     });
 
     it('should render the component under test', async () => {
+        jest.useFakeTimers();
         renderWithContext(<MockComponentUnderTest />, MockProvider);
 
-        expect(screen.getAllByLabelText('Loading...')).toBeVisible();
+        /**
+         * TODO: not sure why this test is throwing this warning:
+         * Warning: An update to MockProvider inside a test was not wrapped in act(...).
+         */
+        await waitFor(() => {
+            expect(screen.getByLabelText('Loading...')).toBeVisible();
+        });
+
+        jest.runOnlyPendingTimers();
 
         await waitFor(() => {
             const stateSlicesElement = screen.getByLabelText('state slices');
@@ -193,6 +203,7 @@ describe('renderWithContext utility', () => {
             expect(stateSlicesElement.querySelectorAll('#pageData > li')).toHaveLength(4);
             expect(stateSlicesElement.querySelectorAll('#user > li')).toHaveLength(3);
         });
+        jest.useRealTimers();
     });
 
     it("should render the component correctly based on the passed 'state'", async () => {
@@ -208,6 +219,10 @@ describe('renderWithContext utility', () => {
                     isBlocked: false,
                 },
             },
+        });
+
+        await waitFor(() => {
+            expect(screen.getByLabelText('state slices')).toBeInTheDocument();
         });
 
         await waitFor(() => {
