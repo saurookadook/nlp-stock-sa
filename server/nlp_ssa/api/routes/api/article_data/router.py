@@ -1,5 +1,6 @@
 import logging
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Request
+from rich import inspect
 
 from api.routes.api.article_data.models import (
     ArticleDataResponse,
@@ -34,8 +35,19 @@ async def read_article_data_by_slug(stock_slug: str):
     }
 
 
+def maybe_get_user_from_cache(request: Request):
+    maybe_user_from_cache = safe_get_from_session_cache(
+        cache_key="session|saurookadook"
+    )
+
+    print(" maybe_user_from_cache ".center(120, "="))
+    inspect(maybe_user_from_cache, sort=True)
+
+    return maybe_user_from_cache
+
+
 @router.get("/api/article-data", response_model=ArticleDataResponse)
-async def read_article_data():
+async def read_article_data(maybe_user_from_cache=Depends(maybe_get_user_from_cache)):
     """Endpoint for getting all article data.
 
     Query results are
@@ -43,11 +55,6 @@ async def read_article_data():
     - grouped by stock slug
     - ordered by date_modified (published date?) descending
     """
-    maybe_user_from_cache = await safe_get_from_session_cache(
-        cache_key="session:saurookadook"
-    )
-    logger.log_info_centered(" maybe_user_from_cache ")
-    logger.info(maybe_user_from_cache)
 
     article_data_grouped_by_stock_slug = []
 
