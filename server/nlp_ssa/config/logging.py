@@ -1,6 +1,6 @@
 import logging
 
-from config import env_config
+from config import env_vars
 
 
 root_logger = logging.getLogger()
@@ -22,10 +22,11 @@ class ExtendedLogger(logging.getLoggerClass()):
         )  # to account for characters added by logging handlers
 
     def log_info_centered(self, msg, *args, **kwargs):
-        self.info(msg.center(self.window_width, "-"), *args, **kwargs)
+        self.log(logging.INFO, msg.center(self.window_width, "-"), *args, **kwargs)
 
     def log_info_section_start(self, entity_name: str, *args, **kwargs):
-        self.info(
+        self.log(
+            logging.INFO,
             f" 'Getting `{entity_name}` records...' ".center(self.window_width, "="),
             *args,
             **kwargs,
@@ -35,6 +36,7 @@ class ExtendedLogger(logging.getLoggerClass()):
         self, entity_name: str, entity_count: int, *args, **kwargs
     ):
         self.info(
+            logging.INFO,
             f" 'Done with `{entity_name}` records! Total: {entity_count}' ".center(
                 self.window_width, "="
             ),
@@ -47,7 +49,7 @@ logging.setLoggerClass(ExtendedLogger)
 
 
 def is_prod():
-    return env_config["env"].lower() == "prod"
+    return env_vars.ENV.lower() == "prod"
 
 
 def configure_logging(app_name: str):
@@ -60,7 +62,7 @@ def configure_logging(app_name: str):
             show_time=False, rich_tracebacks=True, tracebacks_theme="emacs"
         )
 
-    root_logger.setLevel(getattr(logging, env_config["log_level"].upper()))
+    root_logger.setLevel(getattr(logging, env_vars.LOG_LEVEL.upper()))
     console_handler.setFormatter(
         logging.Formatter(
             "{asctime} [{name}: {lineno}] [{levelname}]: {message}", style="{"
