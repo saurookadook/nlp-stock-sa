@@ -4,10 +4,10 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column
 
 from db import Base
-from models.mixins import TimestampsMixin
+from models.mixins import TimestampsMixinDB
 
 
-class StockDB(Base, TimestampsMixin):
+class StockDB(Base, TimestampsMixinDB):
     __tablename__ = "stocks"
 
     id: Mapped[uuid.UUID] = mapped_column(
