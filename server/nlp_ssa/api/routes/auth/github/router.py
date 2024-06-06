@@ -12,7 +12,8 @@ from rich import inspect
 # TODO: remove
 from api.routes.auth.session.caching import (
     build_cache_key,
-    safe_update_in_session_cache,
+    safe_set_in_session_cache,
+    get_or_set_user_session_cache,
 )
 from config import env_vars
 from config.logging import ExtendedLogger
@@ -91,24 +92,27 @@ def get_auth_info_from_github(request: Request):
 
 
 # TODO: better name...?
-def handle_user_session_dependency(
+def create_or_update_user_session(
     request: Request, auth_info: Dict = Depends(get_auth_info_from_github)
 ):
+    user_session_key = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
+
     token_data = auth_info.get("token_data")
     user_info = auth_info.get("user_info")
 
     username = user_info.get("login")
+    cookie_value = user_session_key or f"{username}:{secrets.token_urlsafe(17)}"
     session_cookie_config = dict(
         key=env_vars.AUTH_COOKIE_KEY,
-        value=f"{username}:{secrets.token_urlsafe(17)}",
+        value=cookie_value,
         max_age=ONE_DAY_IN_SECONDS,
         domain=env_vars.BASE_DOMAIN,
         httponly=True,
         # samesite='strict'
     )
 
-    updated = safe_update_in_session_cache(
-        cache_key=build_cache_key(entity_id=username),
+    updated = get_or_set_user_session_cache(
+        cache_key=build_cache_key(entity_key=cookie_value),
         details=dict(cookie_config=session_cookie_config, token_data=token_data),
     )
 
@@ -121,8 +125,8 @@ def handle_user_session_dependency(
 
 @router.get("/github-callback")
 async def github_oauth_callback(
-    fast_api_request: Request = None,
-    session_cookie_config: Dict = Depends(handle_user_session_dependency),
+    request: Request = None,
+    session_cookie_config: Dict = Depends(create_or_update_user_session),
     # token: str = Depends(oauth2_auth_code_scheme),
 ):
     response = RedirectResponse("https://nlp-ssa.dev/app")
