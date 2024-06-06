@@ -3,16 +3,16 @@ import logging
 from config import env_vars
 
 
-root_logger = logging.getLogger()
+BaseLoggerClass = logging.getLoggerClass()
 
 
-class ExtendedLogger(logging.getLoggerClass()):
+class ExtendedLogger(BaseLoggerClass):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        import os
-
         try:
+            import os
+
             raw_window_width, _ = os.get_terminal_size()
         except OSError:
             raw_window_width = 200
@@ -46,6 +46,8 @@ class ExtendedLogger(logging.getLoggerClass()):
 
 
 logging.setLoggerClass(ExtendedLogger)
+
+root_logger = logging.getLogger()
 
 
 def is_prod():
