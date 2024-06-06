@@ -73,6 +73,7 @@ services:
   server:
     depends_on:
       - database
+      - session-cache
     env_file: .env
     environment:
       EXAMPLE: woof
@@ -92,6 +93,8 @@ services:
 
   session-cache:
     image: memcached:1.6.10
+    networks:
+      - main_app
     platform: linux/amd64
     ports:
       - '11211:11211'

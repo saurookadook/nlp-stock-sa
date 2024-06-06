@@ -1,5 +1,6 @@
 import logging
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Request
+from rich import inspect
 
 from api.routes.api.article_data.models import (
     ArticleDataResponse,
@@ -9,11 +10,13 @@ from api.routes.api.article_data.route_handlers import (
     get_all_article_data,
     get_article_data_by_stock_slug,
 )
-from config import configure_logging
+from api.routes.auth.session.caching import build_cache_key, safe_get_from_session_cache
+from config import env_vars
+from config.logging import ExtendedLogger
 from db import db_session
 
-# configure_logging(app_name="nlp_ssa.api.routes.article_data")
-logger = logging.getLogger(__file__)
+
+logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 
 
@@ -33,8 +36,21 @@ async def read_article_data_by_slug(stock_slug: str):
     }
 
 
+def maybe_get_user_from_cache(request: Request):
+    user_session_key = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
+    logger.debug(f" user_session_key: {user_session_key} ".center(120, "="))
+    maybe_user_from_cache = safe_get_from_session_cache(
+        cache_key=build_cache_key(entity_key=user_session_key)
+    )
+
+    logger.debug(" maybe_user_from_cache ".center(120, "="))
+    inspect(maybe_user_from_cache, sort=True)
+
+    return maybe_user_from_cache
+
+
 @router.get("/api/article-data", response_model=ArticleDataResponse)
-async def read_article_data():
+async def read_article_data(maybe_user_from_cache=Depends(maybe_get_user_from_cache)):
     """Endpoint for getting all article data.
 
     Query results are
@@ -42,6 +58,7 @@ async def read_article_data():
     - grouped by stock slug
     - ordered by date_modified (published date?) descending
     """
+
     article_data_grouped_by_stock_slug = []
 
     try:

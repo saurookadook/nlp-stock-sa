@@ -26,48 +26,32 @@ oauth2_auth_code_scheme = OAuth2AuthorizationCodeBearer(
 github_client = WebApplicationClient(env_vars.GITHUB_OAUTH_CLIENT_ID)
 
 
-@router.get("/login", response_model=LoginResponse)
-async def read_login(
-    fast_api_request: Request = None,
-    csrf_protect: CsrfProtect = Depends(),
-):
-    # await csrf_protect.validate_csrf(fast_api_request)
-
-    fast_api_request.state.github_oauth_state = secrets.token_urlsafe(16)
+def build_github_url(request: Request):
+    request.state.github_oauth_state = secrets.token_urlsafe(16)
 
     github_url = github_client.prepare_request_uri(
         env_vars.GITHUB_OAUTH_AUTH_URL,
         redirect_uri="https://nlp-ssa.dev/api/auth/github-callback",
         scope=["read:user", "user:email"],
         # TODO: eventually need this lol
-        # state=fast_api_request.state.github_oauth_state,
+        # state=request.state.github_oauth_state,
         allow_signup="true",
     )
 
     logger.info(f"github_url: '{github_url}'")
 
-    return {"github_url": github_url}
+    return github_url
 
 
-@router.post("/login/google")
-async def attempt_google_login(
-    fast_api_request: Request = None, csrf_protect: CsrfProtect = Depends()
+@router.get("/login", response_model=LoginResponse)
+async def read_login(
+    request: Request = None,
+    csrf_protect: CsrfProtect = Depends(),
+    github_url: str = Depends(build_github_url),
 ):
-    # await csrf_protect.validate_csrf(fast_api_request)
-    return {"message": "woohoooo"}
-    # fast_api_request.session["state"] = secrets.token_urlsafe(16)
+    # await csrf_protect.validate_csrf(request)
 
-    # github_url = github_client.prepare_request_uri(
-    #     GITHUB_OAUTH_URL,
-    #     redirect_uri=env_vars.GITHUB_OAUTH_CALLBACK_URL,
-    #     scope=["read:user"],
-    #     state=fast_api_request.session["state"],
-    #     allow_signup="true",
-    # )
-
-    # logger.info(f"github_url: '{github_url}'")
-
-    # return {"github_url": github_url}
+    return {"github_url": github_url}
 
 
 # TODO: these might get removed :)

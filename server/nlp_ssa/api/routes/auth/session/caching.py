@@ -1,16 +1,20 @@
 import json
 import logging
-from fastapi import Request
 from pymemcache import Client
 from pymemcache.client.retrying import RetryingClient
 from pymemcache.exceptions import MemcacheUnexpectedCloseError
 from typing import Dict, Union
 
 from config import env_vars
+from config.logging import ExtendedLogger
 
-logger = logging.getLogger(__file__)
+logger: ExtendedLogger = logging.getLogger(__file__)
 
-base_client = Client((env_vars.MEMCACHED_HOST, env_vars.MEMCACHED_PORT))
+base_client = Client(
+    (env_vars.MEMCACHED_HOST, env_vars.MEMCACHED_PORT),
+    connect_timeout=0.25,
+    timeout=0.25,
+)
 retry_client = RetryingClient(
     base_client,
     attempts=3,
@@ -21,53 +25,74 @@ retry_client = RetryingClient(
 TTL_SECONDS = 600  # 60s * 10 = 10min
 
 
-def build_cache_key(*, entity_id: str, entity_type: str = "session"):
-    return f"{entity_type}:{entity_id}"
+# TODO: is the entity_type overkill...?
+def build_cache_key(*, entity_key: str, entity_type: str = "session"):
+    # TODO: maybe the entity_type could instead be some hashed value in an env variable?
+    return f"{entity_type}|{entity_key}"
 
 
-async def safe_get_from_session_cache(key: str):
-    logger.info(f"Attempting to retrieve value for '{key}' from session cache...")
-    cached_value = await retry_client.get(key)
+def safe_get_from_session_cache(*, cache_key: str):
+    # logger.debug(" safe_get_from_session_cache ".center(120, "="))
+    logger.debug(f"{'-' * 24} safe_get_from_session_cache")
+    logger.debug(
+        f"Attempting to retrieve value for '{cache_key}' from session cache..."
+    )
+    cached_value = retry_client.get(cache_key)
+    logger.debug(" response from memcached ".center(120, "="))
+    logger.debug(cached_value)
+
     if not cached_value:
-        logger.warning(f"No value found for '{key}' in session cache")
+        logger.warning(f"No value found for '{cache_key}' in session cache")
         return None
 
     try:
         return json.loads(cached_value.decode("utf-8"))
     except Exception as e:
-        logger.warning(f"Encountered error deserializing cached value for '{key}'")
+        logger.warning(
+            f"Encountered error deserializing cached value for '{cache_key}'"
+        )
         logger.warning(e)
         return cached_value
 
 
-async def safe_update_in_session_cache(
-    cache_key: str, details: Dict[str, Union[str, bool, int, float]]
+def safe_set_in_session_cache(
+    *,
+    cache_key: str,
+    details: Dict[str, Union[str, bool, int, float]],  # TODO: make this type better
 ):
+    # logger.debug(" safe_update_from_session_cache ".center(120, "="))
+    logger.debug(f"{'-' * 24} safe_update_from_session_cache")
     logger.info(
         f"Updating value for key '{cache_key}' in session cache with expiration TTL of '{TTL_SECONDS}'"
     )
 
-    await retry_client.set(
+    cache_result = retry_client.set(
         cache_key, json.dumps(details).encode("utf-8"), expire=TTL_SECONDS
     )
 
-    return details
+    if cache_result:
+        return details
+    else:
+        logger.warning("safe_set_in_session_cache: cache miss!!! :o")
+        return None
 
 
-async def get_user_from_session_cache(request: Request):
+def get_or_set_user_session_cache(
+    *, cache_key: str, details: Dict[str, Union[str, bool, int, float]]
+):
+    logger.debug(" get_or_set_user_session_cache ".center(120, "="))
 
-    session_id = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
-    cache_key = build_cache_key(session_id)
-
-    cache_value = await safe_get_from_session_cache(cache_key)
+    cache_value = safe_get_from_session_cache(cache_key=cache_key)
 
     if not cache_value:
-        cache_value = await safe_update_in_session_cache(
-            cache_key=cache_key, details=dict(session_id=session_id)
-        )
+        cache_value = safe_set_in_session_cache(cache_key=cache_key, details=details)
 
-    logger.info("=" * 100)
-    logger.info(f" RETRIEVED CACHE VALUE FOR '{cache_key}' ")
-    logger.info(cache_value)
-    logger.info("=" * 100)
+    logger.debug("=" * 100)
+    logger.debug(f" RETRIEVED CACHE VALUE FOR '{cache_key}' ")
+    logger.debug(cache_value)
+    logger.debug("=" * 100)
     return cache_value
+
+
+def debugging_wrapper(key):
+    return safe_get_from_session_cache(cache_key=key)
