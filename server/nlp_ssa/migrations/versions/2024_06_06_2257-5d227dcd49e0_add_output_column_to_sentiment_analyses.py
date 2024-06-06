@@ -12,6 +12,7 @@ from sqlalchemy.dialects import postgresql
 from typing import Sequence, Union
 
 import db
+from models.sentiment_analysis.db import OUTPUT_SERVER_DEFAULT
 
 # revision identifiers, used by Alembic.
 revision: str = "5d227dcd49e0"
@@ -26,7 +27,7 @@ def upgrade() -> None:
         sa.Column(
             "output",
             postgresql.JSONB(astext_type=sa.Text()),
-            server_default="{}",
+            server_default=OUTPUT_SERVER_DEFAULT,
             nullable=False,
         ),
     )

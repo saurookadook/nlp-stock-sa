@@ -15,6 +15,8 @@ SENTIMENT_ENUM = postgresql.ENUM(
     metadata=Base.metadata,
 )
 
+OUTPUT_SERVER_DEFAULT = '{"compound":0,"neg":0,"neu":0,"pos":0}'
+
 
 class OutputColumn:
     compound: Mapped[float]
@@ -36,7 +38,10 @@ class SentimentAnalysisDB(Base, TimestampsMixinDB):
         postgresql.UUID(as_uuid=True), nullable=False
     )
     output: Mapped[OutputColumn] = mapped_column(
-        postgresql.JSONB, default={}, server_default="{}", nullable=False
+        postgresql.JSONB,
+        default={"compound": 0, "neg": 0, "neu": 0, "pos": 0},
+        server_default=OUTPUT_SERVER_DEFAULT,
+        nullable=False,
     )
     score: Mapped[float] = mapped_column(Float)
     sentiment: Mapped[SentimentEnum] = mapped_column(
