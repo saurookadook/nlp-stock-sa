@@ -4,7 +4,7 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column
 
 from db import Base
-from models.mixins import TimestampsMixin
+from models.mixins import TimestampsMixinDB
 from models.sentiment_analysis.constants import SentimentEnum
 
 
@@ -16,7 +16,14 @@ SENTIMENT_ENUM = postgresql.ENUM(
 )
 
 
-class SentimentAnalysisDB(Base, TimestampsMixin):
+class OutputColumn:
+    compound: Mapped[float]
+    neg: Mapped[float]
+    neu: Mapped[float]
+    pos: Mapped[float]
+
+
+class SentimentAnalysisDB(Base, TimestampsMixinDB):
     __tablename__ = "sentiment_analyses"
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -27,6 +34,9 @@ class SentimentAnalysisDB(Base, TimestampsMixin):
     )  # reuse as slug?
     source_group_id: Mapped[uuid.UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), nullable=False
+    )
+    output: Mapped[OutputColumn] = mapped_column(
+        postgresql.JSONB, default={}, server_default="{}", nullable=False
     )
     score: Mapped[float] = mapped_column(Float)
     sentiment: Mapped[SentimentEnum] = mapped_column(
