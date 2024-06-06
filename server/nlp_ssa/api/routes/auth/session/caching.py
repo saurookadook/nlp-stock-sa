@@ -27,6 +27,7 @@ TTL_SECONDS = 600  # 60s * 10 = 10min
 
 # TODO: is the entity_type overkill...?
 def build_cache_key(*, entity_key: str, entity_type: str = "session"):
+    # TODO: maybe the entity_type could instead be some hashed value in an env variable?
     return f"{entity_type}|{entity_key}"
 
 
