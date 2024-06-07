@@ -30,6 +30,16 @@ Base.metadata.naming_conventions = {
     "pk": "%(table_name)s_pkey",
 }
 
+# TODO: maybe a nice refactor :]
+# @as_declarative()
+# class Base(object):
+#
+#     @declared_attr
+#     def __tablename__(cls):
+#         # TODO: Transform to snake case and pluralize?
+#         return cls.__name__.lower()
+#
+
 db_session = scoped_session(
     sessionmaker(autocommit=False, autoflush=False, bind=engine, future=True)
 )

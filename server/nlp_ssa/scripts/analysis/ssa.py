@@ -6,12 +6,12 @@ from vaderSentiment import vaderSentiment as vs
 from uuid import UUID, uuid4
 
 from config.logging import ExtendedLogger, configure_logging
+from constants import SentimentEnum
 from db import db_session
 
 # from models.analysis_view import AnalysisViewFacade
 from models.article_data import ArticleData, ArticleDataFacade
 from models.sentiment_analysis import SentimentAnalysis, SentimentAnalysisFacade
-from models.sentiment_analysis.constants import SentimentEnum
 from models.stock import StockDB
 from models.user import UserFacade
 

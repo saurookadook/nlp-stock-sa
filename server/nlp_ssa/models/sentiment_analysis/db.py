@@ -3,9 +3,9 @@ from sqlalchemy import Float, ForeignKey
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column
 
+from constants import SentimentEnum
 from db import Base
 from models.mixins import TimestampsMixinDB
-from models.sentiment_analysis.constants import SentimentEnum
 
 
 SENTIMENT_ENUM = postgresql.ENUM(

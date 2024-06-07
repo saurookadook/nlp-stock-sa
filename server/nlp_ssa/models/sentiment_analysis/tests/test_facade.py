@@ -3,12 +3,12 @@ import pytest
 from sqlalchemy import select
 from uuid import UUID, uuid4
 
+from constants import SentimentEnum
 from models.sentiment_analysis import (
     SentimentAnalysis,
     SentimentAnalysisDB,
     SentimentAnalysisFacade,
 )
-from models.sentiment_analysis.constants import SentimentEnum
 from models.sentiment_analysis.factories import SentimentAnalysisFactory
 from models.stock.factories import StockFactory
 from utils.testing_mocks import get_mock_utcnow
