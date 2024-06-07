@@ -99,7 +99,7 @@ def get_scores_and_create_rows(
             sentiment_analysis_record = SentimentAnalysis(
                 id=uuid4(),
                 quote_stock_symbol=quote_stock_symbol,
-                source_group_id=source_group_id,
+                source_group_id=data.id,  # TODO: this is temporary until I get other tables and relationships created
                 output=polarity_scores_dict,
                 score=score,
                 sentiment=sentiment,
