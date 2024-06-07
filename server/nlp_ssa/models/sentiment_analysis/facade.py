@@ -63,11 +63,13 @@ class SentimentAnalysisFacade:
         if maybe_one:
             return self.update(payload=payload)
 
+        payload.setdefault("updated_at", arrow.utcnow())
+
         insert_stmt = insert(SentimentAnalysisDB).values(**payload)
 
         full_stmt = insert_stmt.on_conflict_do_update(
             constraint=SentimentAnalysisDB.__table__.primary_key,
-            set_=dict(**payload, updated_at=arrow.utcnow()),
+            set_=dict(**payload),
         ).returning(literal_column("*"))
 
         sentiment_analysis = self.db_session.execute(full_stmt).fetchone()
@@ -101,9 +103,9 @@ class SentimentAnalysisFacade:
         except SentimentAnalysisFacade.NoResultFound:
             pass
 
-        try:
-            return self.get_one_by_source_group_id(source_group_id)
-        except SentimentAnalysisFacade.NoResultFound:
-            pass
+        # try:
+        #     return self.get_one_by_source_group_id(source_group_id)
+        # except SentimentAnalysisFacade.NoResultFound:
+        #     pass
 
         return None
