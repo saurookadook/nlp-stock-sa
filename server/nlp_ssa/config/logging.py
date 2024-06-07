@@ -1,9 +1,24 @@
 import logging
+from enum import Enum
 
 from config import env_vars
 
 
 BaseLoggerClass = logging.getLoggerClass()
+
+
+class LogLevelEnum(Enum):
+
+    NOTSET = logging.NOTSET
+    DEBUG = logging.DEBUG
+    INFO = logging.INFO
+    WARNING = logging.WARNING
+    ERROR = logging.ERROR
+    CRITICAL = logging.CRITICAL
+
+    @classmethod
+    def level_values(cls):
+        return [level.value for level in cls]
 
 
 class ExtendedLogger(BaseLoggerClass):
@@ -21,10 +36,21 @@ class ExtendedLogger(BaseLoggerClass):
             raw_window_width - 80
         )  # to account for characters added by logging handlers
 
-    def log_info_centered(self, msg, *args, **kwargs):
+    # TODO: type annotation for "int in this Enum"?
+    def log_centered(self, log_level: int, msg: str, *args, **kwargs):
+        if (
+            not isinstance(log_level, int)
+            or log_level not in LogLevelEnum.level_values()
+        ):
+            log_level = LogLevelEnum.INFO.value
         self.log(logging.INFO, msg.center(self.window_width, "-"), *args, **kwargs)
 
-    def log_info_section_start(self, entity_name: str, *args, **kwargs):
+    def log_section_start(self, log_level: int, entity_name: str, *args, **kwargs):
+        if (
+            not isinstance(log_level, int)
+            or log_level not in LogLevelEnum.level_values()
+        ):
+            log_level = LogLevelEnum.INFO.value
         self.log(
             logging.INFO,
             f" 'Getting `{entity_name}` records...' ".center(self.window_width, "="),
@@ -32,9 +58,14 @@ class ExtendedLogger(BaseLoggerClass):
             **kwargs,
         )
 
-    def log_info_section_end(
-        self, entity_name: str, entity_count: int, *args, **kwargs
+    def log_section_end(
+        self, log_level: int, entity_name: str, entity_count: int, *args, **kwargs
     ):
+        if (
+            not isinstance(log_level, int)
+            or log_level not in LogLevelEnum.level_values()
+        ):
+            log_level = LogLevelEnum.INFO.value
         self.log(
             logging.INFO,
             f" 'Done with `{entity_name}` records! Total: {entity_count}' ".center(
@@ -43,6 +74,33 @@ class ExtendedLogger(BaseLoggerClass):
             *args,
             **kwargs,
         )
+
+    def log_info_centered(self, *args, **kwargs):
+        self.log_centered(LogLevelEnum.INFO.value, *args, **kwargs)
+
+    def log_info_section_start(self, *args, **kwargs):
+        self.log_section_start(LogLevelEnum.INFO.value, *args, **kwargs)
+
+    def log_info_section_end(self, *args, **kwargs):
+        self.log_section_end(LogLevelEnum.INFO.value, *args, **kwargs)
+
+    def log_warn_centered(self, *args, **kwargs):
+        self.log_centered(LogLevelEnum.WARNING.value, *args, **kwargs)
+
+    def log_warn_section_start(self, *args, **kwargs):
+        self.log_section_start(LogLevelEnum.WARNING.value, *args, **kwargs)
+
+    def log_warn_section_end(self, *args, **kwargs):
+        self.log_section_end(LogLevelEnum.WARNING.value, *args, **kwargs)
+
+    def log_error_centered(self, *args, **kwargs):
+        self.log_centered(LogLevelEnum.ERROR.value, *args, **kwargs)
+
+    def log_error_section_start(self, *args, **kwargs):
+        self.log_section_start(LogLevelEnum.ERROR.value, *args, **kwargs)
+
+    def log_error_section_end(self, *args, **kwargs):
+        self.log_section_end(LogLevelEnum.ERROR.value, *args, **kwargs)
 
 
 logging.setLoggerClass(ExtendedLogger)
