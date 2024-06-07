@@ -1,9 +1,10 @@
 import factory
 import uuid
 
+from constants import SentimentEnum
 from db import db_session
 from models.mixins import TimestampsMixinFactory
-from models.sentiment_analysis import SentimentAnalysisDB, SentimentEnum
+from models.sentiment_analysis import SentimentAnalysisDB
 
 
 class SentimentAnalysisFactory(

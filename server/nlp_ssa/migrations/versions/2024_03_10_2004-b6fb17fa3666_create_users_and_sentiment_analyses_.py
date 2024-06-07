@@ -10,9 +10,9 @@ import sqlalchemy as sa
 from alembic import op
 from typing import Sequence, Union
 
+from constants import SentimentEnum
 import db
 from migrations.alembic_utilities import create_pg_enum, drop_pg_enum
-from models.sentiment_analysis.constants import SentimentEnum
 
 # revision identifiers, used by Alembic.
 revision: str = "b6fb17fa3666"

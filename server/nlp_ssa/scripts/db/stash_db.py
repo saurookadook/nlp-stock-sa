@@ -6,10 +6,11 @@ from sqlalchemy import select
 from uuid import UUID
 
 from config import configure_logging
+from constants import SentimentEnum
 from db import db_session
 from models.article_data import ArticleDataDB
 from models.analysis_view import AnalysisViewDB
-from models.sentiment_analysis import SentimentAnalysisDB, SentimentEnum
+from models.sentiment_analysis import SentimentAnalysisDB
 from models.stock import StockDB
 from models.user import UserDB
 

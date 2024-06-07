@@ -1,8 +1,8 @@
 from pydantic import BaseModel, ConfigDict
 from uuid import UUID
 
+from constants import SentimentEnum
 from models.mixins import TimestampsMixin
-from models.sentiment_analysis import SentimentEnum
 
 
 class AnalysisOutput(BaseModel):
