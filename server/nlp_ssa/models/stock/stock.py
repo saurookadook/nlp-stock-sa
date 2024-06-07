@@ -2,10 +2,10 @@ from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from uuid import UUID
 
-from utils.pydantic_helpers import SerializerArrowType
+from models.mixins import TimestampsMixin
 
 
-class Stock(BaseModel):
+class Stock(BaseModel, TimestampsMixin):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
@@ -16,5 +16,3 @@ class Stock(BaseModel):
         ""  # TODO: for some bizarre reason, these raise errors without the default value
     )
     exchange_name: Optional[str]
-    created_at: SerializerArrowType
-    updated_at: SerializerArrowType

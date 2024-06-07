@@ -4,11 +4,11 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column
 
 from db import ArrowDate, Base
-from models.mixins import TimestampsMixin
+from models.mixins import TimestampsMixinDB
 from utils.pydantic_helpers import ArrowType
 
 
-class ArticleDataDB(Base, TimestampsMixin):
+class ArticleDataDB(Base, TimestampsMixinDB):
     __tablename__ = "article_data"
 
     id: Mapped[uuid.UUID] = mapped_column(

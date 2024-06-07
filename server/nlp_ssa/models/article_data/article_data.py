@@ -2,18 +2,17 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing import Annotated, Optional
 from uuid import UUID
 
+from models.mixins import TimestampsMixin
 from utils.pydantic_helpers import SerializerArrowType, generic_validator_with_default
 
 
-class ArticleData(BaseModel):
+class ArticleData(BaseModel, TimestampsMixin):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
     quote_stock_symbol: str
     source_group_id: UUID
     source_url: str
-    created_at: SerializerArrowType
-    updated_at: SerializerArrowType
 
     author: Annotated[Optional[str], Field(default_factory=lambda: "")]
     last_updated_date: Annotated[

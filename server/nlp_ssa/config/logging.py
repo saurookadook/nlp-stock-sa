@@ -35,7 +35,7 @@ class ExtendedLogger(BaseLoggerClass):
     def log_info_section_end(
         self, entity_name: str, entity_count: int, *args, **kwargs
     ):
-        self.info(
+        self.log(
             logging.INFO,
             f" 'Done with `{entity_name}` records! Total: {entity_count}' ".center(
                 self.window_width, "="
