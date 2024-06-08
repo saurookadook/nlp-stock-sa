@@ -1,5 +1,5 @@
 import factory
-import uuid
+from uuid import uuid4
 
 from db import db_session
 from models.mixins import TimestampsMixinFactory
@@ -11,7 +11,7 @@ class StockFactory(TimestampsMixinFactory, factory.alchemy.SQLAlchemyModelFactor
         model = StockDB
         sqlalchemy_session = db_session
 
-    id = factory.LazyFunction(lambda: uuid.uuid4())
+    id = factory.LazyFunction(lambda: uuid4())
     quote_stock_symbol = factory.Transformer(
         factory.Faker("random_letters", length=6),
         transform=lambda o: "".join(o).upper(),
