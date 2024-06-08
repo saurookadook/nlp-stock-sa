@@ -21,6 +21,7 @@ class SentimentAnalysisFactory(
     )
     source_group_id = factory.LazyFunction(lambda: uuid4())
     output = {"compound": 0, "neg": 0, "neu": 0, "pos": 0}
+    # TODO: make sentiment and score lazy attributes based on output
     sentiment = SentimentEnum.NEUTRAL.value
     score = factory.Transformer(
         factory.Faker("random_int", min=11, max=999),
