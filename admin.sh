@@ -177,6 +177,8 @@ scriptController() {
         done
     elif [ "$1" == "run-ssa" ]; then
         docker compose run --rm server python nlp_ssa/scripts/analysis/ssa.py
+    elif [ "$1" == "db-sandbox" ]; then
+        docker compose run --rm server python nlp_ssa/scripts/db/sandbox.py
     elif [ "$1" == "stash-db" ]; then
         docker compose run --rm server python nlp_ssa/scripts/db/stash_db.py
     elif [ "$1" == "pop-db" ]; then
