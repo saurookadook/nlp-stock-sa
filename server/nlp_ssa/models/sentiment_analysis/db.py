@@ -7,13 +7,6 @@ from constants.db_types import SentimentEnum, SentimentEnumDB
 from db import Base
 from models.mixins import TimestampsMixinDB
 
-# SentimentEnumDB = postgresql.ENUM(
-#     SentimentEnum,
-#     values_callable=lambda e: [x.value for x in e],
-#     name=SentimentEnum.db_type_name(),
-#     metadata=Base.metadata,
-# )
-
 
 OUTPUT_SERVER_DEFAULT = '{"compound":0,"neg":0,"neu":0,"pos":0}'
 
@@ -50,4 +43,3 @@ class SentimentAnalysisDB(Base, TimestampsMixinDB):
         default=SentimentEnum.NEUTRAL,
         nullable=False,
     )
-    # TODO: add 'output' column
