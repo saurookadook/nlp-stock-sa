@@ -34,5 +34,11 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_constraint(None, "sentiment_analyses", type_="foreignkey")
-    op.drop_constraint(None, "article_data", type_="foreignkey")
+    op.drop_constraint(
+        "sentiment_analyses_quote_stock_symbol_fkey",
+        "sentiment_analyses",
+        type_="foreignkey",
+    )
+    op.drop_constraint(
+        "article_data_quote_stock_symbol_fkey", "article_data", type_="foreignkey"
+    )
