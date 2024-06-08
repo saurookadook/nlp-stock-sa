@@ -27,6 +27,7 @@ class SentimentAnalysisDB(Base, TimestampsMixinDB):
     quote_stock_symbol: Mapped[str] = mapped_column(
         ForeignKey("stocks.quote_stock_symbol"), nullable=False
     )  # reuse as slug?
+    # TODO: should have source relationship...?
     source_group_id: Mapped[uuid.UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), nullable=False
     )
