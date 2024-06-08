@@ -5,10 +5,11 @@ from uuid import UUID
 
 from db import ArrowDate, Base
 from models.mixins import TimestampsMixinDB
+from models.source import PolymorphicSourceDB
 from utils.pydantic_helpers import ArrowType
 
 
-class ArticleDataDB(Base, TimestampsMixinDB):
+class ArticleDataDB(Base, TimestampsMixinDB, PolymorphicSourceDB):
     __tablename__ = "article_data"
 
     id: Mapped[UUID] = mapped_column(
