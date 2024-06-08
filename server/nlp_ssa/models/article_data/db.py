@@ -4,8 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from uuid import UUID
 
 from db import ArrowDate, Base
-from models.mixins import TimestampsMixinDB
-from models.source import PolymorphicSourceDB
+from models.mixins.db import TimestampsMixinDB, PolymorphicSourceDB
 from utils.pydantic_helpers import ArrowType
 
 

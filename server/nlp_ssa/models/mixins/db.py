@@ -10,8 +10,6 @@ from uuid import UUID
 from constants.db_types import SourceDiscriminatorEnum, SourceDiscriminatorEnumDB
 from db import ArrowDate, Base
 
-# from models.source.db import SourceAssociationDB
-
 
 class TimestampsMixinDB(object):
     created_at = Column(ArrowDate(), nullable=False, server_default=func.now())
