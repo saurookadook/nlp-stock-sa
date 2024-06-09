@@ -197,6 +197,10 @@ scriptController() {
             dropDatabase
         elif [ "$2" == "drop-test" ]; then
             dropTestDatabase
+        elif [ "$2" == "up-head" ]; then
+            docker compose run --rm server alembic upgrade head
+        elif [ "$2" == "down-1" ]; then
+            docker compose run --rm server alembic downgrade -1
         elif [ "$2" == "init" ]; then
             echo ""
             echo "======================================================================================"
