@@ -34,7 +34,7 @@ def upgrade() -> None:
             "discriminator",
             source_discriminators,
             nullable=False,
-            server_default=SourceDiscriminatorEnum.ARTICLE_DATA.value,
+            server_default=SourceDiscriminatorEnum.get_default_value(),
         ),
         sa.PrimaryKeyConstraint("id"),
     )
