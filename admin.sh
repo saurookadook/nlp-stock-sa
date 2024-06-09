@@ -177,12 +177,6 @@ scriptController() {
         done
     elif [ "$1" == "run-ssa" ]; then
         docker compose run --rm server python nlp_ssa/scripts/analysis/ssa.py
-    elif [ "$1" == "db-sandbox" ]; then
-        docker compose run --rm server python nlp_ssa/scripts/db/sandbox.py
-    elif [ "$1" == "stash-db" ]; then
-        docker compose run --rm server python nlp_ssa/scripts/db/stash_db.py
-    elif [ "$1" == "pop-db" ]; then
-        docker compose run --rm server python nlp_ssa/scripts/db/pop_db.py
     elif [ "$1" == "ad-to-csv" ]; then
         docker compose run --rm server python nlp_ssa/scripts/downloads/article_data_as_csv.py
     elif [ "$1" == "clean-ad" ]; then
@@ -197,6 +191,12 @@ scriptController() {
             dropDatabase
         elif [ "$2" == "drop-test" ]; then
             dropTestDatabase
+        elif [ "$2" == "sandbox" ]; then
+            docker compose run --rm server python nlp_ssa/scripts/db/sandbox.py
+        elif [ "$2" == "stash" ]; then
+            docker compose run --rm server python nlp_ssa/scripts/db/stash_db.py
+        elif [ "$2" == "pop" ]; then
+            docker compose run --rm server python nlp_ssa/scripts/db/pop_db.py
         elif [ "$2" == "up-head" ]; then
             docker compose run --rm server alembic upgrade head
         elif [ "$2" == "down-1" ]; then
