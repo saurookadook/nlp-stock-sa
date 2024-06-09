@@ -39,7 +39,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(
-        "source",
+        "sources",
         sa.Column("id", sa.UUID(), nullable=False),
         sa.Column("association_id", sa.UUID(), nullable=False),
         sa.Column(
@@ -73,7 +73,7 @@ def downgrade() -> None:
         "article_data_source_association_id_fkey", "article_data", type_="foreignkey"
     )
     op.drop_column("article_data", "source_association_id")
-    op.drop_table("source")
+    op.drop_table("sources")
     op.drop_table("source_association")
     drop_pg_enum(
         SourceDiscriminatorEnum.db_type_name(),
