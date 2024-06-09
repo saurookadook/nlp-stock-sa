@@ -1,6 +1,6 @@
 from sqlalchemy.dialects import postgresql
 
-from db.db import Base
+from db import Base
 from constants import SentimentEnum, SourceDiscriminatorEnum
 
 SentimentEnumDB = postgresql.ENUM(
