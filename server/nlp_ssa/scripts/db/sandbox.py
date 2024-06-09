@@ -4,14 +4,15 @@ from bdb import BdbQuit
 from pprint import pprint as pretty_print
 from rich import inspect
 from sqlalchemy import select
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from config import configure_logging
 from config.logging import ExtendedLogger
 from constants import SentimentEnum
-from db import db_session
+from db import Base, db_session
 from models.article_data import ArticleDataDB, ArticleDataFacade
 from models.analysis_view import AnalysisViewDB, AnalysisViewFacade
+from models.mixins import SourceAssociationDB, PolymorphicSourceDB
 from models.sentiment_analysis import SentimentAnalysisDB, SentimentAnalysisFacade
 from models.source import SourceDB, Source
 from models.stock import StockDB, StockFacade
@@ -31,10 +32,23 @@ def start_sandbox():
 
     logger.log_info_centered(" Starting sandbox!! ")
 
+    all_ntd_ad_db = (
+        db_session.execute(
+            select(ArticleDataDB).where(ArticleDataDB.quote_stock_symbol == "NTDOF")
+        )
+        .scalars()
+        .all()
+    )
+    ad = all_ntd_ad_db[1]
+    inspect(ad, methods=True, sort=True)
+
     try:
+        ad.source = SourceDB(id=uuid4())
+        inspect(ad, methods=True, sort=True)
         breakpoint()
-    except BdbQuit:
-        pass
+    except Exception as e:
+        inspect(e, sort=True)
+        breakpoint()
 
     logger.log_info_centered(" Stopping sandbox... ")
 
