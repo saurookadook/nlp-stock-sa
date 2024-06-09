@@ -1,7 +1,7 @@
-import uuid
 from sqlalchemy import Float, ForeignKey
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from uuid import UUID
 
 from constants.db_types import SentimentEnum, SentimentEnumDB
 from db import Base
@@ -21,15 +21,19 @@ class OutputColumn:
 class SentimentAnalysisDB(Base, TimestampsMixinDB):
     __tablename__ = "sentiment_analyses"
 
-    id: Mapped[uuid.UUID] = mapped_column(
+    id: Mapped[UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), primary_key=True, nullable=False
     )
     quote_stock_symbol: Mapped[str] = mapped_column(
         ForeignKey("stocks.quote_stock_symbol"), nullable=False
     )  # reuse as slug?
     # TODO: should have source relationship...?
-    source_group_id: Mapped[uuid.UUID] = mapped_column(
+    source_group_id: Mapped[UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), nullable=False
+    )
+    source_id: Mapped[UUID] = mapped_column(ForeignKey("sources.id"), nullable=True)
+    source: Mapped["SourceDB"] = relationship(
+        back_populates="related_sentiment_analyses"
     )
     output: Mapped[OutputColumn] = mapped_column(
         postgresql.JSONB,

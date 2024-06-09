@@ -20,3 +20,7 @@ class SourceDB(TimestampsMixinDB, Base):
         back_populates="source", uselist=False
     )
     data: AssociationProxy = association_proxy("association", "data")
+
+    related_sentiment_anslyses: Mapped[List["SentimentAnalysisDB"]] = relationship(
+        back_populates="source"
+    )

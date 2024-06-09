@@ -30,7 +30,7 @@ class SourceAssociationDB(Base):
         nullable=False,
     )
 
-    source: Mapped["SourceDB"] = relationship(
+    data_source: Mapped["SourceDB"] = relationship(
         "SourceDB", back_populates="association", uselist=False
     )
 
@@ -62,14 +62,16 @@ class PolymorphicSourceDB:
             dict(
                 __tablename__=None,
                 __mapper_args__={"polymorphic_identity": discriminator},
-                data=relationship(ModelName, back_populates="source_association"),
+                data=relationship(
+                    ModelName, back_populates="source_association", uselist=False
+                ),
             ),
         )
 
-        cls.source = association_proxy(
+        cls.data_source = association_proxy(
             "source_association",
-            "source",
-            creator=lambda source: assoc_cls(source=source),
+            "data_source",
+            creator=lambda data_source: assoc_cls(data_source=data_source),
         )
         return relationship(assoc_cls)
 
