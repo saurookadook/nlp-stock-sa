@@ -3,6 +3,7 @@ __all__ = [
     "analysis_view",
     "mixins",
     "sentiment_analysis",
+    "source",
     # "sentiment_analysis_archive",
     "stock",
     "user",

@@ -8,7 +8,7 @@ from db import Base
 from models.mixins.db import TimestampsMixinDB
 
 
-class SourceDB(Base, TimestampsMixinDB):
+class SourceDB(TimestampsMixinDB, Base):
     __tablename__ = "source"
 
     id: Mapped[UUID] = mapped_column(
@@ -18,6 +18,9 @@ class SourceDB(Base, TimestampsMixinDB):
         ForeignKey("source_association.id"), nullable=True
     )
     association: Mapped["SourceAssociationDB"] = relationship(
-        "SourceAssociationDB", backref="source", single_parent=True
+        "SourceAssociationDB", back_populates="source", uselist=False
     )
-    data: AssociationProxy = association_proxy("association", "data")
+    data: AssociationProxy = association_proxy("_association", "data")
+
+
+# Base.registry.configure()

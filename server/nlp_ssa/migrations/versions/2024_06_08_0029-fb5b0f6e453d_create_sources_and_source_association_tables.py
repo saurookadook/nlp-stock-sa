@@ -8,11 +8,10 @@ Create Date: 2024-06-08 00:29:00.879655
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects import postgresql
 from typing import Sequence, Union
 
-from constants import SourceDiscriminatorEnum
 import db
+from constants import SourceDiscriminatorEnum
 from migrations.alembic_utilities import create_pg_enum, drop_pg_enum
 
 # revision identifiers, used by Alembic.

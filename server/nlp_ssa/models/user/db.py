@@ -8,7 +8,7 @@ from db import Base
 from models.mixins import TimestampsMixinDB
 
 
-class UserDB(Base, TimestampsMixinDB):
+class UserDB(TimestampsMixinDB, Base):
     from models.analysis_view import AnalysisViewDB
 
     __tablename__ = "users"

@@ -8,7 +8,7 @@ from models.mixins.db import TimestampsMixinDB, PolymorphicSourceDB
 from utils.pydantic_helpers import ArrowType
 
 
-class ArticleDataDB(Base, TimestampsMixinDB, PolymorphicSourceDB):
+class ArticleDataDB(PolymorphicSourceDB, TimestampsMixinDB, Base):
     __tablename__ = "article_data"
 
     id: Mapped[UUID] = mapped_column(

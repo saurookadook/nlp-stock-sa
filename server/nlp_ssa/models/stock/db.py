@@ -7,7 +7,7 @@ from db import Base
 from models.mixins import TimestampsMixinDB
 
 
-class StockDB(Base, TimestampsMixinDB):
+class StockDB(TimestampsMixinDB, Base):
     __tablename__ = "stocks"
 
     id: Mapped[uuid.UUID] = mapped_column(
