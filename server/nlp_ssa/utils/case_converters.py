@@ -2,6 +2,7 @@ import re
 
 
 def convert_to_snake_case(string):
+    # TODO: this needs to be rewritten lol
     def replacement_func(matchObj):
         return "_"
 
