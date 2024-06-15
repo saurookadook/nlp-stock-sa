@@ -26,7 +26,7 @@ class SourceAssociationDB(Base):
     discriminator: Mapped[SourceDiscriminatorEnum] = mapped_column(
         SourceDiscriminatorEnumDB,
         server_default=SourceDiscriminatorEnum.get_default_value(),
-        default=SourceDiscriminatorEnum.get_default_value(),
+        default=SourceDiscriminatorEnum.get_default(),
         nullable=False,
     )
 
@@ -48,7 +48,7 @@ class PolymorphicSourceDB:
         return mapped_column(
             postgresql.UUID(as_uuid=True),
             ForeignKey(f"{SourceAssociationDB.__tablename__}.id"),
-            default=uuid4(),
+            default=uuid4,
         )
 
     @declared_attr

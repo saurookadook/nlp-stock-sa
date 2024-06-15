@@ -35,7 +35,7 @@ class Base(object):
         return alias_generators.to_snake(cls.__name__).replace(db_suffix, "")
 
     id: Mapped[UUID] = mapped_column(
-        postgresql.UUID(as_uuid=True), primary_key=True, default=uuid4()
+        postgresql.UUID(as_uuid=True), primary_key=True, default=uuid4
     )
 
 
