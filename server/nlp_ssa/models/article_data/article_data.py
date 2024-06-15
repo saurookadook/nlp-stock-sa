@@ -3,6 +3,7 @@ from typing import Annotated, Optional
 from uuid import UUID
 
 from models.mixins import TimestampsMixin
+from models.source.source import Source
 from utils.pydantic_helpers import SerializerArrowType, generic_validator_with_default
 
 
@@ -13,6 +14,7 @@ class ArticleData(BaseModel, TimestampsMixin):
     quote_stock_symbol: str
     source_group_id: UUID
     source_url: str
+    data_source: Annotated[Optional[Source], Field(default_factory=lambda: None)]
 
     author: Annotated[Optional[str], Field(default_factory=lambda: "")]
     last_updated_date: Annotated[

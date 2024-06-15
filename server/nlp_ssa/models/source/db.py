@@ -13,8 +13,7 @@ class SourceDB(TimestampsMixinDB, Base):
     __tablename__ = "sources"
 
     association_id: Mapped[UUID] = mapped_column(
-        postgresql.UUID(as_uuid=True),
-        ForeignKey(SourceAssociationDB.id),
+        postgresql.UUID(as_uuid=True), ForeignKey(SourceAssociationDB.id), unique=True
     )
     association: Mapped[SourceAssociationDB] = relationship(
         back_populates="data_source", uselist=False
