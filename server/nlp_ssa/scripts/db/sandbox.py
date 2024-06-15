@@ -43,7 +43,7 @@ def start_sandbox():
     inspect(ad, methods=True, sort=True)
 
     try:
-        ad.source = SourceDB(id=uuid4())
+        ad.data_source = SourceDB(id=uuid4())
         inspect(ad, methods=True, sort=True)
         breakpoint()
     except Exception as e:

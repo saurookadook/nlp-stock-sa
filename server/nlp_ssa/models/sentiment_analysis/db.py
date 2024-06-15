@@ -33,7 +33,7 @@ class SentimentAnalysisDB(Base, TimestampsMixinDB):
     )
     source_id: Mapped[UUID] = mapped_column(ForeignKey("sources.id"), nullable=True)
     source: Mapped["SourceDB"] = relationship(
-        back_populates="related_sentiment_analyses"
+        back_populates="related_sentiment_analyses", uselist=False
     )
     output: Mapped[OutputColumn] = mapped_column(
         postgresql.JSONB,

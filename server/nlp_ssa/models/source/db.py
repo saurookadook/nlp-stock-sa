@@ -17,10 +17,10 @@ class SourceDB(TimestampsMixinDB, Base):
         ForeignKey(SourceAssociationDB.id),
     )
     association: Mapped[SourceAssociationDB] = relationship(
-        back_populates="source", uselist=False
+        back_populates="data_source", uselist=False
     )
     data: AssociationProxy = association_proxy("association", "data")
 
-    related_sentiment_anslyses: Mapped[List["SentimentAnalysisDB"]] = relationship(
+    related_sentiment_analyses: Mapped[List["SentimentAnalysisDB"]] = relationship(
         back_populates="source"
     )
