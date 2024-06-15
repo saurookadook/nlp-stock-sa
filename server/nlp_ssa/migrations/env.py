@@ -2,12 +2,13 @@ from alembic import context
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 
+# from constants.db_types import SourceDiscriminatorEnumDB
 from config import env_config
 from db import Base
-
 from models.analysis_view.db import AnalysisViewDB
 from models.article_data.db import ArticleDataDB
 from models.sentiment_analysis.db import SentimentAnalysisDB
+from models.source.db import SourceDB
 from models.stock.db import StockDB
 from models.user.db import UserDB
 
