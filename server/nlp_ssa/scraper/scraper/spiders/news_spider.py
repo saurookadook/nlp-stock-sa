@@ -191,6 +191,10 @@ class NewsSpider(scrapy.Spider):
         news_item_configs = []
         for item in news_items:
             item_link = item.css("a::attr(href)").get()
+            if item_link is None:
+                logger.warning(f" WARNING: Skipping item: {item} ")
+                continue
+
             item_thumbnail = item.css("img::attr(src)").get()
             # self._debug_logger(
             #     header_text="news_item", variables=[item, item_link, item_thumbnail]
