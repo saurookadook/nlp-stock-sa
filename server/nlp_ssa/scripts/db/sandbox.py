@@ -8,17 +8,17 @@ from uuid import UUID
 
 from config import configure_logging
 from config.logging import ExtendedLogger
-from constants import SentimentEnum
+from constants import SentimentEnum, SourceDiscriminatorEnum
 from db import db_session
 from models.article_data import ArticleDataDB, ArticleDataFacade
 from models.analysis_view import AnalysisViewDB, AnalysisViewFacade
 from models.sentiment_analysis import SentimentAnalysisDB, SentimentAnalysisFacade
-from models.source import SourceDB, Source
+from models.source import SourceDB
 from models.stock import StockDB, StockFacade
 from models.user import UserDB, UserFacade
 
 
-configure_logging(app_name="stash_db")
+configure_logging(app_name="sandbox")
 logger: ExtendedLogger = logging.getLogger(__file__)
 
 
@@ -31,9 +31,21 @@ def start_sandbox():
 
     logger.log_info_centered(" Starting sandbox!! ")
 
+    ntd_ad_db = (
+        db_session.execute(
+            select(ArticleDataDB).where(ArticleDataDB.quote_stock_symbol == "NTDOF")
+        )
+        .scalars()
+        .first()
+    )
+    inspect(ntd_ad_db, methods=True, sort=True)
+
     try:
+        ntd_ad_db.polymorphic_source = SourceDB()
         breakpoint()
-    except BdbQuit:
+    except Exception as e:
+        inspect(e, sort=True)
+        breakpoint()
         pass
 
     logger.log_info_centered(" Stopping sandbox... ")
