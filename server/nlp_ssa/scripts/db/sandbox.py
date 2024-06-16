@@ -38,10 +38,25 @@ def start_sandbox():
         .scalars()
         .first()
     )
+    logger.log_info_centered(" ntd_ad_db ")
     inspect(ntd_ad_db, methods=True, sort=True)
+
+    sa = (
+        db_session.execute(
+            select(SentimentAnalysisDB).where(
+                SentimentAnalysisDB.source_group_id == ntd_ad_db.id
+            )
+        )
+        .scalars()
+        .first()
+    )
+    logger.log_info_centered(" sa ")
+    inspect(sa, methods=True, sort=True)
 
     try:
         ntd_ad_db.polymorphic_source = SourceDB()
+        inspect(ntd_ad_db, methods=True, sort=True)
+        inspect(ntd_ad_db.polymorphic_source, methods=True, sort=True)
         breakpoint()
     except Exception as e:
         inspect(e, sort=True)
