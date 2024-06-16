@@ -43,7 +43,6 @@ def setup_listener(mapper, class_ref):
 
     @event.listens_for(class_ref.polymorphic_source, "set")
     def set_source(target: class_ref, value: SourceDB, old_value: SourceDB, initiator):
-        value.data_type = SourceDiscriminatorEnum.get_by_value(
-            target.__class__.__name__
-        )
+        ClassName = target.__class__.__name__
+        value.data_type = SourceDiscriminatorEnum[ClassName]
         value.data_type_id = target.id

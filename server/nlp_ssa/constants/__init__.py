@@ -35,8 +35,8 @@ class SentimentEnum(ExtendedEnum):
 
 class SourceDiscriminatorEnum(ExtendedEnum):
 
-    ARTICLE_DATA = "ArticleDataDB"
-    REDDIT_DATA = "RedditDataDB"
+    ArticleDataDB = "article_data"
+    RedditDataDB = "reddit_data"
 
     @staticmethod
     def db_type_name() -> Literal["source_discriminators"]:
