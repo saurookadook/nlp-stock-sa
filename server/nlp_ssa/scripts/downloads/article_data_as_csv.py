@@ -7,7 +7,7 @@ from db import db_session
 from models.article_data import ArticleDataDB
 
 
-configure_logging(app_name="stash_db")
+configure_logging(app_name="article_data_as_csv")
 logger = logging.getLogger(__file__)
 
 

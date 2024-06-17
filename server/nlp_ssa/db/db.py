@@ -1,14 +1,18 @@
 import arrow
 import logging
+import re
+from pydantic import alias_generators
 from sqlalchemy import Dialect, create_engine, TIMESTAMP
-from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
+from sqlalchemy.dialects import postgresql
+from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from sqlalchemy.orm import Mapped, mapped_column, sessionmaker, scoped_session
 from sqlalchemy.types import TypeDecorator
 from typing import Any
+from uuid import UUID, uuid4
 
-from config import configure_logging, env_config
+from config import env_config
 
 
-# configure_logging(app_name="nlp_ssa.db")
 logger = logging.getLogger(__file__)
 
 engine = create_engine(
@@ -20,7 +24,20 @@ engine = create_engine(
     future=True,
 )
 
-Base = declarative_base()
+
+@as_declarative()
+class Base(object):
+
+    @declared_attr
+    def __tablename__(cls):
+        # TODO: probably have to trim off the `_db` too...?
+        db_suffix = re.compile(r"_db$", flags=re.IGNORECASE | re.MULTILINE)
+        return alias_generators.to_snake(cls.__name__).replace(db_suffix, "")
+
+    id: Mapped[UUID] = mapped_column(
+        postgresql.UUID(as_uuid=True), primary_key=True, default=uuid4
+    )
+
 
 Base.metadata.naming_conventions = {
     "ix": "ix_%(column_0_N_label)s",
@@ -29,6 +46,7 @@ Base.metadata.naming_conventions = {
     "fk": "%(table_name)s_%(column_0_N_name)s_fkey",
     "pk": "%(table_name)s_pkey",
 }
+
 
 db_session = scoped_session(
     sessionmaker(autocommit=False, autoflush=False, bind=engine, future=True)

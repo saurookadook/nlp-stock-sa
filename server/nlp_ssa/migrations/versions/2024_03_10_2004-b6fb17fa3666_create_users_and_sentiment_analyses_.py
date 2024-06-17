@@ -10,9 +10,9 @@ import sqlalchemy as sa
 from alembic import op
 from typing import Sequence, Union
 
+from constants import SentimentEnum
 import db
 from migrations.alembic_utilities import create_pg_enum, drop_pg_enum
-from models.sentiment_analysis.constants import SentimentEnum
 
 # revision identifiers, used by Alembic.
 revision: str = "b6fb17fa3666"
@@ -21,8 +21,11 @@ branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 
+pg_enum_args = [SentimentEnum.db_type_name(), [x.value for x in SentimentEnum]]
+
+
 def upgrade() -> None:
-    sentiments = create_pg_enum("sentiments", [x.value for x in SentimentEnum])
+    sentiments = create_pg_enum(*pg_enum_args)
 
     op.create_table(
         "sentiment_analyses",
@@ -81,4 +84,4 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.drop_table("users")
     op.drop_table("sentiment_analyses")
-    drop_pg_enum("sentiments", [x.value for x in SentimentEnum])
+    drop_pg_enum(*pg_enum_args)

@@ -10,6 +10,10 @@
     "[sql]": {
         "editor.formatOnSave": false
     },
+    "flake8.args": [
+        "--max-line-length=120",
+        "--per-file-ignores='__init__.py: F401'"
+    ],
     "python.analysis.extraPaths": [
         // NOTE: you should change `1aaBcDeF` in the path below to whatever hash is used in your local poetry-cache
         "./ssa/.poetry-cache/virtualenvs/nlp-stock-sa-1aaBcDeF-py3.10/lib/python3.10/site-packages"

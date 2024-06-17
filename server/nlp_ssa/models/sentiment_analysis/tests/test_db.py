@@ -3,10 +3,8 @@ import pytest
 from sqlalchemy import select, and_
 from uuid import UUID
 
-from models.sentiment_analysis import (
-    SentimentAnalysisDB,
-    SentimentEnum,
-)
+from constants import SentimentEnum
+from models.sentiment_analysis import SentimentAnalysisDB
 from models.sentiment_analysis.factories import SentimentAnalysisFactory
 from models.stock.factories import StockFactory
 

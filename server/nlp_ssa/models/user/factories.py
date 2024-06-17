@@ -1,5 +1,5 @@
 import factory
-import uuid
+from uuid import uuid4
 
 from db import db_session
 from models.mixins import TimestampsMixinFactory
@@ -12,7 +12,7 @@ class UserFactory(TimestampsMixinFactory, factory.alchemy.SQLAlchemyModelFactory
         model = UserDB
         sqlalchemy_session = db_session
 
-    id = factory.LazyFunction(lambda: uuid.uuid4())
+    id = factory.LazyFunction(lambda: uuid4())
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
 
