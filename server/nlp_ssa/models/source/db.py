@@ -31,6 +31,7 @@ class SourceDB(TimestampsMixinDB, Base):
     # data: Mapped[Union[ArticleDataDB]] = relationship(
     #     back_populates="polymorphic_source", uselist=False
     # )
+    source_owner_name: Mapped[str] = mapped_column(nullable=True)
 
     sentiment_analysis: Mapped["SentimentAnalysisDB"] = relationship(
         "SentimentAnalysisDB", back_populates="source", uselist=False
