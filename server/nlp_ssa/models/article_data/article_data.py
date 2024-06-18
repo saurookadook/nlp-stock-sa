@@ -3,16 +3,27 @@ from typing import Annotated, Optional
 from uuid import UUID
 
 from models.mixins import TimestampsMixin
+from models.source import Source
 from utils.pydantic_helpers import SerializerArrowType, generic_validator_with_default
 
 
-class ArticleData(BaseModel, TimestampsMixin):
+class ArticleData(
+    # OwnedByPolymorphicSourceMixin,
+    TimestampsMixin,
+    BaseModel,
+):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
     quote_stock_symbol: str
     source_group_id: UUID
     source_url: str
+    polymorphic_source: Annotated[Optional[Source], Field(default_factory=lambda: None)]
+
+    @field_validator("polymorphic_source")
+    @classmethod
+    def handle_field_default(cls, value, info):
+        return generic_validator_with_default(cls, value, info)
 
     author: Annotated[Optional[str], Field(default_factory=lambda: "")]
     last_updated_date: Annotated[
