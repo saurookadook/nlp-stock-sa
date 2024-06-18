@@ -5,7 +5,10 @@ from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict, List, Union
 from uuid import UUID
 
+from constants import SourceDiscriminatorEnum
 from models.article_data import ArticleDataDB, ArticleData
+from models.source.db import SourceDB
+from rich import inspect
 
 
 class ArticleDataFacade:
@@ -65,10 +68,17 @@ class ArticleDataFacade:
                 # "created_at": arrow.utcnow(),
                 "updated_at": arrow.utcnow(),
             },
-        ).returning(literal_column("*"))
+        ).returning(ArticleDataDB)
 
-        article_data = self.db_session.execute(full_stmt).fetchone()
+        article_data = self.db_session.execute(full_stmt).scalar_one()
         self.db_session.flush()
+
+        if (
+            hasattr(article_data, "polymorphic_source")
+            and article_data.polymorphic_source is None
+        ):
+            article_data.polymorphic_source = SourceDB()
+            self.db_session.flush()
 
         return ArticleData.model_validate(article_data)
 
