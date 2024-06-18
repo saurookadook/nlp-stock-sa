@@ -70,15 +70,11 @@ class ArticleDataFacade:
             },
         ).returning(ArticleDataDB)
 
-        article_data = self.db_session.execute(full_stmt).scalar_one()
+        article_data_row = self.db_session.execute(full_stmt).fetchone()
         self.db_session.flush()
+        article_data = article_data_row[0]
 
-        if (
-            hasattr(article_data, "polymorphic_source")
-            and article_data.polymorphic_source is None
-        ):
-            article_data.polymorphic_source = SourceDB()
-            self.db_session.flush()
+        self._create_source_if_not_exists(record=article_data)
 
         return ArticleData.model_validate(article_data)
 
@@ -92,10 +88,13 @@ class ArticleDataFacade:
                 )
             )
             .values(**payload)
-        ).returning(literal_column("*"))
+        ).returning(ArticleDataDB)
 
-        updated_record = self.db_session.execute(update_stmt).fetchone()
+        updated_row = self.db_session.execute(update_stmt).fetchone()
         self.db_session.flush()
+        updated_record = updated_row[0]
+
+        self._create_source_if_not_exists(record=updated_record)
 
         return ArticleData.model_validate(updated_record)
 
@@ -111,3 +110,8 @@ class ArticleDataFacade:
             pass
 
         return None
+
+    def _create_source_if_not_exists(self, *, record: ArticleDataDB):
+        if hasattr(record, "polymorphic_source") and record.polymorphic_source is None:
+            record.polymorphic_source = SourceDB()
+            self.db_session.flush()
