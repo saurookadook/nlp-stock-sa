@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from constants import SentimentEnum
 from db import db_session
-from models.mixins import TimestampsMixinFactory
+from models.mixins.factories import TimestampsMixinFactory
 from models.sentiment_analysis import SentimentAnalysisDB
 
 
