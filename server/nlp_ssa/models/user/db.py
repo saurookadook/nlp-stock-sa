@@ -5,10 +5,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 
 from db import Base
-from models.mixins import TimestampsMixinDB
+from models.mixins import TimestampsDB
 
 
-class UserDB(Base, TimestampsMixinDB):
+class UserDB(Base, TimestampsDB):
     from models.analysis_view import AnalysisViewDB
 
     __tablename__ = "users"

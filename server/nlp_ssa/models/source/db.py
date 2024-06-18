@@ -8,10 +8,10 @@ from uuid import UUID
 
 from constants.db_types import SourceDiscriminatorEnum, SourceDiscriminatorEnumDB
 from db import Base
-from models.mixins.db import TimestampsMixinDB
+from models.mixins.db import TimestampsDB
 
 
-class SourceDB(TimestampsMixinDB, Base):
+class SourceDB(TimestampsDB, Base):
     """`Source` entities establish a polymorphic relationship between `SentimentAnalysis` entities \
         and specific data entities, such as `ArticleData`.
     """

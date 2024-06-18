@@ -4,10 +4,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from uuid import UUID
 
 from db import Base
-from models.mixins import TimestampsMixinDB
+from models.mixins import TimestampsDB
 
 
-class AnalysisViewDB(TimestampsMixinDB, Base):
+class AnalysisViewDB(TimestampsDB, Base):
     __tablename__ = "analysis_views"
 
     id: Mapped[UUID] = mapped_column(

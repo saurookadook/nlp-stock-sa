@@ -5,7 +5,7 @@ from uuid import UUID
 
 from constants.db_types import SentimentEnum, SentimentEnumDB
 from db import Base
-from models.mixins import TimestampsMixinDB
+from models.mixins import TimestampsDB
 
 
 OUTPUT_SERVER_DEFAULT = '{"compound":0,"neg":0,"neu":0,"pos":0}'
@@ -18,7 +18,7 @@ class OutputColumn:
     pos: Mapped[float]
 
 
-class SentimentAnalysisDB(Base, TimestampsMixinDB):
+class SentimentAnalysisDB(Base, TimestampsDB):
     from models.source.db import SourceDB
 
     __tablename__ = "sentiment_analyses"
