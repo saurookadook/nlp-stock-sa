@@ -175,12 +175,6 @@ scriptController() {
                     ;;
             esac
         done
-    elif [ "$1" == "run-ssa" ]; then
-        docker compose run --rm server python nlp_ssa/scripts/analysis/ssa.py
-    elif [ "$1" == "ad-to-csv" ]; then
-        docker compose run --rm server python nlp_ssa/scripts/downloads/article_data_as_csv.py
-    elif [ "$1" == "clean-ad" ]; then
-        docker compose run --rm server python nlp_ssa/scripts/data_cleaning/clean_article_data.py
     elif [ "$1" == "db" ]; then
         echo ""
         echo "======================================================================================"
@@ -263,6 +257,27 @@ scriptController() {
             echo "======================================================================================"
             echo ""
             docker compose up scraper --build -d
+        elif [ "$2" == "ssa" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "Running 'stock_sentiment_analysis' script..."
+            echo "======================================================================================"
+            echo ""
+            docker compose run --rm server python nlp_ssa/scripts/analysis/ssa.py
+        elif [ "$2" == "ad-to-csv" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "Running 'article_data_as_csv' script..."
+            echo "======================================================================================"
+            echo ""
+            docker compose run --rm server python nlp_ssa/scripts/downloads/article_data_as_csv.py
+        elif [ "$2" == "clean-ad" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "Running 'clean_article_data' script..."
+            echo "======================================================================================"
+            echo ""
+            docker compose run --rm server python nlp_ssa/scripts/data_cleaning/clean_article_data.py
         fi
     elif [ "$1" == "test" ]; then
         if [ "$2" == "server" ]; then
