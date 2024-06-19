@@ -5,6 +5,7 @@ from constants import SentimentEnum
 from db import db_session
 from models.mixins.factories import TimestampsMixinFactory
 from models.sentiment_analysis import SentimentAnalysisDB
+from models.source.factories import SourceFactory
 
 
 class SentimentAnalysisFactory(
@@ -20,8 +21,8 @@ class SentimentAnalysisFactory(
         transform=lambda o: "".join(o).upper(),
     )
     source_group_id = factory.LazyFunction(lambda: uuid4())
-    source_id = None
-    source = None
+    source = factory.SubFactory(SourceFactory)
+    source_id = factory.SelfAttribute("source.id")
     output = {"compound": 0, "neg": 0, "neu": 0, "pos": 0}
     # TODO: make sentiment and score lazy attributes based on output
     sentiment = SentimentEnum.NEUTRAL.value
@@ -29,12 +30,3 @@ class SentimentAnalysisFactory(
         factory.Faker("random_int", min=11, max=999),
         transform=lambda o: o / 10 if type(o) is int else o,
     )
-
-    # TODO: maybe sometime...?
-    # @factory.post_generation
-    # def set_source(_self, create, extracted, **kwargs):
-    #     from models.source.factories import SourceFactory
-
-    #     source = SourceFactory()
-    #     _self.source_id = source.id
-    #     _self.source = source
