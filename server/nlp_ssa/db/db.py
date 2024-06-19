@@ -28,6 +28,8 @@ engine = create_engine(
 @as_declarative()
 class Base(object):
 
+    __table_args__ = {"extend_existing": True}
+
     @declared_attr
     def __tablename__(cls):
         # TODO: probably have to trim off the `_db` too...?

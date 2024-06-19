@@ -2,7 +2,7 @@ import factory
 from uuid import uuid4
 
 from db import db_session
-from models.mixins import TimestampsMixinFactory
+from models.mixins.factories import TimestampsMixinFactory
 from models.user import UserDB
 from utils.case_converters import convert_to_kebab_case
 

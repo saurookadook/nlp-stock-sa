@@ -43,7 +43,7 @@ class ExtendedLogger(BaseLoggerClass):
             or log_level not in LogLevelEnum.level_values()
         ):
             log_level = LogLevelEnum.INFO.value
-        self.log(logging.INFO, msg.center(self.window_width, "-"), *args, **kwargs)
+        self.log(log_level, msg.center(self.window_width, "-"), *args, **kwargs)
 
     def log_section_start(self, log_level: int, entity_name: str, *args, **kwargs):
         if (
@@ -52,7 +52,7 @@ class ExtendedLogger(BaseLoggerClass):
         ):
             log_level = LogLevelEnum.INFO.value
         self.log(
-            logging.INFO,
+            log_level,
             f" 'Getting `{entity_name}` records...' ".center(self.window_width, "="),
             *args,
             **kwargs,
@@ -67,7 +67,7 @@ class ExtendedLogger(BaseLoggerClass):
         ):
             log_level = LogLevelEnum.INFO.value
         self.log(
-            logging.INFO,
+            log_level,
             f" 'Done with `{entity_name}` records! Total: {entity_count}' ".center(
                 self.window_width, "="
             ),

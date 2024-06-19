@@ -3,6 +3,7 @@ import pytest
 from sqlalchemy import select
 from uuid import UUID, uuid4
 
+from constants import SourceDiscriminatorEnum
 from models.article_data import (
     ArticleData,
     ArticleDataDB,
@@ -107,11 +108,13 @@ def test_create_or_update_new_article_data(article_data_facade, mock_db_session)
 
     result = article_data_facade.create_or_update(payload=article_data_dict)
 
-    assert result.quote_stock_symbol == article_data_dict["quote_stock_symbol"]
-    assert result.source_group_id == article_data_dict["source_group_id"]
-    assert result.source_url == article_data_dict["source_url"]
-    assert result.raw_content == article_data_dict["raw_content"]
-    assert result.sentence_tokens == article_data_dict["sentence_tokens"]
+    assert result.quote_stock_symbol == article_data_dict.get("quote_stock_symbol")
+    assert result.source_group_id == article_data_dict.get("source_group_id")
+    assert result.source_url == article_data_dict.get("source_url")
+    assert result.polymorphic_source.data_type_id == article_data_dict.get("id")
+    assert result.polymorphic_source.data_type == SourceDiscriminatorEnum.ArticleDataDB
+    assert result.raw_content == article_data_dict.get("raw_content")
+    assert result.sentence_tokens == article_data_dict.get("sentence_tokens")
     # TODO: find better way to mock server 'now' function
     assert isinstance(result.created_at, arrow.Arrow)
     assert isinstance(result.updated_at, arrow.Arrow)
@@ -151,7 +154,9 @@ def test_create_or_update_existing_article_data(article_data_facade, mock_db_ses
     mock_db_session.commit()
 
     article_data_db = mock_db_session.execute(
-        select(ArticleDataDB).where(ArticleDataDB.id == updated_article_data_dict["id"])
+        select(ArticleDataDB).where(
+            ArticleDataDB.id == updated_article_data_dict.get("id")
+        )
     ).scalar_one()
 
     result = ArticleData.model_validate(article_data_db)
@@ -159,8 +164,10 @@ def test_create_or_update_existing_article_data(article_data_facade, mock_db_ses
     assert result.quote_stock_symbol == mock_article_data.quote_stock_symbol
     assert result.source_group_id == mock_article_data.source_group_id
     assert result.source_url == mock_article_data.source_url
-    assert result.raw_content == updated_article_data_dict["raw_content"]
-    assert result.sentence_tokens == updated_article_data_dict["sentence_tokens"]
+    assert result.polymorphic_source.data_type_id == mock_article_data.id
+    assert result.polymorphic_source.data_type == SourceDiscriminatorEnum.ArticleDataDB
+    assert result.raw_content == updated_article_data_dict.get("raw_content")
+    assert result.sentence_tokens == updated_article_data_dict.get("sentence_tokens")
     assert result.created_at == get_mock_utcnow()
     # TODO: find better way to mock server 'now' function
     assert isinstance(result.updated_at, arrow.Arrow)

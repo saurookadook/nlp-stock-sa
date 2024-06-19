@@ -17,16 +17,22 @@ from pprint import pprint as prettyprint
 from rich import inspect
 from sqlalchemy import select
 
+from nlp_ssa.config.logging import ExtendedLogger
+
+# from nlp_ssa.constants import SourceDiscriminatorEnum
 from nlp_ssa.db import db_session
+
+# from nlp_ssa.models import *
 from nlp_ssa.models.article_data import ArticleDataFacade
 from nlp_ssa.models.stock import StockDB
+from nlp_ssa.models.sentiment_analysis import SentimentAnalysisDB
 from scraper.items import ScraperItem
 
 nltk.download("punkt")
 nltk.download("stopwords")
 nltk.download("wordnet")
 
-logger = logging.getLogger(__file__)
+logger: ExtendedLogger = logging.getLogger(__file__)
 
 
 class NewsSpider(scrapy.Spider):
@@ -133,7 +139,7 @@ class NewsSpider(scrapy.Spider):
         metadata = self._get_article_metadata(response)
 
         try:
-            self.article_data_facade.create_or_update(
+            article_data_record = self.article_data_facade.create_or_update(
                 payload=dict(
                     id=uuid.uuid4(),
                     quote_stock_symbol=stock_slug,
@@ -156,9 +162,15 @@ class NewsSpider(scrapy.Spider):
                     thumbnail_image_url=thumbnail_url,
                 )
             )
+            logger.log_info_centered(" BEFORE COMMIT ")
+            inspect(article_data_record)
+
             db_session.commit()
+
+            logger.log_info_centered(" AFTER COMMIT ")
+            inspect(article_data_record)
         except Exception as e:
-            print(e, file=sys.stderr)
+            logger.error(e, file=sys.stderr)
 
         item = ScraperItem()
         item["Sentence"] = cleaned_text

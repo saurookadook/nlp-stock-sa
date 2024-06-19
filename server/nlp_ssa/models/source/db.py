@@ -8,10 +8,10 @@ from uuid import UUID
 
 from constants.db_types import SourceDiscriminatorEnum, SourceDiscriminatorEnumDB
 from db import Base
-from models.mixins.db import TimestampsMixinDB
+from models.mixins.db import TimestampsDB
 
 
-class SourceDB(TimestampsMixinDB, Base):
+class SourceDB(TimestampsDB, Base):
     """`Source` entities establish a polymorphic relationship between `SentimentAnalysis` entities \
         and specific data entities, such as `ArticleData`.
     """
@@ -31,6 +31,7 @@ class SourceDB(TimestampsMixinDB, Base):
     # data: Mapped[Union[ArticleDataDB]] = relationship(
     #     back_populates="polymorphic_source", uselist=False
     # )
+    source_owner_name: Mapped[str] = mapped_column(nullable=True)
 
     sentiment_analysis: Mapped["SentimentAnalysisDB"] = relationship(
         "SentimentAnalysisDB", back_populates="source", uselist=False
