@@ -3,7 +3,8 @@ import pytest
 from sqlalchemy import select
 from uuid import UUID, uuid4
 
-from constants import SentimentEnum
+from constants import SentimentEnum, SourceDiscriminatorEnum
+from models.article_data.factories import ArticleDataFactory
 from models.sentiment_analysis import (
     SentimentAnalysis,
     SentimentAnalysisDB,
@@ -88,7 +89,9 @@ def test_get_all_by_stock_symbol_no_results(sentiment_analysis_facade):
     assert results == []
 
 
-def test_create_or_update_new_article_data(mock_db_session, sentiment_analysis_facade):
+def test_create_or_update_new_sentiment_analysis(
+    mock_db_session, sentiment_analysis_facade
+):
     StockFactory(quote_stock_symbol="NTDOF")
     mock_db_session.commit()
 
@@ -113,7 +116,44 @@ def test_create_or_update_new_article_data(mock_db_session, sentiment_analysis_f
     assert isinstance(result.updated_at, arrow.Arrow)
 
 
-def test_create_or_update_existing_article_data(
+def test_create_or_update_new_sentiment_analysis_with_source(
+    mock_db_session, sentiment_analysis_facade
+):
+    mock_stock = StockFactory(quote_stock_symbol="NTDOF")
+    mock_db_session.commit()
+
+    mock_article_data = ArticleDataFactory(
+        id=UUID("3a0e5f09-3904-46df-bffb-13f5a95412ad"),
+        quote_stock_symbol=mock_stock.quote_stock_symbol,
+    )
+    mock_db_session.commit()
+
+    sentiment_analysis_dict = {
+        "id": uuid4(),
+        "quote_stock_symbol": "NTDOF",
+        "source_group_id": mock_article_data.id,
+        "source_id": mock_article_data.polymorphic_source.id,
+        "score": 0.9,
+        "sentiment": SentimentEnum.POSITIVE,
+    }
+
+    result = sentiment_analysis_facade.create_or_update(payload=sentiment_analysis_dict)
+
+    assert result.quote_stock_symbol == sentiment_analysis_dict.get(
+        "quote_stock_symbol"
+    )
+    assert result.source_group_id == sentiment_analysis_dict.get("source_group_id")
+    assert result.source_id == sentiment_analysis_dict.get("source_id")
+    assert result.source.data_type_id == mock_article_data.id
+    assert result.source.data_type == SourceDiscriminatorEnum.ArticleDataDB
+    assert result.score == sentiment_analysis_dict.get("score")
+    assert result.sentiment == sentiment_analysis_dict.get("sentiment")
+    # TODO: find better way to mock server 'now' function
+    assert isinstance(result.created_at, arrow.Arrow)
+    assert isinstance(result.updated_at, arrow.Arrow)
+
+
+def test_create_or_update_existing_sentiment_analysis(
     mock_db_session, sentiment_analysis_facade
 ):
     mock_stock = StockFactory(quote_stock_symbol="DIS")
@@ -148,6 +188,58 @@ def test_create_or_update_existing_article_data(
     assert result.id == mock_sentiment_analysis.id
     assert result.quote_stock_symbol == mock_sentiment_analysis.quote_stock_symbol
     assert result.source_group_id == mock_sentiment_analysis.source_group_id
+    assert result.score == updated_sentiment_analysis_dict.get("score")
+    assert result.sentiment == updated_sentiment_analysis_dict.get("sentiment")
+    assert result.created_at == get_mock_utcnow()
+    # TODO: find better way to mock server 'now' function
+    assert isinstance(result.updated_at, arrow.Arrow)
+
+
+def test_create_or_update_existing_sentiment_analysis_with_source(
+    mock_db_session, sentiment_analysis_facade
+):
+    mock_stock = StockFactory(quote_stock_symbol="DIS")
+    mock_db_session.commit()
+
+    mock_article_data = ArticleDataFactory(
+        id=UUID("3a0e5f09-3904-46df-bffb-13f5a95412ad"),
+        quote_stock_symbol=mock_stock.quote_stock_symbol,
+    )
+    mock_db_session.commit()
+
+    mock_sentiment_analysis = SentimentAnalysisFactory(
+        id=UUID("7fb2c6c5-b2e3-4bd0-9b84-22fbeb729d8c"),
+        quote_stock_symbol=mock_stock.quote_stock_symbol,
+        score=0.5,
+    )
+    mock_db_session.commit()
+
+    updated_sentiment_analysis_dict = {
+        "id": mock_sentiment_analysis.id,
+        "quote_stock_symbol": mock_sentiment_analysis.quote_stock_symbol,
+        "source_group_id": mock_sentiment_analysis.source_group_id,
+        "source": mock_article_data.polymorphic_source,
+        "score": 0.9,
+        "sentiment": SentimentEnum.POSITIVE,
+    }
+
+    sentiment_analysis_facade.create_or_update(payload=updated_sentiment_analysis_dict)
+    mock_db_session.commit()
+
+    sentiment_analysis_db = mock_db_session.execute(
+        select(SentimentAnalysisDB).where(
+            SentimentAnalysisDB.id == updated_sentiment_analysis_dict.get("id")
+        )
+    ).scalar_one()
+
+    result = SentimentAnalysis.model_validate(sentiment_analysis_db)
+
+    assert result.id == mock_sentiment_analysis.id
+    assert result.quote_stock_symbol == mock_sentiment_analysis.quote_stock_symbol
+    assert result.source_group_id == mock_sentiment_analysis.source_group_id
+    assert result.source_id == updated_sentiment_analysis_dict.get("source_id")
+    assert result.source.data_type_id == mock_article_data.id
+    assert result.source.data_type == SourceDiscriminatorEnum.ArticleDataDB
     assert result.score == updated_sentiment_analysis_dict.get("score")
     assert result.sentiment == updated_sentiment_analysis_dict.get("sentiment")
     assert result.created_at == get_mock_utcnow()
