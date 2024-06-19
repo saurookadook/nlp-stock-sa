@@ -1,12 +1,12 @@
 import arrow
-from uuid import UUID
-from sqlalchemy import desc, literal_column, or_, select, update
+from sqlalchemy import desc, or_, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict, List
+from uuid import UUID
 
-from models.sentiment_analysis import SentimentAnalysisDB
-from models.sentiment_analysis.sentiment_analysis import SentimentAnalysis
+from constants import SourceDiscriminatorEnum
+from models.sentiment_analysis import SentimentAnalysisDB, SentimentAnalysis
 
 
 class SentimentAnalysisFacade:
@@ -30,6 +30,7 @@ class SentimentAnalysisFacade:
     def get_one_by_source_group_id(
         self, source_group_id: str | UUID
     ) -> SentimentAnalysis:
+        # TODO: update this method to get by source_id?
         try:
             sentiment_analysis = self.db_session.execute(
                 select(SentimentAnalysisDB).where(
@@ -58,53 +59,66 @@ class SentimentAnalysisFacade:
 
     def create_or_update(self, *, payload: Dict) -> SentimentAnalysis:
         maybe_one = self._find_one_if_exists(
-            row_id=payload.get("id"), source_group_id=payload.get("source_group_id")
+            row_id=payload.get("id"), source_id=payload.get("source_id")
         )
         if maybe_one:
             return self.update(payload=payload)
 
         payload.setdefault("updated_at", arrow.utcnow())
 
+        source = payload.get("source", None)
+        # TODO: this conditional should probably be put into a method :]
+        if source is not None and source.data_type in SourceDiscriminatorEnum:
+            payload.setdefault("source_id", source.id)
+            payload.pop("source")
+
         insert_stmt = insert(SentimentAnalysisDB).values(**payload)
 
         full_stmt = insert_stmt.on_conflict_do_update(
             constraint=SentimentAnalysisDB.__table__.primary_key,
             set_=dict(**payload),
-        ).returning(literal_column("*"))
+        ).returning(SentimentAnalysisDB)
 
-        sentiment_analysis = self.db_session.execute(full_stmt).fetchone()
+        sentiment_analysis = self.db_session.execute(full_stmt).scalar_one()
         self.db_session.flush()
 
         return SentimentAnalysis.model_validate(sentiment_analysis)
 
     def update(self, *, payload: Dict) -> SentimentAnalysis:
+
+        source = payload.get("source", None)
+        # TODO: this conditional should probably be put into a method :]
+        if source is not None and source.data_type in SourceDiscriminatorEnum:
+            payload.setdefault("source_id", source.id)
+            payload.pop("source")
+
         update_stmt = (
             update(SentimentAnalysisDB)
             .where(
                 or_(
                     SentimentAnalysisDB.id == payload.get("id"),
-                    SentimentAnalysisDB.source_group_id
-                    == payload.get("source_group_id"),
+                    SentimentAnalysisDB.source_id == payload.get("source_id"),
                 )
             )
             .values(**payload)
-        ).returning(literal_column("*"))
+        ).returning(SentimentAnalysisDB)
 
-        updated_record = self.db_session.execute(update_stmt).fetchone()
+        updated_record = self.db_session.execute(update_stmt).scalar_one()
         self.db_session.flush()
 
         return SentimentAnalysis.model_validate(updated_record)
 
     def _find_one_if_exists(
-        self, *, row_id: str | UUID = None, source_group_id: str | UUID = None
+        self, *, row_id: str | UUID = None, source_id: str | UUID = None
     ):
         try:
             return self.get_one_by_id(row_id)
         except SentimentAnalysisFacade.NoResultFound:
             pass
 
+        # TODO: add this method...?
         # try:
-        #     return self.get_one_by_source_group_id(source_group_id)
+        #     return self.get_one_by_source_id(source_id)
         # except SentimentAnalysisFacade.NoResultFound:
         #     pass
 
