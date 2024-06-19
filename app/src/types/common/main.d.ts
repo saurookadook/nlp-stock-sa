@@ -109,6 +109,27 @@ type AbstractPageData = {
 };
 
 /**********************************************************************
+ * Sentiment Analyses
+ **********************************************************************/
+type SentimentAnalysesDataEntry = {
+    id: string;
+    quoteStockSymbol: string;
+    fullStockSymbol: string;
+    exchangeName?: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+type SentimentAnalysesBySlugApiData = {
+    quoteStockSymbol: string;
+    sentimentAnalyses: SentimentAnalysesDataEntry[];
+};
+
+type SentimentAnalysesBySlugApiResponse = {
+    data: SentimentAnalysesDataEntry[] | null;
+};
+
+/**********************************************************************
  * Stocks
  **********************************************************************/
 type StockDataEntry = {
@@ -133,12 +154,14 @@ type SingularStockData = {
  **********************************************************************/
 type ArticleDataBySlugStateSlice = GroupedArticleData;
 type ArticleDataStateSlice = GroupedArticleData[];
+type SentimentAnalysesBySlugStateSlice = SentimentAnalysesBySlugApiData;
 type StockDataAllStateSlice = StockDataEntry[];
 type StockDataSingularStateSlice = StockDataEntry;
 
 type DataExplorersStore = {
     articleDataBySlug: ArticleDataBySlugStateSlice;
     articleData: ArticleDataStateSlice;
+    sentimentAnalysesBySlug: SentimentAnalysesBySlugStateSlice;
     stockDataAll: StockDataAllStateSlice;
     stockDataSingular: StockDataSingularStateSlice;
 };
