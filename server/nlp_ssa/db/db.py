@@ -4,8 +4,14 @@ import re
 from pydantic import alias_generators
 from sqlalchemy import Dialect, create_engine, TIMESTAMP
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
-from sqlalchemy.orm import Mapped, mapped_column, sessionmaker, scoped_session
+from sqlalchemy.orm import (
+    Mapped,
+    as_declarative,
+    declared_attr,
+    mapped_column,
+    sessionmaker,
+    scoped_session,
+)
 from sqlalchemy.types import TypeDecorator
 from typing import Any
 from uuid import UUID, uuid4

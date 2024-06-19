@@ -87,7 +87,7 @@ def mock_stocks(mock_db_session):
 
 
 @pytest.fixture
-def mock_ntdof_article_data(mock_db_session, mock_stocks):
+def mock_ntdof_article_data_as_db_models(mock_db_session, mock_stocks):
     ntdof_stock, _ = mock_stocks
 
     may_the_4th = get_may_the_4th()
@@ -124,11 +124,11 @@ def mock_ntdof_article_data(mock_db_session, mock_stocks):
 
     mock_db_session.commit()
 
-    return [ArticleData.model_validate(ad) for ad in ntdof_article_data]
+    return ntdof_article_data
 
 
 @pytest.fixture
-def mock_tsla_article_data(mock_db_session, mock_stocks):
+def mock_tsla_article_data_as_db_models(mock_db_session, mock_stocks):
     _, tsla_stock = mock_stocks
 
     may_the_4th = get_may_the_4th()
@@ -166,4 +166,18 @@ def mock_tsla_article_data(mock_db_session, mock_stocks):
 
     mock_db_session.commit()
 
-    return [ArticleData.model_validate(ad) for ad in tsla_article_data]
+    return tsla_article_data
+
+
+@pytest.fixture
+def mock_ntdof_article_data(mock_ntdof_article_data_as_db_models):
+    return [
+        ArticleData.model_validate(ad) for ad in mock_ntdof_article_data_as_db_models
+    ]
+
+
+@pytest.fixture
+def mock_tsla_article_data(mock_tsla_article_data_as_db_models):
+    return [
+        ArticleData.model_validate(ad) for ad in mock_tsla_article_data_as_db_models
+    ]

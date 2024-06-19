@@ -1,5 +1,5 @@
 import arrow
-from sqlalchemy import desc, or_, select, update
+from sqlalchemy import asc, or_, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict, List
@@ -46,11 +46,20 @@ class SentimentAnalysisFacade:
     def get_all_by_stock_symbol(
         self, quote_stock_symbol: str
     ) -> List[SentimentAnalysis]:
+        """Returns list of `SentimentAnalysis` instances by `updated_at` in ascending ordered
+
+        Args:
+            `quote_stock_symbol`: Quote stock symbol as a string.
+
+        Returns:
+            `List[SentimentAnalysis]`:
+        """
+
         results = (
             self.db_session.execute(
                 select(SentimentAnalysisDB)
                 .where(SentimentAnalysisDB.quote_stock_symbol == quote_stock_symbol)
-                .order_by(desc(SentimentAnalysisDB.updated_at))
+                .order_by(asc(SentimentAnalysisDB.updated_at))
             )
             .scalars()
             .all()
