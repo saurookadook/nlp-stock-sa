@@ -119,6 +119,12 @@ def get_scores_and_create_rows(
             continue
         elif len(existing_sa_query) == 1:
             existing_sa = existing_sa_query[0]
+            if isinstance(existing_sa.source_id, UUID):
+                logger.log_warn_centered(
+                    f" Skipping: sentiment_analysis record '{existing_sa.id}' is already up to date :] "
+                )
+                continue
+
             existing_sa_dict = dict(
                 id=existing_sa.id,
                 quote_stock_symbol=existing_sa.quote_stock_symbol,
