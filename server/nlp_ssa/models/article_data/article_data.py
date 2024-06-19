@@ -20,11 +20,6 @@ class ArticleData(
     source_url: str
     polymorphic_source: Annotated[Optional[Source], Field(default_factory=lambda: None)]
 
-    @field_validator("polymorphic_source")
-    @classmethod
-    def handle_field_default(cls, value, info):
-        return generic_validator_with_default(cls, value, info)
-
     author: Annotated[Optional[str], Field(default_factory=lambda: "")]
     last_updated_date: Annotated[
         Optional[SerializerArrowType], Field(default_factory=lambda: None)
@@ -38,6 +33,7 @@ class ArticleData(
     title: Annotated[Optional[str], Field(default_factory=lambda: "")]
 
     @field_validator(
+        "polymorphic_source",
         "author",
         "last_updated_date",
         "published_date",
