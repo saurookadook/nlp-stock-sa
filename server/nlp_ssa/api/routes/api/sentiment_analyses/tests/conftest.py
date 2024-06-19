@@ -1,11 +1,13 @@
 import pytest
 
+from models.sentiment_analysis import SentimentAnalysis
 from models.sentiment_analysis.factories import SentimentAnalysisFactory
-from models.source.factories import SourceFactory
 
 
 @pytest.fixture
-def mock_sentiment_analyses(mock_db_session, mock_ntdof_article_data_as_db_models):
+def mock_sentiment_analyses_as_db_models(
+    mock_db_session, mock_ntdof_article_data_as_db_models
+):
     sentiment_analyses_mocks = []
 
     for article_data in mock_ntdof_article_data_as_db_models:
@@ -17,3 +19,11 @@ def mock_sentiment_analyses(mock_db_session, mock_ntdof_article_data_as_db_model
         sentiment_analyses_mocks.append(mock_sa)
 
     return sentiment_analyses_mocks
+
+
+@pytest.fixture
+def mock_sentiment_analyses(mock_sentiment_analyses_as_db_models):
+    return [
+        SentimentAnalysis.model_validate(sa)
+        for sa in mock_sentiment_analyses_as_db_models
+    ]
