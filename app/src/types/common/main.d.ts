@@ -111,11 +111,23 @@ type AbstractPageData = {
 /**********************************************************************
  * Sentiment Analyses
  **********************************************************************/
+type SentimentAnalysisOutput = {
+    compound: number;
+    neg: number;
+    neu: number;
+    pos: number;
+};
+
+type SentimentEnum = 'compound' | 'negative' | 'neutral' | 'positive';
+
 type SentimentAnalysesDataEntry = {
     id: string;
     quoteStockSymbol: string;
-    fullStockSymbol: string;
-    exchangeName?: string;
+    sourceId: string;
+    source: any; // TODO: make it better
+    output: SentimentAnalysisOutput;
+    score: number;
+    sentiment: SentimentEnum;
     createdAt: string;
     updatedAt: string;
 };
