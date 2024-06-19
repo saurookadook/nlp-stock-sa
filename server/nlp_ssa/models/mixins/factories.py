@@ -8,7 +8,7 @@ class OwnedByPolymorphicSourceFactory(factory.alchemy.SQLAlchemyModelFactory):
     # polymorphic_source = factory.SubFactory("models.source.factories.SourceFactory")
 
     @factory.post_generation
-    def set_polymorphic_source(_self, create, extracted, **kwargs):
+    def polymorphic_source(_self, create, extracted, **kwargs):
         # TODO: feels like there should be a better way to do this...
 
         if _self.polymorphic_source is not None:

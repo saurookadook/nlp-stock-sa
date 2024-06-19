@@ -21,8 +21,8 @@ class SentimentAnalysisFactory(
         transform=lambda o: "".join(o).upper(),
     )
     source_group_id = factory.LazyFunction(lambda: uuid4())
-    source = factory.SubFactory(SourceFactory)
-    source_id = factory.SelfAttribute("source.id")
+    # source = factory.SubFactory(SourceFactory)
+    # source_id = factory.SelfAttribute("source.id")
     output = {"compound": 0, "neg": 0, "neu": 0, "pos": 0}
     # TODO: make sentiment and score lazy attributes based on output
     sentiment = SentimentEnum.NEUTRAL.value
@@ -30,3 +30,8 @@ class SentimentAnalysisFactory(
         factory.Faker("random_int", min=11, max=999),
         transform=lambda o: o / 10 if type(o) is int else o,
     )
+
+    @factory.post_generation
+    def source(_self, create, extracted, **kwargs):
+        if extracted is not None:
+            _self.source_id = extracted.id
