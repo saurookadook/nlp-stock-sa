@@ -6,7 +6,8 @@ from typing import Dict, List
 from uuid import UUID
 
 from constants import SourceDiscriminatorEnum
-from models.sentiment_analysis import SentimentAnalysisDB, SentimentAnalysis
+from models.sentiment_analysis.db import SentimentAnalysisDB
+from models.sentiment_analysis.sentiment_analysis import SentimentAnalysis
 
 
 class SentimentAnalysisFacade:
