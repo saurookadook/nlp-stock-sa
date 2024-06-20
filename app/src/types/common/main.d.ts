@@ -123,8 +123,9 @@ type SentimentEnum = 'compound' | 'negative' | 'neutral' | 'positive';
 type SentimentAnalysesDataEntry = {
     id: string;
     quoteStockSymbol: string;
-    sourceId: string;
-    source: any; // TODO: make it better
+    sourceGroupId?: string;
+    sourceId: NullableValue<string>;
+    source: NullableValue<any>; // TODO: make it better
     output: SentimentAnalysisOutput;
     score: number;
     sentiment: SentimentEnum;
