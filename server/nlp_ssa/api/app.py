@@ -14,9 +14,10 @@ from api.routes.api.users import router as api_users
 from api.routes.auth.github import router as github_oauth
 from api.routes.auth.login import router as login
 from config import env_config
+from config.logging import ExtendedLogger, configure_logging
 
-
-logger = logging.getLogger(__file__)
+configure_logging(app_name=__file__)
+logger: ExtendedLogger = logging.getLogger(__file__)
 
 
 @asynccontextmanager

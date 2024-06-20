@@ -12,10 +12,11 @@ from api.routes.api.article_data.route_handlers import (
 )
 from api.routes.auth.session.caching import build_cache_key, safe_get_from_session_cache
 from config import env_vars
-from config.logging import ExtendedLogger
+from config.logging import ExtendedLogger, configure_logging
 from db import db_session
 
 
+configure_logging(__file__)
 logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 
@@ -38,12 +39,12 @@ async def read_article_data_by_slug(stock_slug: str):
 
 def maybe_get_user_from_cache(request: Request):
     user_session_key = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
-    logger.debug(f" user_session_key: {user_session_key} ".center(120, "="))
+    logger.log_info_centered(f" user_session_key: {user_session_key} ")
     maybe_user_from_cache = safe_get_from_session_cache(
         cache_key=build_cache_key(entity_key=user_session_key)
     )
 
-    logger.debug(" maybe_user_from_cache ".center(120, "="))
+    logger.log_info_centered(" maybe_user_from_cache ")
     inspect(maybe_user_from_cache, sort=True)
 
     return maybe_user_from_cache
