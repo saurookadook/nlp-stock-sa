@@ -47,7 +47,9 @@ function ArticleAccordianHeading({ articleRecord }: React.PropsWithChildren<{ ar
 }
 
 function ArticleMetadata({ articleRecord }) {
-    const metadataKeys = Object.keys(articleRecord).filter((key) => !/sourceUrl|rawContent|sentenceTokens/im.test(key));
+    const metadataKeys = Object.keys(articleRecord).filter(
+        (key) => !/polymorphicSource|rawContent|sentenceTokens|sourceUrl/im.test(key),
+    );
 
     return (
         <SimpleGrid
