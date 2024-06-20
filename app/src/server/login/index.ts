@@ -1,11 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express';
 
-import { manifestMiddleware } from 'server/middleware';
 import { asyncWrapper } from 'server/utils';
 
 const router = express.Router();
-
-router.use(manifestMiddleware);
 
 router.use(
     asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
