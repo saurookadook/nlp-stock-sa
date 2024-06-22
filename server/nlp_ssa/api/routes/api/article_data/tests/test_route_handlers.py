@@ -1,9 +1,11 @@
-from api.routes.api.article_data.models import GroupedArticleData
+from sqlalchemy import select
+
+from api.routes.api.article_data.models import ArticleDataEntry, GroupedArticleData
 from api.routes.api.article_data.route_handlers import (
     get_all_article_data,
     get_article_data_by_stock_slug,
 )
-from models.article_data import ArticleData
+from models.article_data import ArticleDataDB, ArticleData
 from models.article_data.factories import ArticleDataFactory
 from models.stock.factories import StockFactory
 
@@ -15,11 +17,22 @@ def test_get_all_article_data_one_stock(
 
     results = get_all_article_data(db_session=mock_db_session)
 
-    ntdof_first_five = mock_ntdof_article_data[:5]
+    ntdof_first_five = (
+        mock_db_session.execute(
+            select(ArticleDataDB).where(
+                ArticleDataDB.id.in_([ad.id for ad in mock_ntdof_article_data[:5]])
+            )
+        )
+        .scalars()
+        .all()
+    )
+
     expected = [
         GroupedArticleData(
             quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-            article_data=ntdof_first_five,
+            article_data=[
+                ArticleDataEntry.model_validate(ad) for ad in ntdof_first_five
+            ],
         )
     ]
 
@@ -33,17 +46,37 @@ def test_get_all_article_data_multiple_stocks(
 
     results = get_all_article_data(db_session=mock_db_session)
 
-    ntdof_first_five = mock_ntdof_article_data[:5]
-    tsla_first_five = mock_tsla_article_data[:5]
+    ntdof_first_five = (
+        mock_db_session.execute(
+            select(ArticleDataDB).where(
+                ArticleDataDB.id.in_([ad.id for ad in mock_ntdof_article_data[:5]])
+            )
+        )
+        .scalars()
+        .all()
+    )
+    tsla_first_five = (
+        mock_db_session.execute(
+            select(ArticleDataDB).where(
+                ArticleDataDB.id.in_([ad.id for ad in mock_tsla_article_data[:5]])
+            )
+        )
+        .scalars()
+        .all()
+    )
 
     expected = [
         GroupedArticleData(
             quote_stock_symbol=ntdof_stock.quote_stock_symbol,
-            article_data=ntdof_first_five,
+            article_data=[
+                ArticleDataEntry.model_validate(ad) for ad in ntdof_first_five
+            ],
         ),
         GroupedArticleData(
             quote_stock_symbol=tsla_stock.quote_stock_symbol,
-            article_data=tsla_first_five,
+            article_data=[
+                ArticleDataEntry.model_validate(ad) for ad in tsla_first_five
+            ],
         ),
     ]
 
