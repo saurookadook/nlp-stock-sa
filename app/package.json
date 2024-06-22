@@ -96,6 +96,7 @@
         "nodemon": "^3.0.3",
         "prettier": "^3.1.0",
         "prettier-eslint": "^16.1.2",
+        "prettier-plugin-multiline-arrays": "^3.0.6",
         "storybook": "^8.0.10",
         "storybook-addon-remix-react-router": "^3.0.0",
         "ts-jest": "^29.1.4",
