@@ -1,10 +1,15 @@
+from __future__ import annotations
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing import Annotated, Optional
 from uuid import UUID
 
 from models.mixins import TimestampsMixin
 from models.source import Source
-from utils.pydantic_helpers import SerializerArrowType, generic_validator_with_default
+from utils.pydantic_helpers import (
+    SerializerArrowType,
+    generic_cyclic_references_validator,
+    generic_validator_with_default,
+)
 
 
 class ArticleData(
@@ -18,7 +23,7 @@ class ArticleData(
     quote_stock_symbol: str
     source_group_id: UUID
     source_url: str
-    polymorphic_source: Annotated[Optional[Source], Field(default_factory=lambda: None)]
+    polymorphic_source: Annotated[Source, Field(default_factory=lambda: None)]
 
     author: Annotated[Optional[str], Field(default_factory=lambda: "")]
     last_updated_date: Annotated[
@@ -45,3 +50,16 @@ class ArticleData(
     @classmethod
     def handle_field_defaults(cls, value, info):
         return generic_validator_with_default(cls, value, info)
+
+    @field_validator("polymorphic_source", mode="wrap")
+    @classmethod
+    def drop_cyclic_references_in_polymorphic_source(cls, data_value, validator_func):
+        from models.source.db import SourceDB
+
+        return generic_cyclic_references_validator(
+            cls,
+            data_value,
+            validator_func,
+            nested_classes=[SourceDB],
+            nested_attr="data",
+        )
