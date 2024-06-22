@@ -30,18 +30,20 @@ def suppress_recursion_validation_error() -> Iterator[None]:
             raise exc
 
 
-def generic_cyclic_references_validator(class_ref, data_value, validator_func):
+def generic_cyclic_references_validator(
+    class_ref, data_value, validator_func, nested_classes=[list], nested_attr=None
+):
     try:
         return validator_func(data_value)
     except ValidationError as exc:
-        if not (is_recursion_validation_error(exc) and isinstance(data_value, list)):
+        if not (
+            is_recursion_validation_error(exc)
+            and isinstance(data_value, *nested_classes)
+        ):
             raise exc
 
-        data_value_without_cyclic_refs = []
-        for item in data_value:
-            with suppress_recursion_validation_error():
-                data_value_without_cyclic_refs.extend(validator_func([item]))
-        return validator_func(data_value_without_cyclic_refs)
+        with suppress_recursion_validation_error():
+            return validator_func(data_value)
 
 
 def get_default_value_from_field_config(class_ref, info):
