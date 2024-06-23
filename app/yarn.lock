@@ -42,28 +42,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@augment-vir/common@npm:^23.3.4":
-  version: 23.4.0
-  resolution: "@augment-vir/common@npm:23.4.0"
-  dependencies:
-    browser-or-node: "npm:^2.1.1"
-    run-time-assertions: "npm:^1.0.0"
-    type-fest: "npm:^4.10.2"
-  checksum: 10c0/179b6f5edf9cbdecb8fd17b1eb95b3230a2893cf849ecf13f1587741228ae6e77302f5828a0f4c334ac156ef436a2f9015a38495ccfdb57e21286703c4e41030
-  languageName: node
-  linkType: hard
-
-"@augment-vir/common@npm:^28.0.0, @augment-vir/common@npm:^28.1.0":
-  version: 28.2.4
-  resolution: "@augment-vir/common@npm:28.2.4"
-  dependencies:
-    browser-or-node: "npm:^3.0.0"
-    run-time-assertions: "npm:^1.5.1"
-    type-fest: "npm:^4.20.1"
-  checksum: 10c0/5d391442a0220b5abe3881d74f8aaeab149bb4055c93d07d6410d999673948ed9c55691b72f4d61d5de31b27875cb1b74d4950f37d822521d2be16e682c65515
-  languageName: node
-  linkType: hard
-
 "@aw-web-design/x-default-browser@npm:1.4.126":
   version: 1.4.126
   resolution: "@aw-web-design/x-default-browser@npm:1.4.126"
@@ -9048,20 +9026,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-or-node@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "browser-or-node@npm:2.1.1"
-  checksum: 10c0/f727639581182f831b5bf4686b401dcad5cc29b5a6b70059c0aa90990844b8f15f3a1d328cc8e83dd3b4bfa69175f9bdf2f4383faec14d47205bfea532b9964d
-  languageName: node
-  linkType: hard
-
-"browser-or-node@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "browser-or-node@npm:3.0.0"
-  checksum: 10c0/05db930e0a21bfffef74dbc4a27eaa12113e7f43a95f3b80a925f624212d701b86034cdfb5c422bdee061c4ae8442d294feee8996e6ae2555a8e46ea0b830b52
-  languageName: node
-  linkType: hard
-
 "browserify-zlib@npm:^0.1.4":
   version: 0.1.4
   resolution: "browserify-zlib@npm:0.1.4"
@@ -12008,13 +11972,6 @@ __metadata:
   version: 0.1.2
   resolution: "exit@npm:0.1.2"
   checksum: 10c0/71d2ad9b36bc25bb8b104b17e830b40a08989be7f7d100b13269aaae7c3784c3e6e1e88a797e9e87523993a25ba27c8958959a554535370672cfb4d824af8989
-  languageName: node
-  linkType: hard
-
-"expect-type@npm:~0.15.0":
-  version: 0.15.0
-  resolution: "expect-type@npm:0.15.0"
-  checksum: 10c0/d5ffc86df1937290a6555e763f76a8c27d18d9bfa63e18788a79ff52bba3d2a9a518af1163d437854efca6bd8e03768a2c4b10ea29e861c9d6f57ff53f19c3c4
   languageName: node
   linkType: hard
 
@@ -15999,7 +15956,6 @@ __metadata:
     nodemon: "npm:^3.0.3"
     prettier: "npm:^3.1.0"
     prettier-eslint: "npm:^16.1.2"
-    prettier-plugin-multiline-arrays: "npm:^3.0.6"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-router-dom: "npm:^6.23.1"
@@ -17316,18 +17272,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-multiline-arrays@npm:^3.0.6":
-  version: 3.0.6
-  resolution: "prettier-plugin-multiline-arrays@npm:3.0.6"
-  dependencies:
-    "@augment-vir/common": "npm:^28.1.0"
-    proxy-vir: "npm:^1.0.0"
-  peerDependencies:
-    prettier: ">=3.0.0"
-  checksum: 10c0/4a22a9f7edebbca06360d1092e1b9dbc8775dcf386fbd5f555565d56735b7c1698abcad46008dc1e23f693a9f0cf3dc92e70bebec282462b0480193fb26ead9c
-  languageName: node
-  linkType: hard
-
 "prettier@npm:^3.0.1, prettier@npm:^3.1.0, prettier@npm:^3.1.1":
   version: 3.2.5
   resolution: "prettier@npm:3.2.5"
@@ -17470,15 +17414,6 @@ __metadata:
     forwarded: "npm:0.2.0"
     ipaddr.js: "npm:1.9.1"
   checksum: 10c0/c3eed999781a35f7fd935f398b6d8920b6fb00bbc14287bc6de78128ccc1a02c89b95b56742bf7cf0362cc333c61d138532049c7dedc7a328ef13343eff81210
-  languageName: node
-  linkType: hard
-
-"proxy-vir@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "proxy-vir@npm:1.0.0"
-  dependencies:
-    "@augment-vir/common": "npm:^23.3.4"
-  checksum: 10c0/49e0d29abf9d7cab10878ac988c08755282159e450dedcaea46e91cfd19aca05ae6db3193ecfb438bc50e404b3b8c4f29f39596c6a330717617eaa5a67edd240
   languageName: node
   linkType: hard
 
@@ -18421,17 +18356,6 @@ __metadata:
   dependencies:
     queue-microtask: "npm:^1.2.2"
   checksum: 10c0/200b5ab25b5b8b7113f9901bfe3afc347e19bb7475b267d55ad0eb86a62a46d77510cb0f232507c9e5d497ebda569a08a9867d0d14f57a82ad5564d991588b39
-  languageName: node
-  linkType: hard
-
-"run-time-assertions@npm:^1.0.0, run-time-assertions@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "run-time-assertions@npm:1.5.1"
-  dependencies:
-    "@augment-vir/common": "npm:^28.0.0"
-    expect-type: "npm:~0.15.0"
-    type-fest: "npm:^4.18.2"
-  checksum: 10c0/fc26714f2e0caed5c2e51e71d4bad767316de5a70d594bb3c0addf85ab86d88ba7c4edc267d1ff40fb6a173ec5a7888d2e1e7388cdac817a76f943c007e18727
   languageName: node
   linkType: hard
 
@@ -20038,13 +19962,6 @@ __metadata:
   version: 2.19.0
   resolution: "type-fest@npm:2.19.0"
   checksum: 10c0/a5a7ecf2e654251613218c215c7493574594951c08e52ab9881c9df6a6da0aeca7528c213c622bc374b4e0cb5c443aa3ab758da4e3c959783ce884c3194e12cb
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^4.10.2, type-fest@npm:^4.18.2, type-fest@npm:^4.20.1":
-  version: 4.20.1
-  resolution: "type-fest@npm:4.20.1"
-  checksum: 10c0/c31da16fe170a74c5b7e102e70e764ba8ec6ade128e782a56f842aefa07307df5a6353e6b5601d3b30ff2d856d8b955f89813df639e4758fedcf8e426b2d854e
   languageName: node
   linkType: hard
 

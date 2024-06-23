@@ -1,5 +1,4 @@
 {
-    "plugins": ["./node_modules/prettier-plugin-multiline-arrays"],
     "arrowParens": "always",
     "bracketSameLine": false,
     "multilineArraysWrapThreshold": 2,
