@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Flex, Heading, Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer } from '@chakra-ui/react';
 
 import { DataExplorersStore } from '@nlpssa-app-types/common/main';
-import { NoDataMessage } from 'client/common/components';
+import { MultiSeriesLineGraph, NoDataMessage } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchSentimentAnalysesByStockSlug } from 'client/data-explorers/store/actions';
 
@@ -25,45 +25,49 @@ function SentimentAnalysesBySlugExplorer() {
         <Flex alignItems="center" alignSelf="start" flexDirection="column" minWidth="80%">
             <Heading>Sentiment Analysis for {params.stockSlug}</Heading>
             {sentimentAnalysesBySlug != null && sentimentAnalysesBySlug.sentimentAnalyses != null ? (
-                <TableContainer
-                    className="sentiment-analyses-wrapper"
-                    // alignSelf="stretch" flexDirection="column"
-                    maxHeight="40rem"
-                    width="100%"
-                >
-                    <Table variant="striped" colorScheme="teal">
-                        <TableCaption>Imperial to metric conversion factors</TableCaption>
-                        <Thead>
-                            <Tr>
-                                <Th textAlign="left">Sentiment</Th>
-                                <Th isNumeric={true}>Score</Th>
-                                <Th textAlign="center">Output</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {sentimentAnalysesBySlug.sentimentAnalyses.map((sentimentAnalysis, index) => {
-                                return (
-                                    <Tr key={`sa-tr-${index}`}>
-                                        <Td textAlign="left">{sentimentAnalysis.sentiment}</Td>
-                                        <Td isNumeric={true}>{sentimentAnalysis.score}</Td>
-                                        <Td textAlign="center">
-                                            <pre>
-                                                <code>{JSON.stringify(sentimentAnalysis.output)}</code>
-                                            </pre>
-                                        </Td>
-                                    </Tr>
-                                );
-                            })}
-                        </Tbody>
-                        <Tfoot>
-                            <Tr>
-                                <Th textAlign="left">Sentiment</Th>
-                                <Th isNumeric={true}>Score</Th>
-                                <Th textAlign="center">Output</Th>
-                            </Tr>
-                        </Tfoot>
-                    </Table>
-                </TableContainer>
+                <Flex alignItems="center" flexDirection="column">
+                    <MultiSeriesLineGraph data={sentimentAnalysesBySlug.sentimentAnalyses} />
+                    <TableContainer
+                        className="sentiment-analyses-wrapper"
+                        // alignSelf="stretch" flexDirection="column"
+                        maxHeight="32rem"
+                        overflowY="scroll"
+                        width="100%"
+                    >
+                        <Table variant="striped" colorScheme="teal">
+                            <TableCaption>Imperial to metric conversion factors</TableCaption>
+                            <Thead>
+                                <Tr>
+                                    <Th textAlign="left">Sentiment</Th>
+                                    <Th isNumeric={true}>Score</Th>
+                                    <Th textAlign="center">Output</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {sentimentAnalysesBySlug.sentimentAnalyses.map((sentimentAnalysis, index) => {
+                                    return (
+                                        <Tr key={`sa-tr-${index}`}>
+                                            <Td textAlign="left">{sentimentAnalysis.sentiment}</Td>
+                                            <Td isNumeric={true}>{sentimentAnalysis.score}</Td>
+                                            <Td textAlign="center">
+                                                <pre>
+                                                    <code>{JSON.stringify(sentimentAnalysis.output)}</code>
+                                                </pre>
+                                            </Td>
+                                        </Tr>
+                                    );
+                                })}
+                            </Tbody>
+                            <Tfoot>
+                                <Tr>
+                                    <Th textAlign="left">Sentiment</Th>
+                                    <Th isNumeric={true}>Score</Th>
+                                    <Th textAlign="center">Output</Th>
+                                </Tr>
+                            </Tfoot>
+                        </Table>
+                    </TableContainer>
+                </Flex>
             ) : (
                 <NoDataMessage />
             )}
