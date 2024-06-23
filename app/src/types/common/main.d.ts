@@ -65,6 +65,18 @@ interface FinalReducers {
 }
 
 /**********************************************************************
+ * Source
+ **********************************************************************/
+type SourceDiscriminator = 'article_data' | 'reddit_data';
+
+type Source = {
+    id: string;
+    data_type_id: NullableValue<string>;
+    data_type: NullableValue<SourceDiscriminator>;
+    data: NullableValue<ArticleDataEntry>;
+};
+
+/**********************************************************************
  * Article Data
  **********************************************************************/
 type ArticleDataEntry = {
@@ -72,6 +84,7 @@ type ArticleDataEntry = {
     quoteStockSymbol: string;
     sourceGroupId: string;
     sourceUrl: string;
+    source: NullableValue<Source>;
     createdAt: string;
     updatedAt: string;
     author?: string;
@@ -111,6 +124,34 @@ type AbstractPageData = {
 /**********************************************************************
  * Sentiment Analyses
  **********************************************************************/
+type SASourceData = {
+    created_at: string;
+    updated_at: string;
+    id: string;
+    quote_stock_symbol: string;
+    source_group_id: string;
+    source_url: string;
+    polymorphic_source: null;
+    author: string;
+    last_updated_date?: string | Date;
+    published_date?: string | Date;
+    raw_content: string;
+    sentence_tokens: string;
+    thumbnail_image_url: string;
+    title: string;
+};
+
+type SASource = {
+    // TODO: temp until I can get nested models to have their properties transformed correctly
+    created_at: string;
+    updated_at: string;
+    id: string;
+    data_type_id: string;
+    data_type: string;
+    data: NullableValue<SASourceData>;
+    source_owner_name: string;
+};
+
 type SentimentAnalysisOutput = {
     compound: number;
     neg: number;
@@ -125,7 +166,7 @@ type SentimentAnalysesDataEntry = {
     quoteStockSymbol: string;
     sourceGroupId?: string;
     sourceId: NullableValue<string>;
-    source: NullableValue<any>; // TODO: make it better
+    source: NullableValue<SASource>; // TODO: make it better
     output: SentimentAnalysisOutput;
     score: number;
     sentiment: SentimentEnum;
@@ -139,7 +180,7 @@ type SentimentAnalysesBySlugApiData = {
 };
 
 type SentimentAnalysesBySlugApiResponse = {
-    data: SentimentAnalysesDataEntry[] | null;
+    data: SentimentAnalysesBySlugApiData | null;
 };
 
 /**********************************************************************
