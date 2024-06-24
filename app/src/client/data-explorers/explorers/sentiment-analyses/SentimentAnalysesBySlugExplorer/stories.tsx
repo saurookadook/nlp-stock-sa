@@ -7,6 +7,7 @@ import {
     withRouter,
 } from 'storybook-addon-remix-react-router';
 
+import { SentimentAnalysesDataEntry } from '@nlpssa-app-types/common/main';
 import { getSentimentAnalysesDataBySlug } from 'client/_story-data';
 import { SentimentAnalysesBySlugExplorer } from 'client/data-explorers/explorers';
 import { dataExplorersRoutes } from 'client/data-explorers/routes';
@@ -33,12 +34,44 @@ type Story = StoryObj<typeof meta>;
 
 const sentimentAnalysesDataBySlug = getSentimentAnalysesDataBySlug();
 
+function dateFieldIsValid(dateField: unknown) {
+    return dateField != null && typeof dateField === 'string' && dateField !== '';
+}
+
+// TODO: the creation of the date fields here is only temporary; that kind of
+// normalization should probably be done in the reducer
+const filterNullSourcesAndSortData = (data: SentimentAnalysesDataEntry[]) =>
+    data
+        .filter((d) => d.source != null)
+        .map(function (d) {
+            if (dateFieldIsValid(d.source?.data?.last_updated_date)) {
+                d.source!.data!.last_updated_date = new Date(d.source!.data!.last_updated_date as string);
+            }
+            if (dateFieldIsValid(d.source?.data?.published_date)) {
+                d.source!.data!.published_date = new Date(d.source!.data!.published_date as string);
+            }
+            return d;
+        })
+        .sort(function (a: SentimentAnalysesDataEntry, b: SentimentAnalysesDataEntry) {
+            const aField = a.source!.data!.last_updated_date as Date;
+            const bField = b.source!.data!.last_updated_date as Date;
+
+            return aField == bField ? 0 : Number(aField > bField) - Number(aField < bField);
+        });
+
 function renderStory() {
     const params = useParams();
     console.log({ params });
     const dataBySlug = sentimentAnalysesDataBySlug[params.stockSlug as string];
     return (
-        <AppStateProvider initialState={{ sentimentAnalysesBySlug: dataBySlug }}>
+        <AppStateProvider
+            initialState={{
+                sentimentAnalysesBySlug: {
+                    quoteStockSymbol: dataBySlug.quoteStockSymbol,
+                    sentimentAnalyses: filterNullSourcesAndSortData(dataBySlug.sentimentAnalyses),
+                },
+            }}
+        >
             <SentimentAnalysesBySlugExplorer />
         </AppStateProvider>
     );
