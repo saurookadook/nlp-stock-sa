@@ -17,7 +17,7 @@ declare global {
     type RenderAppFunc = (data: AmbiguousObject) => void;
 
     var renderApp: RenderAppFunc;
-    var $fetchArticle: ({ dispatch }: { dispatch: any }) => Promise<void>;
+    // var $fetchArticle: ({ dispatch }: { dispatch: any }) => Promise<void>;
     // interface Window {
     //     renderApp: RenderAppFunc;
     // }
@@ -226,3 +226,11 @@ type DataExplorersStore = {
 type HomeStore = {
     pageData: GroupedArticleData[] | null;
 };
+
+/**********************************************************************
+ * D3 (custom)
+ **********************************************************************/
+type AxisScaleFnX = d3.ScaleTime<[number, number, never]>;
+type AxisScaleFnY = d3.ScaleLinear<[number, number, never]>;
+type D3Point = [number, number, string];
+type DispatchParams = d3.CustomEventParameters & { bubble?: boolean };
