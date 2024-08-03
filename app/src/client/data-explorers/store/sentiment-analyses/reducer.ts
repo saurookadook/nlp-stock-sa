@@ -5,6 +5,7 @@ import type {
     SentimentAnalysesDataEntry,
 } from '@nlpssa-app-types/common/main';
 import { SET_SENTIMENT_ANALYSES_BY_SLUG } from 'client/common/constants/actionTypes';
+import { safeGetDateValue } from 'client/common/components/MultiSeriesLineGraph/utils';
 
 type SentimentAnalysesBySlugReducer = GenericStateSliceReducer<
     DataExplorersStore['sentimentAnalysesBySlug'] | null | undefined,
@@ -12,8 +13,8 @@ type SentimentAnalysesBySlugReducer = GenericStateSliceReducer<
 >;
 
 function compareByDateCallback(a: SentimentAnalysesDataEntry, b: SentimentAnalysesDataEntry) {
-    const aField = a.source!.data!.last_updated_date as Date;
-    const bField = b.source!.data!.last_updated_date as Date;
+    const aField = safeGetDateValue(a);
+    const bField = safeGetDateValue(b);
 
     return aField == bField ? 0 : Number(aField > bField) - Number(aField < bField);
 }

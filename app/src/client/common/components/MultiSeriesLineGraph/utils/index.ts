@@ -7,15 +7,16 @@ import type {
     AxisScaleFnY,
 } from '@nlpssa-app-types/common/main';
 
-const dateValue = (d: SentimentAnalysesDataEntry) =>
-    (d.source?.data?.last_updated_date || d.source?.data?.published_date) as Date;
+const safeGetDateValue = (d: SentimentAnalysesDataEntry): Date =>
+    // TODO: remove 'updated_at' fallback once data quality issues are fixed
+    (d.source?.data?.last_updated_date || d.source?.data?.published_date || d.source?.updated_at) as Date;
 
 function createXScale({
     data,
     marginLeft,
     marginRight,
     width,
-    dateGetterFn = dateValue,
+    dateGetterFn = safeGetDateValue,
 }: {
     data: SentimentAnalysesDataEntry[];
     marginLeft: number;
@@ -51,29 +52,13 @@ function createYScale({
 
 function buildPoints({ data, xFn, yFn }: { data: SentimentAnalysesDataEntry[]; xFn: AxisScaleFnX; yFn: AxisScaleFnY }) {
     return data.reduce(function (acc: D3Point[], d: SentimentAnalysesDataEntry) {
-        acc.push([
-            xFn(d.source!.data!.last_updated_date as Date),
-            yFn(d.output.compound),
-            `${d.quoteStockSymbol}: Compound score`,
-        ]);
-        acc.push([
-            xFn(d.source!.data!.last_updated_date as Date),
-            yFn(d.output.neg),
-            `${d.quoteStockSymbol}: Negative score`,
-        ]);
-        acc.push([
-            xFn(d.source!.data!.last_updated_date as Date),
-            yFn(d.output.neu),
-            `${d.quoteStockSymbol}: Neutral score`,
-        ]);
-        acc.push([
-            xFn(d.source!.data!.last_updated_date as Date),
-            yFn(d.output.pos),
-            `${d.quoteStockSymbol}: Positive score`,
-        ]);
+        acc.push([xFn(safeGetDateValue(d)), yFn(d.output.compound), `${d.quoteStockSymbol}: Compound score`]);
+        acc.push([xFn(safeGetDateValue(d)), yFn(d.output.neg), `${d.quoteStockSymbol}: Negative score`]);
+        acc.push([xFn(safeGetDateValue(d)), yFn(d.output.neu), `${d.quoteStockSymbol}: Neutral score`]);
+        acc.push([xFn(safeGetDateValue(d)), yFn(d.output.pos), `${d.quoteStockSymbol}: Positive score`]);
 
         return acc;
     }, []);
 }
 
-export { createXScale, createYScale, buildPoints };
+export { createXScale, createYScale, buildPoints, safeGetDateValue };
