@@ -1,45 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import styled from '@emotion/styled';
-import { Flex } from '@chakra-ui/react';
 
 import type { SentimentAnalysesDataEntry } from '@nlpssa-app-types/common/main';
-import Legend from './Legend';
-
-const StyledGraphWrapper = styled(Flex)`
-    flex-direction: row;
-`;
-
-const StyledSVG = styled.svg`
-    font: 10px sans-serif;
-    height: auto;
-    max-width: 100%;
-    overflow: visible;
-`;
-
-const polarities = ['Compound', 'Negative', 'Neutral', 'Positive'];
-
-const strokeColorByPolarity = {
-    Compound: 'steelblue',
-    Negative: 'red',
-    Neutral: 'orange',
-    Positive: 'green',
-};
+import Legend from 'client/common/components/MultiSeriesLineGraph/Legend';
+import { polarities, strokeColorByPolarity } from 'client/common/components/MultiSeriesLineGraph/constants';
+import { StyledGraphWrapper, StyledSVG } from 'client/common/components/MultiSeriesLineGraph/styled';
 
 type DispatchParams = d3.CustomEventParameters & { bubble?: boolean };
 
-type D3Point = [Date, number, string];
-
-type PointsByPolarityType = {
-    Compound: D3Point[];
-    Negative: D3Point[];
-    Neutral: D3Point[];
-    Positive: D3Point[];
-};
-
-type LinesPathsRef = d3.Selection<SVGPathElement | d3.BaseType, D3Point[] & { z: string }, SVGGElement, unknown> & {
-    _groups: [SVGPathElement, number][];
-};
+type D3Point = [number, number, string];
 
 // 640 / 16 = 40
 // 400 / 16 = 25
@@ -68,7 +37,7 @@ function MultiSeriesLineGraph({
     const svgRef = useRef<SVGSVGElement>(null);
     const gx = useRef<SVGGElement>(null);
     const gy = useRef<SVGGElement>(null);
-    // const linesPaths = useRef<SVGGElement>(null);
+    const linesPathsRef = useRef<SVGGElement>(null);
     const dot = useRef<SVGGElement>(null);
 
     const dateValue = (d: SentimentAnalysesDataEntry) =>
@@ -87,13 +56,25 @@ function MultiSeriesLineGraph({
 
     const points = sentimentAnalysesData.reduce(function (acc: D3Point[], d: SentimentAnalysesDataEntry) {
         acc.push([
-            d.source!.data!.last_updated_date as Date,
-            d.output.compound,
+            x(d.source!.data!.last_updated_date as Date),
+            y(d.output.compound),
             `${d.quoteStockSymbol}: Compound score`,
         ]);
-        acc.push([d.source!.data!.last_updated_date as Date, d.output.neg, `${d.quoteStockSymbol}: Negative score`]);
-        acc.push([d.source!.data!.last_updated_date as Date, d.output.neu, `${d.quoteStockSymbol}: Neutral score`]);
-        acc.push([d.source!.data!.last_updated_date as Date, d.output.pos, `${d.quoteStockSymbol}: Positive score`]);
+        acc.push([
+            x(d.source!.data!.last_updated_date as Date),
+            y(d.output.neg),
+            `${d.quoteStockSymbol}: Negative score`,
+        ]);
+        acc.push([
+            x(d.source!.data!.last_updated_date as Date),
+            y(d.output.neu),
+            `${d.quoteStockSymbol}: Neutral score`,
+        ]);
+        acc.push([
+            x(d.source!.data!.last_updated_date as Date),
+            y(d.output.pos),
+            `${d.quoteStockSymbol}: Positive score`,
+        ]);
 
         return acc;
     }, []);
@@ -104,56 +85,16 @@ function MultiSeriesLineGraph({
         (d) => d[2],
     );
 
-    const compoundPoints = sentimentAnalysesData.reduce(
-        function (acc: PointsByPolarityType, d: SentimentAnalysesDataEntry) {
-            // could probably remove this at some point...
-            if (d.source != null) {
-                acc.Compound.push([
-                    d.source!.data!.last_updated_date as Date,
-                    d.output.compound,
-                    `${d.quoteStockSymbol}: Compound score`,
-                ]);
-                // acc.Compound.push([x(dateValue(d)), y(d.output.compound), `${d.quoteStockSymbol}: Compound score`]);
-                acc.Negative.push([
-                    d.source!.data!.last_updated_date as Date,
-                    d.output.neg,
-                    `${d.quoteStockSymbol}: Negative score`,
-                ]);
-                // acc.Negative.push([x(dateValue(d)), y(d.output.neg), `${d.quoteStockSymbol}: Negative score`]);
-                acc.Neutral.push([
-                    d.source!.data!.last_updated_date as Date,
-                    d.output.neu,
-                    `${d.quoteStockSymbol}: Neutral score`,
-                ]);
-                // acc.Neutral.push([x(dateValue(d)), y(d.output.neu), `${d.quoteStockSymbol}: Neutral score`]);
-                acc.Positive.push([
-                    d.source!.data!.last_updated_date as Date,
-                    d.output.pos,
-                    `${d.quoteStockSymbol}: Positive score`,
-                ]);
-                // acc.Positive.push([x(dateValue(d)), y(d.output.pos), `${d.quoteStockSymbol}: Positive score`]);
-            }
-            return acc;
-        },
-        {
-            Compound: [],
-            Negative: [],
-            Neutral: [],
-            Positive: [],
-        },
-    );
+    // const lineGenerator = d3
+    //     .line<D3Point>()
+    //     .x((d) => x(d[0]))
+    //     .y((d) => y(d[1]));
 
-    const lineGenerator = d3
-        .line<D3Point>()
-        .x((d) => x(d[0]))
-        .y((d) => y(d[1]));
-
-    let linesPaths;
+    const simpleLineGenerator = d3.line<[number, number]>();
 
     useEffect(() => {
-        if (svgRef.current) {
-            linesPaths = d3
-                .select(svgRef.current)
+        if (linesPathsRef.current != null) {
+            d3.select(linesPathsRef.current)
                 .append('g')
                 .classed('lines-paths', true)
                 .attr('fill', 'none')
@@ -162,18 +103,19 @@ function MultiSeriesLineGraph({
                 .attr('stroke-linecap', 'round')
                 .selectAll('path')
                 .data(groups.values())
-                .join('path');
-
-            linesPaths._groups[0].map(function (path: SVGPathElement, i: number) {
-                const polarity = polarities[i];
-                return d3
-                    .select(path)
-                    .classed('line-path', true)
-                    .attr('aria-label', polarity)
-                    .style('stroke', strokeColorByPolarity[polarity])
-                    .attr('d', lineGenerator as (data) => string);
-                // .attr('d', lineGenerator(compoundPoints[polarity]) as string)
-            });
+                .join('path')
+                .each(function (p, j) {
+                    const path = d3.select(this);
+                    const polarity = polarities[j];
+                    console.log({ p, j, path, polarity });
+                    path.classed('line-path', true)
+                        .attr('aria-label', polarity)
+                        .style('stroke', strokeColorByPolarity[polarity])
+                        // .attr('d', lineGenerator as (data) => string);
+                        // @ts-expect-error: testing
+                        .attr('d', simpleLineGenerator);
+                    // debugger;
+                });
         }
     }, []);
 
@@ -222,7 +164,7 @@ function MultiSeriesLineGraph({
         console.groupCollapsed('pointerentered callback');
         console.log({ event });
         console.groupEnd();
-        d3.select(linesPaths.current).style('mix-blend-mode', null).style('stroke', '#ddd');
+        d3.select(linesPathsRef.current).style('mix-blend-mode', null).style('stroke', '#ddd');
         d3.select(dot.current).attr('display', null);
     }
 
@@ -290,25 +232,10 @@ function MultiSeriesLineGraph({
             >
                 <g ref={gx} transform={`translate(0,${height - marginBottom})`} />
                 <g ref={gy} transform={`translate(${marginLeft},0)`} />
-                {/* <g ref={linesPathsRef} className="lines-paths" /> */}
-                {/* {polarities.map((pol, i) => (
-                    <path
-                        key={`polarity-score-line-${i}`}
-                        className="line-path"
-                        fill="none"
-                        stroke={strokeColorByPolarity[pol]}
-                        strokeWidth="1.5"
-                        d={lineGenerator(compoundPoints[pol]) as string}
-                    />
-                ))} */}
+                <g ref={linesPathsRef} className="lines-paths" />
                 <g ref={dot} display="none" fill="white" stroke="currentColor" strokeWidth="1.5">
-                    {sentimentAnalysesData.map((d, i) => (
-                        // cx={x(i)} cy={y(d)}
-                        <>
-                            <circle key={`circle-${i}`} r="2.5" />
-                            <text key={`sa-text-${i}`} textAnchor="middle" y={-8} r="2.5" />
-                        </>
-                    ))}
+                    <circle r="2.5" />
+                    <text textAnchor="middle" y={-8} r="2.5" />
                 </g>
                 <Legend height={height} legendItemSize={legendItemSize} legendSpacer={legendSpacer} />
             </StyledSVG>
