@@ -1,6 +1,18 @@
 import React, { useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Flex, Heading, Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer } from '@chakra-ui/react';
+import {
+    Flex, // force formatting
+    Heading,
+    Table,
+    Thead,
+    Tbody,
+    Tfoot,
+    Tr,
+    Th,
+    Td,
+    TableCaption,
+    TableContainer,
+} from '@chakra-ui/react';
 
 import { DataExplorersStore } from '@nlpssa-app-types/common/main';
 import { MultiSeriesLineGraph, NoDataMessage } from 'client/common/components';
@@ -24,15 +36,18 @@ function SentimentAnalysesBySlugExplorer() {
     return (
         <Flex alignItems="center" alignSelf="start" flexDirection="column" minWidth="80%">
             <Heading>Sentiment Analysis for {params.stockSlug}</Heading>
-            {sentimentAnalysesBySlug != null && sentimentAnalysesBySlug.sentimentAnalyses != null ? (
+            {(sentimentAnalysesBySlug || {}).sentimentAnalyses != null ? (
                 <Flex alignItems="center" flexDirection="column">
-                    <MultiSeriesLineGraph data={sentimentAnalysesBySlug.sentimentAnalyses} />
+                    <MultiSeriesLineGraph
+                        sentimentAnalysesData={sentimentAnalysesBySlug.sentimentAnalyses}
+                        width={16 * 70}
+                    />
                     <TableContainer
                         className="sentiment-analyses-wrapper"
                         // alignSelf="stretch" flexDirection="column"
                         maxHeight="32rem"
                         overflowY="scroll"
-                        width="100%"
+                        width="50rem"
                     >
                         <Table variant="striped" colorScheme="teal">
                             <TableCaption>Imperial to metric conversion factors</TableCaption>
