@@ -51,7 +51,15 @@ function createYScale({
         .range([height - marginBottom, marginTop]);
 }
 
-function buildPoints({ data, xFn, yFn }: { data: SentimentAnalysesDataEntry[]; xFn: AxisScaleFnX; yFn: AxisScaleFnY }) {
+function buildPoints({
+    data, // force formatting
+    xFn,
+    yFn,
+}: {
+    data: SentimentAnalysesDataEntry[];
+    xFn: AxisScaleFnX;
+    yFn: AxisScaleFnY;
+}) {
     return data.reduce(function (acc: D3Point[], d: SentimentAnalysesDataEntry) {
         acc.push([xFn(safeGetDateValue(d)), yFn(d.output.compound), `${d.quoteStockSymbol}: Compound score`]);
         acc.push([xFn(safeGetDateValue(d)), yFn(d.output.neg), `${d.quoteStockSymbol}: Negative score`]);
