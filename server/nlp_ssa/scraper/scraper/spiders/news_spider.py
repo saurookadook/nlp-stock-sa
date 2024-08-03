@@ -18,12 +18,8 @@ from rich import inspect
 from sqlalchemy import select
 
 from nlp_ssa.config.logging import ExtendedLogger
-
-# from nlp_ssa.constants import SourceDiscriminatorEnum
 from nlp_ssa.db import db_session
-
-# from nlp_ssa.models import *
-from nlp_ssa.models.article_data import ArticleDataFacade
+from nlp_ssa.models.article_data import ArticleDataFacade, ArticleDataDB
 from nlp_ssa.models.stock import StockDB
 from nlp_ssa.models.sentiment_analysis import SentimentAnalysisDB
 from scraper.items import ScraperItem
@@ -57,6 +53,15 @@ class NewsSpider(scrapy.Spider):
         return preprocessed_docs
 
     def start_requests(self):
+        # all_article_data = select(ArticleDataDB).where(ArticleDataDB.title == "")
+
+        # for ad in db_session.scalars(all_article_data):
+        #     yield scrapy_splash.SplashRequest(
+        #         url=ad.source_url,
+        #         callback=self.update_metadata_from_page,
+        #         cb_kwargs=dict(current_ad=ad, stock_slug=ad.quote_stock_symbol),
+        #     )
+
         stock_symbol_slugs = db_session.execute(
             select(StockDB.quote_stock_symbol)
         ).all()
@@ -162,19 +167,60 @@ class NewsSpider(scrapy.Spider):
                     thumbnail_image_url=thumbnail_url,
                 )
             )
-            logger.log_info_centered(" BEFORE COMMIT ")
-            inspect(article_data_record)
+            # logger.log_info_centered(" BEFORE COMMIT ")
+            # inspect(article_data_record)
 
             db_session.commit()
 
-            logger.log_info_centered(" AFTER COMMIT ")
-            inspect(article_data_record)
+            # logger.log_info_centered(" AFTER COMMIT ")
+            # inspect(article_data_record)
         except Exception as e:
             logger.error(e, file=sys.stderr)
 
         item = ScraperItem()
         item["Sentence"] = cleaned_text
         item["GroupId"] = source_group_id
+
+        yield item
+
+    def update_metadata_from_page(self, response, current_ad, stock_slug):
+        article_content = response.css("div.morpheusGridBody div.caas-body").get()
+        if not article_content:
+            return
+
+        metadata = self._get_article_metadata(response)
+
+        try:
+            article_data_record = self.article_data_facade.create_or_update(
+                payload=dict(
+                    id=current_ad.id,
+                    quote_stock_symbol=stock_slug,
+                    source_url=response.url,
+                    author=metadata["author"],
+                    last_updated_date=(
+                        ""
+                        if not metadata["last_updated_date"]
+                        else arrow.get(metadata["last_updated_date"]).to("utc")
+                    ),
+                    published_date=(
+                        ""
+                        if not metadata["published_date"]
+                        else arrow.get(metadata["published_date"]).to("utc")
+                    ),
+                    title=metadata["title"],
+                )
+            )
+            db_session.commit()
+        except Exception as e:
+            logger.error(e, file=sys.stderr)
+
+        item = ScraperItem()
+        # item["ArticleData"] = str(current_ad.id)
+        self._debug_logger(
+            header_text="NewsSpider.update_metadata_from_page",
+            variables=[f"{key}: {metadata[key]} " for key in metadata.keys()],
+            width=240,
+        )
 
         yield item
 
@@ -246,7 +292,7 @@ class NewsSpider(scrapy.Spider):
                 ).get(default="")
 
             metadata_dict["title"] = response.css(
-                'meta[name="og:title"]::attr(content)'
+                'meta[property="og:title"]::attr(content)'
             ).get(default="")
         except Exception as e:
             self._debug_logger(header_text="Error getting metadata", variables=[e])

@@ -14,7 +14,31 @@ function StockArticleDataGroup({ articleData, quoteStockSymbol, routerDomAware =
     const headingBackgroundColor = useColorModeValue('teal.500', 'teal.200');
     const headingColor = useColorModeValue('white', 'gray.800');
 
+    const sentimentAnalysesTarget = `/app/data-explorers/sentiment-analyses/${quoteStockSymbol}`;
     const seeAllTarget = `/app/data-explorers/article-data/${quoteStockSymbol}`;
+
+    const LinkComponent = routerDomAware ? RouterDomLink : Link;
+    const linkConfigs = routerDomAware
+        ? [
+              {
+                  props: { className: 'router-dom-link', to: sentimentAnalysesTarget },
+                  text: 'View Sentiment Analysis',
+              },
+              {
+                  props: { className: 'router-dom-link', to: seeAllTarget },
+                  text: 'See All',
+              },
+          ]
+        : [
+              {
+                  props: { className: 'chakra-ui-link', href: sentimentAnalysesTarget },
+                  text: 'View Sentiment Analysis',
+              },
+              {
+                  props: { className: 'chakra-ui-link', href: seeAllTarget },
+                  text: 'See All',
+              },
+          ];
 
     return (
         <Box id={`${quoteStockSymbol}-data-group`}>
@@ -30,17 +54,11 @@ function StockArticleDataGroup({ articleData, quoteStockSymbol, routerDomAware =
                     {quoteStockSymbol}
                 </Box>
                 <Spacer />
-                <Text as="span" fontSize="1rem">
-                    {routerDomAware ? (
-                        <RouterDomLink to={seeAllTarget} className="router-dom-link">
-                            See All
-                        </RouterDomLink>
-                    ) : (
-                        <Link href={seeAllTarget} className="chakra-ui-link">
-                            See All
-                        </Link>
-                    )}
-                </Text>
+                {linkConfigs.map((linkConfig, index) => (
+                    <Text key={`heading-link-${index}`} as="span" fontSize="1rem" paddingX="0.5rem">
+                        <LinkComponent {...linkConfig.props}>{linkConfig.text}</LinkComponent>
+                    </Text>
+                ))}
             </Heading>
             <ArticleDataList articleData={articleData} />
         </Box>

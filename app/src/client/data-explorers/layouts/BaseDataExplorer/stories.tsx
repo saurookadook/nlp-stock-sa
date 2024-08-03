@@ -35,6 +35,7 @@ type Story = StoryObj<typeof meta>;
 const baseInitialData = (): GenericStateStore<DataExplorersStore> => ({
     articleDataBySlug: null,
     articleData: null,
+    sentimentAnalysesBySlug: null,
     stockDataAll: null,
     stockDataSingular: null,
 });

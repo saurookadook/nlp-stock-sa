@@ -1,17 +1,54 @@
 import arrow
 import datetime
 from arrow import Arrow
+from contextlib import contextmanager
 from pydantic import (
     BaseModel,
     ConfigDict,
     GetCoreSchemaHandler,
+    ValidationError,
     ValidationInfo,
     ValidatorFunctionWrapHandler,
     alias_generators,
 )
 from pydantic.functional_validators import WrapValidator
 from pydantic_core import core_schema
-from typing import Annotated, Any
+from typing import Annotated, Any, Iterator
+
+
+def is_recursion_validation_error(exc: ValidationError) -> bool:
+    errors = exc.errors()
+    return len(errors) == 1 and errors[0]["type"] == "recursion_loop"
+
+
+@contextmanager
+def suppress_recursion_validation_error() -> Iterator[None]:
+    try:
+        yield
+    except ValidationError as exc:
+        if not is_recursion_validation_error(exc):
+            raise exc
+
+
+def generic_cyclic_references_validator(
+    class_ref, data_value, validator_func, nested_classes=[list], nested_attr=None
+):
+    try:
+        return validator_func(data_value)
+    except ValidationError as exc:
+        if not (
+            is_recursion_validation_error(exc)
+            and isinstance(data_value, *nested_classes)
+        ):
+            raise exc
+
+        with suppress_recursion_validation_error():
+            return validator_func(data_value)
+
+
+def get_default_value_from_field_config(class_ref, info):
+    field = class_ref.model_fields[info.field_name]
+    return field.default_factory() if callable(field.default_factory) else field.default
 
 
 def generic_validator_with_default(class_ref, value, info):
@@ -20,11 +57,6 @@ def generic_validator_with_default(class_ref, value, info):
         if value is not None
         else get_default_value_from_field_config(class_ref, info)
     )
-
-
-def get_default_value_from_field_config(class_ref, info):
-    field = class_ref.model_fields[info.field_name]
-    return field.default_factory() if callable(field.default_factory) else field.default
 
 
 def convert_to_arrow_instance(

@@ -1,11 +1,11 @@
 import logging
 from fastapi import APIRouter, HTTPException
 
-from config import configure_logging
+from config.logging import ExtendedLogger, configure_logging
 from db import db_session
 
-# configure_logging(app_name="nlp_ssa.api.routes.users")
-logger = logging.getLogger(__file__)
+configure_logging(app_name=__file__)
+logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 
 
@@ -16,7 +16,7 @@ async def read_users_test(username: str):
     user_facade = UserFacade(db_session=db_session)
 
     try:
-        logger.warning(f"{'='*40} getting user {'='*40}")
+        logger.log_warn_centered(f" getting user ")
         user = user_facade.get_one_by_username(username=username)
     except UserFacade.NoResultFound:
         raise HTTPException(

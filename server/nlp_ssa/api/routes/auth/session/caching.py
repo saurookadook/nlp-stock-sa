@@ -6,8 +6,9 @@ from pymemcache.exceptions import MemcacheUnexpectedCloseError
 from typing import Dict, Union
 
 from config import env_vars
-from config.logging import ExtendedLogger
+from config.logging import ExtendedLogger, configure_logging
 
+configure_logging(__file__)
 logger: ExtendedLogger = logging.getLogger(__file__)
 
 base_client = Client(

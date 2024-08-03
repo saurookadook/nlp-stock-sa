@@ -4,10 +4,11 @@ from fastapi_csrf_protect import CsrfProtect
 from sqlalchemy import select
 
 from api.routes.api.stocks.models import AllStocksResponse, SingularStockResponse
+from config.logging import ExtendedLogger, configure_logging
 from db import db_session
 
-
-logger = logging.getLogger(__file__)
+configure_logging(__file__)
+logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 
 

@@ -17,7 +17,7 @@ declare global {
     type RenderAppFunc = (data: AmbiguousObject) => void;
 
     var renderApp: RenderAppFunc;
-    var $fetchArticle: ({ dispatch }: { dispatch: any }) => Promise<void>;
+    // var $fetchArticle: ({ dispatch }: { dispatch: any }) => Promise<void>;
     // interface Window {
     //     renderApp: RenderAppFunc;
     // }
@@ -65,6 +65,18 @@ interface FinalReducers {
 }
 
 /**********************************************************************
+ * Source
+ **********************************************************************/
+type SourceDiscriminator = 'article_data' | 'reddit_data';
+
+type Source = {
+    id: string;
+    data_type_id: NullableValue<string>;
+    data_type: NullableValue<SourceDiscriminator>;
+    data: NullableValue<ArticleDataEntry>;
+};
+
+/**********************************************************************
  * Article Data
  **********************************************************************/
 type ArticleDataEntry = {
@@ -72,8 +84,9 @@ type ArticleDataEntry = {
     quoteStockSymbol: string;
     sourceGroupId: string;
     sourceUrl: string;
-    createdAt: string;
-    updatedAt: string;
+    source: NullableValue<Source>;
+    createdAt: string | Date;
+    updatedAt: string | Date;
     author?: string;
     lastUpdatedDate?: string;
     publishedDate?: string;
@@ -109,6 +122,68 @@ type AbstractPageData = {
 };
 
 /**********************************************************************
+ * Sentiment Analyses
+ **********************************************************************/
+type SASourceData = {
+    created_at: string | Date;
+    updated_at: string | Date;
+    id: string;
+    quote_stock_symbol: string;
+    source_group_id: string;
+    source_url: string;
+    polymorphic_source: null;
+    author: string;
+    last_updated_date?: string | Date;
+    published_date?: string | Date;
+    raw_content: string;
+    sentence_tokens: string;
+    thumbnail_image_url: string;
+    title: string;
+};
+
+type SASource = {
+    // TODO: temp until I can get nested models to have their properties transformed correctly
+    created_at: string | Date;
+    updated_at: string | Date;
+    id: string;
+    data_type_id: string;
+    data_type: string;
+    data: NullableValue<SASourceData>;
+    source_owner_name: string;
+};
+
+type SentimentAnalysisOutput = {
+    compound: number;
+    neg: number;
+    neu: number;
+    pos: number;
+};
+
+type SentimentEnum = 'compound' | 'negative' | 'neutral' | 'positive';
+
+type SentimentAnalysesDataEntry = {
+    id: string;
+    quoteStockSymbol: string;
+    sourceGroupId?: string;
+    sourceId: NullableValue<string>;
+    source: NullableValue<SASource>; // TODO: make it better
+    output: SentimentAnalysisOutput;
+    score: number;
+    sentiment: SentimentEnum;
+    createdAt: string | Date;
+    updatedAt: string | Date;
+};
+
+type SentimentAnalysesBySlugApiData = {
+    quoteStockSymbol: string;
+    sentimentAnalyses: SentimentAnalysesDataEntry[];
+};
+
+type SentimentAnalysesBySlugApiResponse = {
+    data: SentimentAnalysesBySlugApiData | null;
+};
+
+/**********************************************************************
  * Stocks
  **********************************************************************/
 type StockDataEntry = {
@@ -133,12 +208,14 @@ type SingularStockData = {
  **********************************************************************/
 type ArticleDataBySlugStateSlice = GroupedArticleData;
 type ArticleDataStateSlice = GroupedArticleData[];
+type SentimentAnalysesBySlugStateSlice = SentimentAnalysesBySlugApiData;
 type StockDataAllStateSlice = StockDataEntry[];
 type StockDataSingularStateSlice = StockDataEntry;
 
 type DataExplorersStore = {
     articleDataBySlug: ArticleDataBySlugStateSlice;
     articleData: ArticleDataStateSlice;
+    sentimentAnalysesBySlug: SentimentAnalysesBySlugStateSlice;
     stockDataAll: StockDataAllStateSlice;
     stockDataSingular: StockDataSingularStateSlice;
 };
@@ -149,3 +226,11 @@ type DataExplorersStore = {
 type HomeStore = {
     pageData: GroupedArticleData[] | null;
 };
+
+/**********************************************************************
+ * D3 (custom)
+ **********************************************************************/
+type AxisScaleFnX = d3.ScaleTime<[number, number, never]>;
+type AxisScaleFnY = d3.ScaleLinear<[number, number, never]>;
+type D3Point = [number, number, string];
+type DispatchParams = d3.CustomEventParameters & { bubble?: boolean };
