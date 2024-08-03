@@ -15,9 +15,8 @@ function Legend({
         <g id="legend">
             {Object.entries(strokeColorByPolarity).map(([key, val], i) => {
                 return (
-                    <>
+                    <React.Fragment key={`legend-item-${i}`}>
                         <rect
-                            key={`legend-item-color-${i}`}
                             x={100 + i * 100}
                             y={height - legendItemSize + legendSpacer}
                             fill={val}
@@ -25,7 +24,6 @@ function Legend({
                             width={legendItemSize}
                         />
                         <text
-                            key={`legend-item-text-${i}`}
                             x={100 + i * 100 + legendItemSize + 5}
                             y={height + legendSpacer / 2}
                             alignmentBaseline="middle"
@@ -34,7 +32,7 @@ function Legend({
                         >
                             {key}
                         </text>
-                    </>
+                    </React.Fragment>
                 );
             })}
         </g>
