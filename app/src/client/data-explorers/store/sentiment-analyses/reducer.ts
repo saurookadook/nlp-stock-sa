@@ -35,6 +35,9 @@ function cleanAndTransformSentimentAnalyses(data: SentimentAnalysesDataEntry[] |
                   if (dateFieldIsValid(d.source?.data?.published_date)) {
                       d.source!.data!.published_date = new Date(d.source!.data!.published_date as string);
                   }
+                  if (dateFieldIsValid(d.source?.updated_at)) {
+                      d.source!.updated_at = new Date(d.source!.updated_at);
+                  }
                   return d;
               })
               .sort(compareByDateCallback);

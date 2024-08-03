@@ -85,8 +85,8 @@ type ArticleDataEntry = {
     sourceGroupId: string;
     sourceUrl: string;
     source: NullableValue<Source>;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: string | Date;
+    updatedAt: string | Date;
     author?: string;
     lastUpdatedDate?: string;
     publishedDate?: string;
@@ -125,8 +125,8 @@ type AbstractPageData = {
  * Sentiment Analyses
  **********************************************************************/
 type SASourceData = {
-    created_at: string;
-    updated_at: string;
+    created_at: string | Date;
+    updated_at: string | Date;
     id: string;
     quote_stock_symbol: string;
     source_group_id: string;
@@ -143,8 +143,8 @@ type SASourceData = {
 
 type SASource = {
     // TODO: temp until I can get nested models to have their properties transformed correctly
-    created_at: string;
-    updated_at: string;
+    created_at: string | Date;
+    updated_at: string | Date;
     id: string;
     data_type_id: string;
     data_type: string;
@@ -170,8 +170,8 @@ type SentimentAnalysesDataEntry = {
     output: SentimentAnalysisOutput;
     score: number;
     sentiment: SentimentEnum;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: string | Date;
+    updatedAt: string | Date;
 };
 
 type SentimentAnalysesBySlugApiData = {
