@@ -3,7 +3,7 @@ import fs from 'fs';
 export const buildManifest = (manifest, bundlePath) => {
     return Object.entries(manifest).reduce((manifestMap, manifestEntry) => {
         const [key, value] = manifestEntry;
-        console.log('\n'.padStart(220, '='), `key: ${key}\n`, `value: ${value}\n`, '\n'.padEnd(220, '='));
+        // console.log('\n'.padStart(220, '='), `key: ${key}\n`, `value: ${value}\n`, '\n'.padEnd(220, '='));
 
         if (key.endsWith('.map')) {
             return manifestMap;
@@ -11,7 +11,7 @@ export const buildManifest = (manifest, bundlePath) => {
 
         let bundleKey;
         let [_, app, ext] = key.match(/(.*)\.(js|ts|tsx)/)!;
-        console.log('\n'.padStart(220, '='), `_: ${_}\napp: ${app}\next: ${ext}\n`, '\n'.padEnd(220, '='));
+        // console.log('\n'.padStart(220, '='), `_: ${_}\napp: ${app}\next: ${ext}\n`, '\n'.padEnd(220, '='));
         if (['react-vendors', 'nlpssaVendor', 'nlpssaCommon'].includes(app)) {
             app = 'common';
             const bundle = key.includes('Common') ? 'common' : 'vendor';

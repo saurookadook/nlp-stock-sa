@@ -4,7 +4,7 @@ import cors from 'cors';
 import express, { RequestHandler } from 'express';
 import { engine } from 'express-handlebars';
 
-import dataExplorers from './data-explorers';
+import dataExplorersRouter from './data-explorers';
 import homeRouter from './home';
 import loginRouter from './login';
 import { manifestMiddleware } from './middleware';
@@ -52,7 +52,7 @@ if (process.env.ENV !== 'production') {
     expressApp.use('/dist', express.static(path.join(__dirname, 'dist')));
 }
 
-expressApp.use('/app/data-explorers/:explorerType/:stockSlug', dataExplorers);
+expressApp.use('/app/data-explorers', dataExplorersRouter);
 expressApp.use('/app/login/*', loginRouter);
 expressApp.use('/app/', homeRouter);
 
