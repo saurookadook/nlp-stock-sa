@@ -247,7 +247,7 @@ scriptController() {
             echo "Rebuilding frontend..."
             echo "======================================================================================"
             echo ""
-            docker compose build frontend --no-cache && docker compose up frontend -d
+            docker compose down frontend && docker compose build frontend --no-cache && docker compose up frontend -d && docker image prune
         fi
     elif [ "$1" == "run" ]; then
         if [ "$2" == "scraper" ]; then
