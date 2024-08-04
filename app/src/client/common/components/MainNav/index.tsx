@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    Box,
     Drawer,
     DrawerBody,
     DrawerHeader,
@@ -9,8 +10,7 @@ import {
     Link,
 } from '@chakra-ui/react';
 
-// TODO: move this to `constants` shared between `client` and `server`
-const basePathPrefix = '/app';
+import { basePathPrefix } from 'client/common/constants';
 
 function MainNav({ isOpen, onClose }) {
     return (
@@ -20,18 +20,13 @@ function MainNav({ isOpen, onClose }) {
                 <DrawerCloseButton />
                 <DrawerHeader>{`💸 🤑 💸 Main Navigation 💸 🤑 💸`}</DrawerHeader>
                 <DrawerBody paddingTop="var(--chakra-space-4)" paddingBottom="var(--chakra-space-6)">
-                    <nav>
+                    {/* better component to use here? */}
+                    <Box as="nav" display="flex" flexDirection="column">
                         <Link href={basePathPrefix}>Home</Link>
-                    </nav>
-                    <nav>
                         <Link href={`${basePathPrefix}/data-explorers`}>Data Explorers</Link>
-                    </nav>
-                    <nav>
                         <Link href={`${basePathPrefix}/data-explorers/stocks`}>Stocks</Link>
-                    </nav>
-                    <nav>
                         <Link href={`${basePathPrefix}/data-explorers/article-data`}>Article Data</Link>
-                    </nav>
+                    </Box>
                     {/* TODO: add links for other pages :] */}
                 </DrawerBody>
             </DrawerContent>
