@@ -14,7 +14,7 @@ function ExplorersList() {
     const { stockDataAll } = state as DataExplorersStore;
 
     useEffect(() => {
-        if (state.pageData == null) {
+        if (stockDataAll == null) {
             fetchAllStockData({ dispatch });
         }
     }, []);
