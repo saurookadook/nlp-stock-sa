@@ -8,6 +8,7 @@ import SentimentAnalysesBySlugExplorer from 'client/data-explorers/explorers/sen
 import AllStocksExplorer from 'client/data-explorers/explorers/stocks/AllStocksExplorer';
 import SingleStockExplorer from 'client/data-explorers/explorers/stocks/SingleStockExplorer';
 import DataExplorerView from 'client/data-explorers/layouts/DataExplorerView';
+import ExplorersList from 'client/data-explorers/explorers/list/ExplorersList';
 
 export const dataExplorersRoutes = [
     {
@@ -34,6 +35,10 @@ export const dataExplorersRoutes = [
             {
                 path: 'stocks',
                 element: <AllStocksExplorer />,
+            },
+            {
+                path: '',
+                element: <ExplorersList />,
             },
         ],
     },

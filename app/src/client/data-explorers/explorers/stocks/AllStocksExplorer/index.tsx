@@ -16,7 +16,7 @@ function AllStocksExplorer() {
         if (state.pageData == null) {
             fetchAllStockData({ dispatch });
         }
-    });
+    }, []);
 
     console.log('data-explorers.stocks - AllStocksExplorer', { state, stockDataAll });
     return (
