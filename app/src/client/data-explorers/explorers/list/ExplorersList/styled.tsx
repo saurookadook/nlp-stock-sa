@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Flex } from '@chakra-ui/react';
+import { Card, Flex } from '@chakra-ui/react';
 
 const ExplorersList_Flex = styled(Flex)`
     align-items: center;
@@ -8,7 +8,18 @@ const ExplorersList_Flex = styled(Flex)`
 `;
 
 const ExplorersByStockWrapper_div = styled.div`
-    columns: 12rem auto;
+    columns: 15rem auto;
 `;
 
-export { ExplorersList_Flex, ExplorersByStockWrapper_div };
+const ExplorersByStockItem_Card = styled(Card)`
+    display: inline-flex;
+    /* TODO: better way to space out plain CSS columns? */
+    margin-bottom: 1rem;
+    width: 100%;
+
+    * + * {
+        margin-top: 0.5rem;
+    }
+`;
+
+export { ExplorersList_Flex, ExplorersByStockWrapper_div, ExplorersByStockItem_Card };
