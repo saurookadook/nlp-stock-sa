@@ -1,5 +1,6 @@
 import ArticleDataList from 'client/common/components/ArticleDataList';
 import BaseLink from 'client/common/components/BaseLink';
+import ButtonLink from 'client/common/components/ButtonLink';
 import MainNav from 'client/common/components/MainNav';
 import MultiSeriesLineGraph from 'client/common/components/MultiSeriesLineGraph';
 import NavHeader from 'client/common/components/NavHeader';
@@ -9,6 +10,7 @@ import StockArticleDataGroup from 'client/common/components/StockArticleDataGrou
 export {
     ArticleDataList, // force formatting
     BaseLink,
+    ButtonLink,
     MainNav,
     MultiSeriesLineGraph,
     NavHeader,
