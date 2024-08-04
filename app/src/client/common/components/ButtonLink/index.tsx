@@ -10,9 +10,11 @@ function ButtonLink({ ...props }: React.PropsWithChildren<LinkProps>) {
     return (
         <ButtonLink_a
             __css={buttonStyles}
-            border={'1px solid var(--chakra-colors-teal-500)'}
-            borderRadius={'5px'}
-            padding={'0.5rem 1rem'}
+            border="1px solid var(--chakra-colors-teal-500)"
+            borderRadius="5px"
+            height="auto"
+            padding="0.5rem 1rem"
+            textAlign="center"
             {...props}
         >
             {props.children}
