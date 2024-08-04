@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react';
 
 import { DataExplorersStore } from '@nlpssa-app-types/common/main';
-import { NoDataMessage } from 'client/common/components';
+import { NoDataMessage, UnderConstructionMessage } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchSingularStockData } from 'client/data-explorers/store/stocks/actions';
 
@@ -23,6 +23,7 @@ function SingleStockExplorer() {
     console.log('data-explorers.stocks - SingleStockExplorer', { state });
     return (
         <Flex className="single-stock-wrapper" alignSelf="stretch" flexDirection="column">
+            <UnderConstructionMessage />
             {stockDataSingular != null ? <pre>{JSON.stringify(stockDataSingular, null, 4)}</pre> : <NoDataMessage />}
         </Flex>
     );
