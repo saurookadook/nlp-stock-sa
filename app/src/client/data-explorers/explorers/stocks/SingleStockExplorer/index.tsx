@@ -5,17 +5,19 @@ import { Flex } from '@chakra-ui/react';
 import { DataExplorersStore } from '@nlpssa-app-types/common/main';
 import { NoDataMessage, UnderConstructionMessage } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
+import { usePrevious } from 'client/common/utils';
 import { fetchSingularStockData } from 'client/data-explorers/store/stocks/actions';
 
 function SingleStockExplorer() {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
     const params = useParams();
+    const previousStockSlug = usePrevious(params.stockSlug);
 
     const { stockDataSingular } = state as DataExplorersStore;
 
     useEffect(() => {
-        if (stockDataSingular == null) {
+        if (stockDataSingular == null || (previousStockSlug != null && previousStockSlug === params.stockSlug)) {
             fetchSingularStockData({ dispatch, stockSlug: params.stockSlug });
         }
     }, [params.stockSlug]);
