@@ -6,6 +6,7 @@ import MultiSeriesLineGraph from 'client/common/components/MultiSeriesLineGraph'
 import NavHeader from 'client/common/components/NavHeader';
 import NoDataMessage from 'client/common/components/NoDataMessage';
 import StockArticleDataGroup from 'client/common/components/StockArticleDataGroup';
+import UnderConstructionMessage from 'client/common/components/UnderConstructionMessage';
 
 export {
     ArticleDataList, // force formatting
@@ -16,4 +17,5 @@ export {
     NavHeader,
     NoDataMessage,
     StockArticleDataGroup,
+    UnderConstructionMessage,
 };
