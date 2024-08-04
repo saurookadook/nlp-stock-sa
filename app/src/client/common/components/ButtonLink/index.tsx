@@ -1,10 +1,23 @@
 import React from 'react';
-import { type LinkProps } from 'react-router-dom';
+import { Link as RouterDomLink, type LinkProps } from 'react-router-dom';
+import { chakra, useStyleConfig } from '@chakra-ui/react';
 
-import { ButtonLink_a } from 'client/common/components/ButtonLink/styled';
+const ButtonLink_a = chakra(RouterDomLink);
 
 function ButtonLink({ ...props }: React.PropsWithChildren<LinkProps>) {
-    return <ButtonLink_a {...props}>{props.children}</ButtonLink_a>;
+    const buttonStyles = useStyleConfig('Button', { colorScheme: 'teal' });
+
+    return (
+        <ButtonLink_a
+            __css={buttonStyles}
+            border={'1px solid var(--chakra-colors-teal-500)'}
+            borderRadius={'5px'}
+            padding={'0.5rem 1rem'}
+            {...props}
+        >
+            {props.children}
+        </ButtonLink_a>
+    );
 }
 
 export default ButtonLink;
