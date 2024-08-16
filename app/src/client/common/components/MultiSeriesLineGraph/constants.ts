@@ -50,6 +50,7 @@ function getMSLGraphConfig({
               width: 768,
           }
         : {
+              // TODO: revisit these values lol
               ...commonSettings,
               height: 240,
               margins: {

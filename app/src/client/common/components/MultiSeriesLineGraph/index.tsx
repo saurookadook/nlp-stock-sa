@@ -17,26 +17,6 @@ function MultiSeriesLineGraph({
         getMSLGraphConfig({ forFullSize: true, data: sentimentAnalysesData }),
     );
 
-    // const x = createXScale({
-    //     data: sentimentAnalysesData,
-    //     marginLeft,
-    //     marginRight,
-    //     width,
-    // });
-
-    // const y = createYScale({
-    //     boundLower: -1,
-    //     boundUpper: 1,
-    //     height,
-    //     marginBottom,
-    //     marginTop,
-    // });
-
-    // const lineGenerator = d3
-    //     .line<D3Point>()
-    //     .x((d) => x(d[0]))
-    //     .y((d) => y(d[1]));
-
     return (
         <StyledGraphWrapper>
             <MSLGraphContext.Provider
