@@ -65,6 +65,13 @@ interface FinalReducers {
 }
 
 /**********************************************************************
+ * Home
+ **********************************************************************/
+type HomeStore = {
+    pageData: GroupedArticleData[] | null;
+};
+
+/**********************************************************************
  * Source
  **********************************************************************/
 type SourceDiscriminator = 'article_data' | 'reddit_data';
@@ -221,16 +228,35 @@ type DataExplorersStore = {
 };
 
 /**********************************************************************
- * Home
+ * Graph
  **********************************************************************/
-type HomeStore = {
-    pageData: GroupedArticleData[] | null;
+type GraphConfig<DataType> = {
+    graphData: DataType[];
+    legend: {
+        itemSize: number;
+        spacer: number;
+    };
+    height: number;
+    margins: {
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+    };
+    width: number;
+    xScale: AxisScaleFnX;
+    yScale: AxisScaleFnY;
+};
+
+type MSLGraphContext = {
+    graphConfig: GraphConfig;
 };
 
 /**********************************************************************
  * D3 (custom)
  **********************************************************************/
-type AxisScaleFnX = d3.ScaleTime<[number, number, never]>;
-type AxisScaleFnY = d3.ScaleLinear<[number, number, never]>;
+type AxisTuple = [number, number, never];
+type AxisScaleFnX = d3.ScaleTime<AxisTuple>;
+type AxisScaleFnY = d3.ScaleLinear<AxisTuple>;
 type D3Point = [number, number, string];
 type DispatchParams = d3.CustomEventParameters & { bubble?: boolean };
