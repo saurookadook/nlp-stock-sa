@@ -10,11 +10,13 @@ import { StyledGraphWrapper } from './styled';
 // -- 40 / 25 = 1.6
 function MultiSeriesLineGraph({
     sentimentAnalysesData, // force formatting
+    width,
 }: React.PropsWithChildren<{
     sentimentAnalysesData: SentimentAnalysesDataEntry[];
+    width?: number;
 }>) {
     const [graphConfig, setGraphConfig] = useState<MSLGraphConfig>(
-        getMSLGraphConfig({ forFullSize: true, data: sentimentAnalysesData }),
+        getMSLGraphConfig({ forFullSize: true, data: sentimentAnalysesData, width: width }),
     );
 
     return (

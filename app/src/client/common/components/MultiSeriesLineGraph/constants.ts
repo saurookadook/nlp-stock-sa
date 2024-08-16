@@ -22,14 +22,16 @@ function getMSLGraphConfig({
     forFullSize,
     data = [],
     // height = 0,
-    // width = 0, // force formatting
+    width = 768, // force formatting
 }: {
     forFullSize: boolean;
     data?: SentimentAnalysesDataEntry[];
     // height?: number;
-    // width?: number;
+    width?: number;
 }): MSLGraphConfig {
     const commonSettings = {
+        // TODO: should maybe do something more with this value...?
+        initialWidth: width,
         data: data,
         legend: {
             itemSize: 20,
@@ -47,7 +49,7 @@ function getMSLGraphConfig({
                   bottom: 30,
                   left: 40,
               },
-              width: 768,
+              width: commonSettings.initialWidth,
           }
         : {
               // TODO: revisit these values lol
