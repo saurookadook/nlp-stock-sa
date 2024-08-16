@@ -1,4 +1,5 @@
 import 'react';
+import React from 'react';
 
 type AmbiguousObject = Record<string, unknown>;
 
@@ -250,7 +251,10 @@ type GraphConfig<DataType> = {
 
 type MSLGraphContext = {
     graphConfig: GraphConfig;
+    setGraphConfig: SetStateFunc<GraphConfig>;
 };
+
+type MSLGraphConfig = GraphConfig<SentimentAnalysesDataEntry>;
 
 /**********************************************************************
  * D3 (custom)
@@ -260,3 +264,8 @@ type AxisScaleFnX = d3.ScaleTime<AxisTuple>;
 type AxisScaleFnY = d3.ScaleLinear<AxisTuple>;
 type D3Point = [number, number, string];
 type DispatchParams = d3.CustomEventParameters & { bubble?: boolean };
+
+/**********************************************************************
+ * React (custom)
+ **********************************************************************/
+type SetStateFunc<T> = React.Dispatch<React.SetStateAction<T>>;

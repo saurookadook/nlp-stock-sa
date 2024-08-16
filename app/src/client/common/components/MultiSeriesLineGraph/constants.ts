@@ -1,11 +1,11 @@
 import { createContext } from 'react';
 
-import type { GraphConfig, MSLGraphContext, SentimentAnalysesDataEntry } from '@nlpssa-app-types/common/main';
+import type { MSLGraphConfig, MSLGraphContext, SentimentAnalysesDataEntry } from '@nlpssa-app-types/common/main';
 import { createXScale, createYScale } from 'client/common/components/MultiSeriesLineGraph/utils';
 
-export const polarities = ['Compound', 'Negative', 'Neutral', 'Positive'];
+const polarities = ['Compound', 'Negative', 'Neutral', 'Positive'];
 
-export const strokeColorByPolarity = {
+const strokeColorByPolarity = {
     Compound: 'steelblue',
     Negative: 'red',
     Neutral: 'orange',
@@ -15,6 +15,7 @@ export const strokeColorByPolarity = {
 /** MSL === Multi-Series Line */
 const MSLGraphContext = createContext<MSLGraphContext>({
     graphConfig: getMSLGraphConfig({ forFullSize: true }),
+    setGraphConfig: (config) => config,
 });
 
 function getMSLGraphConfig({
@@ -27,7 +28,7 @@ function getMSLGraphConfig({
     data?: SentimentAnalysesDataEntry[];
     // height?: number;
     // width?: number;
-}): GraphConfig<SentimentAnalysesDataEntry> {
+}): MSLGraphConfig {
     const commonSettings = {
         graphData: data,
         legend: {
@@ -77,3 +78,10 @@ function getMSLGraphConfig({
         }),
     };
 }
+
+export {
+    polarities, // force formatting
+    strokeColorByPolarity,
+    MSLGraphContext,
+    getMSLGraphConfig,
+};
