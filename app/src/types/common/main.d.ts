@@ -232,7 +232,7 @@ type DataExplorersStore = {
  * Graph
  **********************************************************************/
 type GraphConfig<DataType> = {
-    graphData: DataType[];
+    data: DataType[];
     legend: {
         itemSize: number;
         spacer: number;

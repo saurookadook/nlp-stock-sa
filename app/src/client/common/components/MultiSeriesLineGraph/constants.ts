@@ -30,7 +30,7 @@ function getMSLGraphConfig({
     // width?: number;
 }): MSLGraphConfig {
     const commonSettings = {
-        graphData: data,
+        data: data,
         legend: {
             itemSize: 20,
             spacer: 16,
@@ -64,7 +64,7 @@ function getMSLGraphConfig({
     return {
         ...config,
         xScale: createXScale({
-            data,
+            data: config.data,
             marginLeft: config.margins.left,
             marginRight: config.margins.right,
             width: config.width,

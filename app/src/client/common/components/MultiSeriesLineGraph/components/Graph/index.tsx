@@ -1,18 +1,27 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-import type { SentimentAnalysesDataEntry, DispatchParams } from '@nlpssa-app-types/common/main';
-import { AxisX, AxisY, MultiSeriesLines } from 'client/common/components/MultiSeriesLineGraph/components';
-import { polarities, strokeColorByPolarity } from 'client/common/components/MultiSeriesLineGraph/constants';
+import type { DispatchParams } from '@nlpssa-app-types/common/main';
+import { AxisX, AxisY, Legend, MultiSeriesLines } from 'client/common/components/MultiSeriesLineGraph/components';
+import {
+    polarities,
+    strokeColorByPolarity,
+    MSLGraphContext,
+} from 'client/common/components/MultiSeriesLineGraph/constants';
 import { buildPoints } from 'client/common/components/MultiSeriesLineGraph/utils';
 import { StyledSVG } from './styled';
 
 function Graph() {
+    const stateContext = useContext(MSLGraphContext);
+    const {
+        graphConfig: { data, height, legend, width, xScale, yScale },
+    } = stateContext;
+
     const svgRef = useRef<SVGSVGElement>(null);
     const linesPathsRef = useRef<SVGGElement>(null);
     const dotRef = useRef<SVGGElement>(null);
 
-    const points = buildPoints({ data: sentimentAnalysesData, xFn: x, yFn: y });
+    const points = buildPoints({ data: data, xFn: xScale, yFn: yScale });
     const groups = d3.rollup(
         points,
         (v) => Object.assign(v, { z: v[0][2] }),
@@ -63,7 +72,7 @@ function Graph() {
                 .select('text')
                 .text(k);
             d3.select(svgRef.current)
-                .property('value', sentimentAnalysesData[i])
+                .property('value', data[i])
                 .dispatch('input', { bubbles: true } as DispatchParams);
         } catch (e) {
             console.groupCollapsed("ERROR: encountered in 'pointermoved' callback");
@@ -104,7 +113,7 @@ function Graph() {
         <StyledSVG
             ref={svgRef}
             width={width}
-            height={height + legendItemSize + legendSpacer}
+            height={height + legend.itemSize + legend.spacer}
             viewBox={`0 0 ${width} ${height}`}
             onPointerEnter={pointerentered}
             onPointerMove={pointermoved}
@@ -114,6 +123,11 @@ function Graph() {
             <AxisX />
             <AxisY />
             <MultiSeriesLines ref={linesPathsRef} />
+            <g ref={dotRef} display="none" fill="white" stroke="currentColor" strokeWidth="1.5">
+                <circle r="2.5" />
+                <text textAnchor="middle" y={-8} r="2.5" />
+            </g>
+            <Legend />
         </StyledSVG>
     );
 }
