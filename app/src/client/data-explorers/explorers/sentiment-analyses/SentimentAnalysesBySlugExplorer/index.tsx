@@ -17,19 +17,20 @@ import {
 import { DataExplorersStore } from '@nlpssa-app-types/common/main';
 import { MultiSeriesLineGraph, NoDataMessage } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
-import { usePrevious } from 'client/common/utils';
 import { fetchSentimentAnalysesByStockSlug } from 'client/data-explorers/store/actions';
 
 function SentimentAnalysesBySlugExplorer() {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
     const params = useParams();
-    const previousStockSlug = usePrevious(params.stockSlug);
 
     const { sentimentAnalysesBySlug } = state as DataExplorersStore;
 
     useEffect(() => {
-        if (sentimentAnalysesBySlug == null || (previousStockSlug != null && previousStockSlug !== params.stockSlug)) {
+        if (
+            sentimentAnalysesBySlug == null ||
+            (sentimentAnalysesBySlug != null && sentimentAnalysesBySlug.quoteStockSymbol !== params.stockSlug)
+        ) {
             fetchSentimentAnalysesByStockSlug({ dispatch, stockSlug: params.stockSlug });
         }
     }, [params.stockSlug]);
