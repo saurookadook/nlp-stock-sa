@@ -1,14 +1,10 @@
 import express, { NextFunction, Request, Response } from 'express';
 
+import { baseRequestURL } from 'server/constants';
 import { asyncWrapper } from 'server/utils';
 
 const router = express.Router();
 
-// TODO:
-// - if this works, move to constants and/or devise way to get this based on env
-// - figure out why the container isn't recognizing requests to 'https://nlp-ssa.dev'
-// ---- NOTE: maybe it's something about networking that I don't know shit about? :]
-const baseRequestURL = process.env.ENV !== 'production' ? 'http://server:3000' : 'https://nlp-ssa.dev';
 // const fetchHeaders = new Headers({
 //     Accept: '*/*',
 //     'Content-Type': 'application/json',

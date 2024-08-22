@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 
+import { baseRequestURL } from 'server/constants';
 import { asyncWrapper } from 'server/utils';
 
 const router = express.Router();
@@ -9,7 +10,7 @@ router.use(
         let initialPageData = {};
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await fetch(`/api/auth/login`, { method: 'GET' });
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/auth/login`);
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[home route] - caught exception: ${e}`);
