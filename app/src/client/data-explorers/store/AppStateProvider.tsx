@@ -5,7 +5,13 @@ import { deeplyMerge } from 'client/common/utils';
 import combinedReducer from 'client/data-explorers/store/reducer';
 
 // TODO: fix type - React.Provider<typeof StateContext>
-function AppStateProvider({ children, initialState }: { children: React.ReactElement; initialState?: any }): any {
+function AppStateProvider({
+    children, // force formatting
+    initialState,
+}: {
+    children: React.ReactElement;
+    initialState?: any;
+}): any {
     const [combinedReducerFunc, combinedDefaultState] = combinedReducer;
 
     const recursivelyMergedState = deeplyMerge(combinedDefaultState, initialState);
