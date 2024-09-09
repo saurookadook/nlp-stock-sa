@@ -264,13 +264,6 @@ scriptController() {
             echo "======================================================================================"
             echo ""
             docker compose run --rm server python nlp_ssa/scripts/analysis/ssa.py
-        elif [ "$2" == "ad-to-csv" ]; then
-            echo ""
-            echo "======================================================================================"
-            echo "Running 'article_data_as_csv' script..."
-            echo "======================================================================================"
-            echo ""
-            docker compose run --rm server python nlp_ssa/scripts/downloads/article_data_as_csv.py
         elif [ "$2" == "clean-ad" ]; then
             echo ""
             echo "======================================================================================"
@@ -278,6 +271,20 @@ scriptController() {
             echo "======================================================================================"
             echo ""
             docker compose run --rm server python nlp_ssa/scripts/data_cleaning/clean_article_data.py
+        elif [ "$2" == "del-orph-sa" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "Running 'delete_orphaned_sentiment_analyses' script..."
+            echo "======================================================================================"
+            echo ""
+            docker compose run --rm server python nlp_ssa/scripts/data_cleaning/delete_orphaned_sentiment_analyses.py
+        elif [ "$2" == "ad-to-csv" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "Running 'article_data_as_csv' script..."
+            echo "======================================================================================"
+            echo ""
+            docker compose run --rm server python nlp_ssa/scripts/downloads/article_data_as_csv.py
         fi
     elif [ "$1" == "test" ]; then
         if [ "$2" == "server" ]; then
