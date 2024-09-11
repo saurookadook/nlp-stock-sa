@@ -15,7 +15,7 @@ declare module '*.svg' {
 }
 
 declare global {
-    type RenderAppFunc = (data: AmbiguousObject) => void;
+    type RenderAppFunc = (data: AmbiguousObject) => Promise<void>;
 
     var renderApp: RenderAppFunc;
     // var $fetchArticle: ({ dispatch }: { dispatch: any }) => Promise<void>;
