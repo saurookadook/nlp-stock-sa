@@ -29,11 +29,12 @@ andy = user_facade.get_one_by_username(username="saurookadook")
 
 
 def log_created_rows_results_by_stock(
-    *, quote_stock_symbol: str, errored_total: int, total: int
+    *, quote_stock_symbol: str, skipped_total: int, errored_total: int, total: int
 ):
     log_lines = [
         f"'sentiment_analyses' created for '{quote_stock_symbol}'",
-        f"---- Successful: {total - errored_total}",
+        f"---- Successful: {total - (skipped_total + errored_total)}",
+        f"---- Skipped: {skipped_total}",
         f"---- Errored: {errored_total}",
         f"---- Total: {total}",
     ]
@@ -93,6 +94,7 @@ def get_scores_and_create_rows(
     """
     sa_facade = SentimentAnalysisFacade(db_session=db_session)
 
+    skipped_total = 0
     errored_total = 0
     for article_data_row in article_data:
         existing_sa_query = (
@@ -120,6 +122,7 @@ def get_scores_and_create_rows(
         elif len(existing_sa_query) == 1:
             existing_sa = existing_sa_query[0]
             if isinstance(existing_sa.source_id, UUID):
+                skipped_total += 1
                 logger.log_warn_centered(
                     f" Skipping: sentiment_analysis record '{existing_sa.id}' is already up to date :] "
                 )
@@ -170,6 +173,7 @@ def get_scores_and_create_rows(
 
     log_created_rows_results_by_stock(
         quote_stock_symbol=quote_stock_symbol,
+        skipped_total=skipped_total,
         errored_total=errored_total,
         total=len(article_data),
     )
