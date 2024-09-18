@@ -52,7 +52,9 @@ dropDatabase() {
     echo "Dropping $DATABASE_NAME database..."
     echo "======================================================================================"
     echo ""
-    docker compose exec database psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
+    docker compose exec database \
+        psql $PSQL_CONNECTION \
+        -c "DROP DATABASE IF EXISTS $DATABASE_NAME"
 }
 
 dropTestDatabase() {
@@ -61,7 +63,9 @@ dropTestDatabase() {
     echo "Dropping $TEST_DATABASE_NAME database..."
     echo "======================================================================================"
     echo ""
-    docker compose exec database psql $PSQL_CONNECTION -c "DROP DATABASE IF EXISTS $TEST_DATABASE_NAME"
+    docker compose exec database \
+        psql $PSQL_CONNECTION \
+        -c "DROP DATABASE IF EXISTS $TEST_DATABASE_NAME"
 }
 
 createDatabase() {
@@ -69,7 +73,10 @@ createDatabase() {
         dropDatabase
     fi
 
-    docker compose exec database psql $PSQL_CONNECTION -f "/opt/db/scripts/init_db.sql"
+    docker compose exec database \
+        psql $PSQL_CONNECTION \
+        -f "/opt/db/scripts/init_db.sql"
+
     docker compose run --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
@@ -78,8 +85,14 @@ createTestDatabase() {
         dropTestDatabase
     fi
 
-    docker compose exec database psql $PSQL_CONNECTION -f "/opt/db/scripts/init_test_db.sql"
-    docker compose run -e DATABASE_NAME=$TEST_DATABASE_NAME -e ENV=test --rm server python nlp_ssa/scripts/db/initialize.py
+    docker compose exec database \
+        psql $PSQL_CONNECTION \
+        -f "/opt/db/scripts/init_test_db.sql"
+
+    docker compose run \
+        -e DATABASE_NAME=$TEST_DATABASE_NAME \
+        -e ENV=test \
+        --rm server python nlp_ssa/scripts/db/initialize.py
 }
 
 initDatabase() {
@@ -92,21 +105,12 @@ initDatabase() {
         echo "======================================================================================"
         echo ""
         createDatabase
-        # echo ""
-        # echo "======================================================================================"
-        # echo "$DATABASE_NAME already exists :]"
-        # echo "======================================================================================"
-        # echo ""
     else
         echo ""
         echo "======================================================================================"
         echo "$DATABASE_NAME already exists :]"
         echo "======================================================================================"
         echo ""
-        # echo "======================================================================================"
-        # echo "Creating $DATABASE_NAME database..."
-        # echo "======================================================================================"
-        # createDatabase
     fi
 }
 
@@ -247,7 +251,10 @@ scriptController() {
             echo "Rebuilding frontend..."
             echo "======================================================================================"
             echo ""
-            docker compose down frontend && docker compose build frontend --no-cache && docker compose up frontend -d && docker image prune -f
+            docker compose down frontend && \
+            docker compose build frontend --no-cache && \
+            docker compose up frontend -d && \
+            docker image prune -f
         fi
     elif [ "$1" == "run" ]; then
         if [ "$2" == "scraper" ]; then
@@ -293,7 +300,12 @@ scriptController() {
             echo "Running server tests! :D"
             echo "======================================================================================"
             echo ""
-            docker compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server python -m pytest -s --import-mode=append  # "'${@:3}'"
+            docker compose run \
+                -e DATABASE_NAME=test_the_money_maker \
+                -e ENV=test \
+                --rm server python \
+                -m pytest \
+                -s --import-mode=append  # "'${@:3}'"
         fi
     elif [ "$1" == "clean" ]; then
         echo ""
@@ -305,10 +317,9 @@ scriptController() {
             cleanDocker
         fi
     elif [ "$1" == "reset-server" ]; then
-        docker compose down && docker compose build database server --no-cache && docker compose up -d database server
-    elif [ "$1" == "test" ]; then
-        echo "testing..."
-        # for testing individual things :]
+        docker compose down && \
+        docker compose build database server --no-cache && \
+        docker compose up -d database server
     fi
 }
 
