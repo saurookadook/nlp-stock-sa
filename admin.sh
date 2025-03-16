@@ -21,8 +21,9 @@ LAST_RETURN_STATUS_CODE=$?
 # -- `&>/dev/null` to suppress both
 
 dbIsNotReady() {
-    pg_isready -h database
-    [[ $? -ne 0 ]]
+    pg_isready -h database > /dev/null 2>&1;
+    local status = $?;
+    return $(( $status == 0 ? 1 : 0 ));  # Flip the exit code: return 1 if ready, 0 if not ready
 }
 
 isDbReady() {
