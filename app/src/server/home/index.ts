@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
+import { baseRequestURL } from 'server/constants';
 
 import { asyncWrapper } from 'server/utils';
 
@@ -9,7 +10,7 @@ router.use(
         let initialPageData = {};
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/article-data');
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data`);
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[home route] - caught exception: ${e}`);

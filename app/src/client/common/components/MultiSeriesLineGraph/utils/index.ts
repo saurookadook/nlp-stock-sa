@@ -7,10 +7,11 @@ import type {
     AxisScaleFnY,
 } from '@nlpssa-app-types/common/main';
 
-const safeGetDateValue = (d: SentimentAnalysesDataEntry): Date => {
-    // TODO: remove 'updated_at' fallback once data quality issues are fixed
-    return (d.source?.data?.last_updated_date || d.source?.data?.published_date || d.source?.updated_at) as Date;
-};
+function safeGetDateValue(d: SentimentAnalysesDataEntry): Date {
+    const resolvedDateValue = d.source?.data?.last_updated_date || d.source?.data?.published_date;
+    // TODO: fix types so there's no need for the `new Date()` fallback?
+    return resolvedDateValue != null ? new Date(resolvedDateValue) : new Date();
+}
 
 function createXScale({
     data,

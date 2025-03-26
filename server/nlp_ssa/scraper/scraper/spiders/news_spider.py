@@ -28,20 +28,31 @@ nltk.download("punkt")
 nltk.download("stopwords")
 nltk.download("wordnet")
 
-logger: ExtendedLogger = logging.getLogger(__file__)
+logger: ExtendedLogger = logging.getLogger("news_spider")
 
 
 class NewsSpider(scrapy.Spider):
-    name = "news"
-    article_data_facade = ArticleDataFacade(db_session=db_session)
-    base_url = "https://finance.yahoo.com"
-    custom_settings = {
+    article_data_facade: ArticleDataFacade = ArticleDataFacade(db_session=db_session)
+    base_url: str = "https://finance.yahoo.com"
+    custom_settings: dict = {
         "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15",
         "DOWNLOAD_DELAY": 2,
     }
-    stock_slugs = []
-    lemmatizer = WordNetLemmatizer()
-    tokenizer = PunktSentenceTokenizer()
+    name: str = "news"
+    selectors = {
+        "article_content": "div.morpheusGridBody div.caas-body, div.body-wrap div.body",
+        "article_title": 'meta[property="og:title"]::attr(content)',
+        "byline_wrapper": '.byline-attr, [class*="byline-wrapper"]',
+        "byline_author": '[class*="byline-attr-author"]::text, [class*="item-author"] *::text',
+        "byline_time": '[class*="byline-attr-time-"] time::attr(datetime), time::attr(datetime)',
+        "item_link": "a::attr(href)",
+        "item_thumbnail": "img::attr(src)",
+        "news_items": "div.news-stream .stream-item",
+    }
+    stock_slugs: list[str] = []
+
+    lemmatizer: WordNetLemmatizer = WordNetLemmatizer()
+    tokenizer: PunktSentenceTokenizer = PunktSentenceTokenizer()
 
     def preprocess(self, documents):
         """
@@ -126,8 +137,11 @@ class NewsSpider(scrapy.Spider):
             header_text="NewsSpider.parse", variables=[response.url, stock_slug]
         )
 
-        article_content = response.css("div.morpheusGridBody div.caas-body").get()
+        article_content = response.css(self.selectors["article_content"]).get()
         if not article_content:
+            self.logger.warning(
+                f"UH OH! :o  ||  No article content found for '{response.url}'"
+            )
             return
 
         soup = BeautifulSoup(article_content, "html.parser")
@@ -178,13 +192,14 @@ class NewsSpider(scrapy.Spider):
             logger.error(e, file=sys.stderr)
 
         item = ScraperItem()
-        item["Sentence"] = cleaned_text
-        item["GroupId"] = source_group_id
+        item["record_id"] = str(article_data_record.id)
+        item["sentence"] = cleaned_text
+        item["source_group_id"] = source_group_id
 
         yield item
 
     def update_metadata_from_page(self, response, current_ad, stock_slug):
-        article_content = response.css("div.morpheusGridBody div.caas-body").get()
+        article_content = response.css(self.selectors["article_content"]).get()
         if not article_content:
             return
 
@@ -215,7 +230,7 @@ class NewsSpider(scrapy.Spider):
             logger.error(e, file=sys.stderr)
 
         item = ScraperItem()
-        # item["ArticleData"] = str(current_ad.id)
+        item["record_id"] = str(current_ad.id)
         self._debug_logger(
             header_text="NewsSpider.update_metadata_from_page",
             variables=[f"{key}: {metadata[key]} " for key in metadata.keys()],
@@ -244,16 +259,16 @@ class NewsSpider(scrapy.Spider):
         return text
 
     def _get_non_ad_news_items_from_response(self, response):
-        news_items = response.css("div.news-stream .stream-item")
+        news_items = response.css(self.selectors["news_items"])
 
         news_item_configs = []
         for item in news_items:
-            item_link = item.css("a::attr(href)").get()
+            item_link = item.css(self.selectors["item_link"]).get()
             if item_link is None:
                 logger.warning(f" WARNING: Skipping item: {item} ")
                 continue
 
-            item_thumbnail = item.css("img::attr(src)").get()
+            item_thumbnail = item.css(self.selectors["item_thumbnail"]).get()
             # self._debug_logger(
             #     header_text="news_item", variables=[item, item_link, item_thumbnail]
             # )
@@ -279,21 +294,21 @@ class NewsSpider(scrapy.Spider):
         )
 
         try:
-            byline_wrapper = response.css('[class*="byline-wrapper"]')
+            byline_wrapper = response.css(self.selectors["byline_wrapper"])
             if byline_wrapper:
                 metadata_dict["author"] = byline_wrapper.css(
-                    '[class*="item-author"] *::text'
+                    self.selectors["byline_author"]
                 ).get(default="")
                 metadata_dict["last_updated_date"] = byline_wrapper.css(
-                    "time::attr(datetime)"
+                    self.selectors["byline_time"]
                 ).get(default="")
                 metadata_dict["published_date"] = byline_wrapper.css(
-                    "time::attr(datetime)"
+                    self.selectors["byline_time"]
                 ).get(default="")
 
-            metadata_dict["title"] = response.css(
-                'meta[property="og:title"]::attr(content)'
-            ).get(default="")
+            metadata_dict["title"] = response.css(self.selectors["article_title"]).get(
+                default=""
+            )
         except Exception as e:
             self._debug_logger(header_text="Error getting metadata", variables=[e])
 
@@ -302,8 +317,10 @@ class NewsSpider(scrapy.Spider):
     def _debug_logger(
         self, *, header_text: str, variables: list = [], width: int = 200
     ):
-        print(f" {header_text} ".center(width, "="))
+        self.logger.info(f" {header_text} ".center(width, "="))
+
         for var in variables:
             prettyprint(var, indent=4, width=width, sort_dicts=True)
+
         if len(variables) > 0:
-            print("=" * width)
+            self.logger.info("=" * width)

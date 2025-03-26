@@ -1,4 +1,5 @@
 import 'react';
+import React from 'react';
 
 type AmbiguousObject = Record<string, unknown>;
 
@@ -14,7 +15,7 @@ declare module '*.svg' {
 }
 
 declare global {
-    type RenderAppFunc = (data: AmbiguousObject) => void;
+    type RenderAppFunc = (data: AmbiguousObject) => Promise<void>;
 
     var renderApp: RenderAppFunc;
     // var $fetchArticle: ({ dispatch }: { dispatch: any }) => Promise<void>;
@@ -63,6 +64,13 @@ type CombinedStateSliceReducer = [GenericReducerFunc, CombinedState];
 interface FinalReducers {
     [key: string]: GenericReducerFunc;
 }
+
+/**********************************************************************
+ * Home
+ **********************************************************************/
+type HomeStore = {
+    pageData: GroupedArticleData[] | null;
+};
 
 /**********************************************************************
  * Source
@@ -221,16 +229,44 @@ type DataExplorersStore = {
 };
 
 /**********************************************************************
- * Home
+ * Graph
  **********************************************************************/
-type HomeStore = {
-    pageData: GroupedArticleData[] | null;
+type GraphConfig<DataType> = {
+    initialWidth: number;
+    data: DataType[];
+    legend: {
+        itemSize: number;
+        spacer: number;
+    };
+    height: number;
+    margins: {
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+    };
+    width: number;
+    xScale: AxisScaleFnX;
+    yScale: AxisScaleFnY;
 };
+
+type MSLGraphContext = {
+    graphConfig: GraphConfig;
+    setGraphConfig: SetStateFunc<GraphConfig>;
+};
+
+type MSLGraphConfig = GraphConfig<SentimentAnalysesDataEntry>;
 
 /**********************************************************************
  * D3 (custom)
  **********************************************************************/
-type AxisScaleFnX = d3.ScaleTime<[number, number, never]>;
-type AxisScaleFnY = d3.ScaleLinear<[number, number, never]>;
+type AxisTuple = [number, number, never];
+type AxisScaleFnX = d3.ScaleTime<AxisTuple>;
+type AxisScaleFnY = d3.ScaleLinear<AxisTuple>;
 type D3Point = [number, number, string];
 type DispatchParams = d3.CustomEventParameters & { bubble?: boolean };
+
+/**********************************************************************
+ * React (custom)
+ **********************************************************************/
+type SetStateFunc<T> = React.Dispatch<React.SetStateAction<T>>;

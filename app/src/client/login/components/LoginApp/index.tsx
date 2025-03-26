@@ -8,7 +8,7 @@ import { AppleLinkBox, GitHubLinkBox, GoogleLinkBox, MicrosoftLinkBox } from 'cl
 function LoginApp({ initialPageData }: { initialPageData?: Record<string, unknown> | null }) {
     console.log('login - LoginApp', { initialPageData });
 
-    const [loginData, setLoginData] = useState({ ...initialPageData } || {} as AmbiguousObject);
+    const [loginData, setLoginData] = useState({ ...initialPageData } as AmbiguousObject);
 
     const isLoginDataLoaded = () => Object.keys(loginData).length > 0;
 

@@ -1,2 +1,3 @@
 export const basePathPrefix = '/app';
-export const baseDataExplorerPath = `${basePathPrefix}/data-explorers`;
+export const baseDataExplorerPath = `/data-explorers`;
+export const baseDataExplorerPathFull = basePathPrefix + baseDataExplorerPath;

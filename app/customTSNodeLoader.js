@@ -1,9 +1,9 @@
 // from https://github.com/TypeStrong/ts-node/discussions/1450#discussioncomment-1806115
 // see also https://github.com/TypeStrong/ts-node/discussions/1450#discussion-3563207
 
+import { pathToFileURL } from 'node:url';
 import { resolve as resolveTs } from 'ts-node/esm';
 import * as tsConfigPaths from 'tsconfig-paths';
-import { pathToFileURL } from 'url';
 
 const { absoluteBaseUrl, paths } = tsConfigPaths.loadConfig();
 console.log(''.padStart(220, '='), { absoluteBaseUrl, paths }, ''.padStart(220, '='));

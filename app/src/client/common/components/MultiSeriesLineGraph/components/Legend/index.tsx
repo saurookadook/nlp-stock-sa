@@ -1,16 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { strokeColorByPolarity } from 'client/common/components/MultiSeriesLineGraph/constants';
+import { strokeColorByPolarity, MSLGraphContext } from 'client/common/components/MultiSeriesLineGraph/constants';
 
-function Legend({
-    height,
-    legendItemSize,
-    legendSpacer,
-}: {
-    height: number;
-    legendItemSize: number;
-    legendSpacer: number;
-}) {
+function Legend() {
+    const stateContext = useContext(MSLGraphContext);
+    const {
+        graphConfig: { height, legend },
+    } = stateContext;
+
     return (
         <g id="legend">
             {Object.entries(strokeColorByPolarity).map(([key, val], i) => {
@@ -18,14 +15,14 @@ function Legend({
                     <React.Fragment key={`legend-item-${i}`}>
                         <rect
                             x={100 + i * 100}
-                            y={height - legendItemSize + legendSpacer}
+                            y={height - legend.itemSize + legend.spacer}
                             fill={val}
-                            height={legendItemSize}
-                            width={legendItemSize}
+                            height={legend.itemSize}
+                            width={legend.itemSize}
                         />
                         <text
-                            x={100 + i * 100 + legendItemSize + 5}
-                            y={height + legendSpacer / 2}
+                            x={100 + i * 100 + legend.itemSize + 5}
+                            y={height + legend.spacer / 2}
                             alignmentBaseline="middle"
                             fill={val}
                             textAnchor="left"
