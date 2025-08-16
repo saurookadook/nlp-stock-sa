@@ -1,13 +1,10 @@
 # NLP Stock SA
 
-This is a stock sentiment analysis project.
+🚧 **WIP** 🚧
 
-Resources:
-- [DB potential schema- lucidchart](https://lucid.app/lucidchart/1723ceb6-2878-41eb-8635-b7ee19a8b545/edit?view_items=4xwL7nak7NXS&invitationId=inv_baa67f02-3606-4521-813e-1aaadd75bb81)
-- [Example DB tables](https://docs.google.com/drawings/d/16xttDCvKXwcfHAD_Jk_BNj3nUYusFEAdXT9sMvCwBWU/edit?usp=sharing)
-- [General pipeline - graph](https://docs.google.com/drawings/d/1MXKg1cNiAlD6T-5AAXAwya8o7Z69hFH9PmhIVDQ_Vmw/edit?usp=sharing)
-- [General pipeline building](https://docs.google.com/document/d/1czS0XXaNHYZwbpxwVmxxbbdjS-T6AESQo0vkFuzelPk/edit?usp=sharing)
+This app consumes data about stocks, gets sentiment analysis from that data, and then makes it available in numerous ways in a simple UI.
 
+<img src="/assets/nlp-ssa-demo-2025-08-16.png" alt="Example of data explorer page for a particular stock.">
 
 ## Requirements
 
@@ -29,7 +26,6 @@ Resources:
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [Prettier ESLint](https://marketplace.visualstudio.com/items?itemName=rvest.vs-code-prettier-eslint)
 
-
 #### Settings
 
 ```sh
@@ -39,6 +35,7 @@ cp .vscode.example .vscode
 ### Details
 
 For Docker, make sure you bump the resources it can be allocated:
+
 - **CPU limit**: `16`
 - **Memory limit**: `16 GB`
 - **Swap**: `1.5 GB`
@@ -46,11 +43,28 @@ For Docker, make sure you bump the resources it can be allocated:
 
 ### Installation
 
-Add following to `/etc/hosts`
+If you don't have `mkcert` installed already, install it. 🙂
 
-> _**TODO**: this might not be necessary still?_
+```sh
+brew install mkcert
+# NOTE:
+# If this is your first time using mkcert, you'll need to run it with
+# the `-install` flag. This only needs to be done once, and it creates
+# a local certificate authority against which we will create our own
+# self-signed SSL certificates.
+mkcert -install
 ```
-127.0.0.1 nlp-ssa.dev *.nlp-ssa.dev database
+
+If this is your first time going through the setup instructions, you will need to make the `install.sh` script executable.
+
+```sh
+chmod +x nginx-reverse-proxy/.scripts/install.sh
+```
+
+Finally, run the script. 🙂
+
+```sh
+nginx-reverse-proxy/.scripts/install.sh
 ```
 
 > **NOTE: For M1 Macs only**
@@ -135,6 +149,7 @@ docker compose up all -d
 Then navigate to `https://nlp-ssa.dev/app` 🙂
 
 To run the scraper:
+
 ```sh
 docker compose up scraper --build -d
 ```
@@ -190,3 +205,12 @@ Or run in watch mode:
 ```sh
 docker compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server pytest-watch
 ```
+
+---
+
+## Resources
+
+- [DB potential schema- lucidchart](https://lucid.app/lucidchart/1723ceb6-2878-41eb-8635-b7ee19a8b545/edit?view_items=4xwL7nak7NXS&invitationId=inv_baa67f02-3606-4521-813e-1aaadd75bb81)
+- [Example DB tables](https://docs.google.com/drawings/d/16xttDCvKXwcfHAD_Jk_BNj3nUYusFEAdXT9sMvCwBWU/edit?usp=sharing)
+- [General pipeline - graph](https://docs.google.com/drawings/d/1MXKg1cNiAlD6T-5AAXAwya8o7Z69hFH9PmhIVDQ_Vmw/edit?usp=sharing)
+- [General pipeline building](https://docs.google.com/document/d/1czS0XXaNHYZwbpxwVmxxbbdjS-T6AESQo0vkFuzelPk/edit?usp=sharing)
