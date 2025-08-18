@@ -19,7 +19,7 @@ else
 fi
 
 # Define the line we want to check/append
-LINE='127.0.0.1 nlp-ssa.dev *.nlp-ssa.dev postgres'
+LINE='127.0.0.1 nlp-ssa.dev *.nlp-ssa.dev database'
 HOSTS_FILE='/etc/hosts'
 
 # Check if the line exists exactly as is

@@ -13,6 +13,7 @@ services:
       - server
       - session-cache
 
+  # TODO: rename this to something better like `pg_database`?
   database:
     image: postgres:16.2-bullseye # higher than this?
     env_file: .env
