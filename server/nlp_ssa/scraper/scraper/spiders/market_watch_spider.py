@@ -24,11 +24,19 @@ logger: ExtendedLogger = logging.getLogger(__file__)
 
 
 class MarketWatchSpider(BaseSpider):
+    """Spider for MarketWatch (marketwatch.com)
+
+    NOTES:
+    - it would seem this site needs a subscription
+    - it may also be bouncing the crawlers based on some of the
+        401 responses I've gotten
+    """
+
     name = "news"
-    base_url = "https://www.marketwatch.com/"
+    base_url = "https://www.marketwatch.com"
 
     def start_requests(self):
-        logger.info(f"  MarketWatchSpider : start_requests  ".center(160, "!"))
+        logger.info(f"  {self.__class__.__name__} : start_requests  ".center(160, "!"))
         # stock_symbol_slugs = db_session.execute(
         #     select(StockDB.quote_stock_symbol)
         # ).all()
@@ -53,7 +61,8 @@ class MarketWatchSpider(BaseSpider):
         news_item_configs = self._get_non_ad_non_pro_news_items_from_response(response)
 
         self._debug_logger(
-            header_text="news_item_configs", variables=[news_item_configs]
+            header_text=f"{self.follow_quote_news_links.__qualname__} : news_item_configs",
+            variables=[news_item_configs],
         )
         for item_config in news_item_configs[0:1]:
             self._debug_logger(header_text="item_config", variables=[item_config])
@@ -91,13 +100,15 @@ class MarketWatchSpider(BaseSpider):
         - yields item
         """
         self._debug_logger(
-            header_text="NewsSpider.parse",
+            header_text=self.parse.__qualname__,
             variables=[source_url, response.url, stock_slug],
         )
 
         main_content = response.css("div#maincontent").get()
         if not main_content:
-            raise Exception("NOPETOWN FOR MarketWatch :[")
+            logger.warning(
+                f"NOPETOWN FOR '{source_url}' FROM MarketWatch :[ - No article content!!!"
+            )
 
         inspect(main_content)
 
@@ -181,7 +192,11 @@ class MarketWatchSpider(BaseSpider):
             self._debug_logger(header_text="Error getting metadata", variables=[e])
 
     def _get_non_ad_non_pro_news_items_from_response(self, response):
-        news_items = response.css(".top--quote--headlines element--article")
+        base_area_selector = "#maincontent .region--primary .column--primary"
+        news_items = response.css(
+            f"{base_area_selector} .top--quote--headlines .element--article, "
+            f"{base_area_selector} .more-headlines .element--article"
+        )
 
         news_item_configs = []
         for item in news_items:
@@ -192,10 +207,10 @@ class MarketWatchSpider(BaseSpider):
                 ".article__content .article__headline a::attr(href)"
             ).get()
             if item_link is None or item_link.find("marketwatch.com") == -1:
-                logger.warning(f" WARNING: Skipping item: {item} ")
+                logger.warning(f"Skipping item:\n {item} ")
                 continue
 
-            item_thumbnail = item.css("figure img::attr(srcset)").get()
+            item_thumbnail = item.css("figure img::attr(data-srcset)").get()
             item_thumbnail_match = re.match(
                 r"[^\s]+", item_thumbnail, flags=re.MULTILINE
             )
@@ -211,11 +226,7 @@ class MarketWatchSpider(BaseSpider):
                 if item_thumbnail_match is not None
                 else None
             )
-            # self._debug_logger(
-            #     header_text="news_item", variables=[item, item_link, item_thumbnail]
-            # )
-            # logger.debug(f"item_link: '{item_link}'")
-            # logger.debug(f"item_thumbnail: '{item_thumbnail}'")
+
             news_item_configs.append(
                 dict(
                     url=item_url,
