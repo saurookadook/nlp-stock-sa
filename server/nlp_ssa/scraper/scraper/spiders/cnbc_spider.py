@@ -32,6 +32,7 @@ nltk.download("wordnet")
 logger: ExtendedLogger = logging.getLogger(__file__)
 
 
+# -------------------------| WIP |-------------------------
 class CNBCNewsSpider(BaseSpider):
     name = "news"
     base_url = "https://www.cnbc.com/"

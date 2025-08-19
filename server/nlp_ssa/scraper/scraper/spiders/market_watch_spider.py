@@ -7,11 +7,6 @@ import scrapy
 import scrapy_splash
 import sys
 import uuid
-from bs4 import BeautifulSoup
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
-from nltk.corpus import stopwords
-from nltk.tokenize import PunktSentenceTokenizer
 from pathlib import Path
 from pprint import pprint as prettyprint
 from rich import inspect
@@ -25,10 +20,6 @@ from nlp_ssa.models.sentiment_analysis import SentimentAnalysisDB
 from scraper.items import ScraperItem
 from scraper.spiders.base_spider import BaseSpider
 
-nltk.download("punkt")
-nltk.download("stopwords")
-nltk.download("wordnet")
-
 logger: ExtendedLogger = logging.getLogger(__file__)
 
 
@@ -37,7 +28,7 @@ class MarketWatchSpider(BaseSpider):
     base_url = "https://www.marketwatch.com/"
 
     def start_requests(self):
-        logger.info(f"  CNBCNewsSpider : start_requests  ".center(160, "!"))
+        logger.info(f"  MarketWatchSpider : start_requests  ".center(160, "!"))
         # stock_symbol_slugs = db_session.execute(
         #     select(StockDB.quote_stock_symbol)
         # ).all()
@@ -46,9 +37,7 @@ class MarketWatchSpider(BaseSpider):
         self.stock_slugs = ["TSLA"]
 
         url_configs = [
-            # TODO: need to add a 'type' column to `stocks` so we can
-            # differentiate between stocks, funds, etc.
-            dict(url=f"{self.base_url}/quotes/{slug}", stock_slug=slug)
+            dict(url=self._build_request_url(slug), stock_slug=slug)
             for slug in self.stock_slugs
         ]
         inspect(url_configs)
@@ -106,8 +95,132 @@ class MarketWatchSpider(BaseSpider):
             variables=[source_url, response.url, stock_slug],
         )
 
-        article_content = response.css("div[id*=ArticleBody] div.group").get()
-        if not article_content:
-            raise Exception("NOPETOWN FOR CNBC :[")
-        else:
-            inspect(article_content)
+        main_content = response.css("div#maincontent").get()
+        if not main_content:
+            raise Exception("NOPETOWN FOR MarketWatch :[")
+
+        inspect(main_content)
+
+        raw_text, cleaned_text = self.get_cleaned_text(main_content)
+        metadata = self._get_article_metadata(response)
+        source_group_id = uuid.uuid4()
+
+        try:
+            article_data_record = self.article_data_facade.create_or_update(
+                payload=dict(
+                    id=uuid.uuid4(),
+                    quote_stock_symbol=stock_slug,
+                    source_group_id=source_group_id,
+                    source_url=response.url or source_url,
+                    author=metadata["author"],
+                    last_updated_date=(
+                        ""
+                        if not metadata["last_updated_date"]
+                        else arrow.get(metadata["last_updated_date"]).to("utc")
+                    ),
+                    published_date=(
+                        ""
+                        if not metadata["published_date"]
+                        else arrow.get(metadata["published_date"]).to("utc")
+                    ),
+                    raw_content=raw_text,
+                    sentence_tokens=cleaned_text,
+                    title=metadata["title"],
+                    thumbnail_image_url=thumbnail_url,
+                )
+            )
+            # logger.log_info_centered(" BEFORE COMMIT ")
+            # inspect(article_data_record)
+
+            db_session.commit()
+
+            # logger.log_info_centered(" AFTER COMMIT ")
+            # inspect(article_data_record)
+        except Exception as e:
+            logger.error(e, file=sys.stderr)
+
+        item = ScraperItem()
+        item["Sentence"] = cleaned_text
+        item["GroupId"] = source_group_id
+
+        yield item
+
+    def _build_request_url(self, slug):
+        stock_type = "fund" if slug in self.fund_slugs else "stock"
+
+        return f"{self.base_url}/investing/{stock_type}/{slug}"
+
+    def _get_article_metadata(self, response):
+        metadata_dict = dict(
+            author="",
+            last_updated_date="",
+            published_date="",
+            title="",
+        )
+
+        try:
+            byline_wrapper = response.css("#maincontent .article__byline")
+            if byline_wrapper:
+                metadata_dict["author"] = byline_wrapper.css(
+                    "a[class*=AuthorLink] *::text"
+                ).get(default="")
+
+            timestamp_wrapper = response.css("#maincontent .author__timestamp")
+            if timestamp_wrapper:
+                metadata_dict["last_updated_date"] = timestamp_wrapper.css(
+                    ".last time::attr(datetime)"
+                ).get(default="")
+                metadata_dict["published_date"] = timestamp_wrapper.css(
+                    ".first time::attr(datetime)"
+                ).get(default="")
+
+            metadata_dict["title"] = response.css(
+                "#maincontent .article__headline *::text"
+            ).get(default="")
+        except Exception as e:
+            self._debug_logger(header_text="Error getting metadata", variables=[e])
+
+    def _get_non_ad_non_pro_news_items_from_response(self, response):
+        news_items = response.css(".top--quote--headlines element--article")
+
+        news_item_configs = []
+        for item in news_items:
+            guid = item.css("::attr(data-guid)").get()
+            self._debug_logger(header_text="  guid  ", variables=[guid])
+
+            item_link = item.css(
+                ".article__content .article__headline a::attr(href)"
+            ).get()
+            if item_link is None or item_link.find("marketwatch.com") == -1:
+                logger.warning(f" WARNING: Skipping item: {item} ")
+                continue
+
+            item_thumbnail = item.css("figure img::attr(srcset)").get()
+            item_thumbnail_match = re.match(
+                r"[^\s]+", item_thumbnail, flags=re.MULTILINE
+            )
+
+            trimmed_link = self._trim_query_params(item_link)
+            item_url = (
+                self.base_url + trimmed_link
+                if item_link.startswith("/")
+                else trimmed_link
+            )
+            item_thumbnail_url = (
+                item_thumbnail_match.group(0)
+                if item_thumbnail_match is not None
+                else None
+            )
+            # self._debug_logger(
+            #     header_text="news_item", variables=[item, item_link, item_thumbnail]
+            # )
+            # logger.debug(f"item_link: '{item_link}'")
+            # logger.debug(f"item_thumbnail: '{item_thumbnail}'")
+            news_item_configs.append(
+                dict(
+                    url=item_url,
+                    thumbnail_url=item_thumbnail_url,
+                )
+            )
+
+        return news_item_configs

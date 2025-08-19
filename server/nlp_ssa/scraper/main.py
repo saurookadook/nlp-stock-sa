@@ -5,6 +5,7 @@ from scrapy.utils.project import get_project_settings
 
 from scraper.spiders.cnbc_spider import CNBCNewsSpider
 from scraper.spiders.bloomberg_spider import BloombergSpider
+from scraper.spiders.market_watch_spider import MarketWatchSpider
 from scraper.spiders.news_spider import NewsSpider
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
@@ -15,6 +16,7 @@ def main():
     spiders = [
         # BloombergSpider,
         CNBCNewsSpider,
+        MarketWatchSpider,
         # NewsSpider,
     ]
 
