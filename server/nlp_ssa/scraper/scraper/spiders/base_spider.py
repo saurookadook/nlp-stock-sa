@@ -1,12 +1,7 @@
-import arrow
-import json
-import logging
 import nltk
 import re
 import scrapy
-import scrapy_splash
 import sys
-import uuid
 from bs4 import BeautifulSoup
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
@@ -17,12 +12,10 @@ from pprint import pprint as prettyprint
 from rich import inspect
 from sqlalchemy import select
 
-from nlp_ssa.config.logging import ExtendedLogger
 from nlp_ssa.db import db_session
 from nlp_ssa.models.article_data import ArticleDataFacade, ArticleDataDB
 from nlp_ssa.models.stock import StockDB
 from nlp_ssa.models.sentiment_analysis import SentimentAnalysisDB
-from scraper.items import ScraperItem
 
 nltk.download("punkt")
 nltk.download("stopwords")
@@ -39,6 +32,10 @@ class BaseSpider(scrapy.Spider):
     lemmatizer = WordNetLemmatizer()
     tokenizer = PunktSentenceTokenizer()
 
+    # TODO: need to add a 'type' column to `stocks` so we can
+    # differentiate between stocks, funds, etc.
+    fund_slugs = ["IJR", "SCHD", "SPY", "SWPPX", "VOO", "VO", "VYM"]
+
     def preprocess(self, documents):
         """
         Preprocesses a list of text documents by cleaning each one.
@@ -47,6 +44,39 @@ class BaseSpider(scrapy.Spider):
         for doc in documents:
             preprocessed_docs.append(self.clean(doc))
         return preprocessed_docs
+
+    def clean(self, text):
+        """
+        Cleans text by:
+        - Removing URLs
+        - Converting text to lowercase
+        - Removing punctuation
+        - Removing stopwords
+        - Lemmatizing words
+        """
+        text = re.sub(r"http\S+", "", text)  # Remove URLs
+        text = text.lower()  # Convert to lowercase
+        text = re.sub(r"[^a-zA-Z0-9]", " ", text)  # Remove punctuation
+
+        text = self.tokenizer.tokenize(text)
+        stops = set(stopwords.words("english"))
+        text = [word for word in text if word not in stops]  # Remove stopwords
+        text = [self.lemmatizer.lemmatize(word=word_1) for word_1 in text]  # Lemmatize
+        return text
+
+    def get_raw_and_cleaned_text(self, content):
+        soup = BeautifulSoup(content, "html.parser")
+        raw_text = soup.get_text()
+        return raw_text, self.clean(raw_text)
+
+    def _trim_query_params(self, url_str):
+        query_param_start_index = url_str.find("?")
+
+        return (
+            url_str[0:query_param_start_index]
+            if query_param_start_index > -1
+            else url_str
+        )
 
     def _debug_logger(
         self, *, header_text: str, variables: list = [], width: int = 200
