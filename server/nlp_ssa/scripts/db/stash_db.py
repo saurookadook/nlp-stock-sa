@@ -31,10 +31,12 @@ def stash_db():
         "users": [],
     }
 
+    EXCLUDABLE_FIELDS_SET = {"polymorphic_source", "source"}
+
     logger.log_info_section_start("article_data")
     article_data_records = db_session.execute(select(ArticleDataDB)).scalars().all()
     data["article_data"] = [
-        ArticleData.model_validate(ad).model_dump(exclude={"polymorphic_source"})
+        ArticleData.model_validate(ad).model_dump(exclude=EXCLUDABLE_FIELDS_SET)
         for ad in article_data_records
     ]
     logger.log_info_section_end("article_data", len(data["article_data"]))
@@ -51,7 +53,7 @@ def stash_db():
         db_session.execute(select(SentimentAnalysisDB)).scalars().all()
     )
     data["sentiment_analyses"] = [
-        SentimentAnalysis.model_validate(sa).model_dump(exclude={"source"})
+        SentimentAnalysis.model_validate(sa).model_dump(exclude=EXCLUDABLE_FIELDS_SET)
         for sa in sentiment_analysis_records
     ]
     logger.log_info_section_end("sentiment_analyses", len(data["sentiment_analyses"]))
