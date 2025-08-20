@@ -33,7 +33,7 @@ class ExtendedLogger(BaseLoggerClass):
             raw_window_width = 200
         self.raw_window_width = raw_window_width
         self.window_width = (
-            raw_window_width - 80
+            raw_window_width - 120
         )  # to account for characters added by logging handlers
 
     # TODO: type annotation for "int in this Enum"?
