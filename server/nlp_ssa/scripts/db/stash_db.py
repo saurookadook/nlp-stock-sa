@@ -2,17 +2,19 @@ import arrow
 import gzip
 import json
 import logging
+from rich import inspect, pretty
 from sqlalchemy import select
 from uuid import UUID
 
 from config import configure_logging
-from constants import SentimentEnum
+from constants import SentimentEnum, SourceDiscriminatorEnum
 from db import db_session
-from models.article_data import ArticleDataDB
-from models.analysis_view import AnalysisViewDB
-from models.sentiment_analysis import SentimentAnalysisDB
-from models.stock import StockDB
-from models.user import UserDB
+from models.article_data import ArticleData, ArticleDataDB
+from models.analysis_view import AnalysisView, AnalysisViewDB
+from models.sentiment_analysis import SentimentAnalysis, SentimentAnalysisDB
+from models.source import Source, SourceDB
+from models.stock import Stock, StockDB
+from models.user import User, UserDB
 
 
 configure_logging(app_name="stash_db")
@@ -24,41 +26,57 @@ def stash_db():
         "article_data": [],
         "analysis_views": [],
         "sentiment_analyses": [],
+        "sources": [],
         "stocks": [],
         "users": [],
     }
 
     logger.log_info_section_start("article_data")
     article_data_records = db_session.execute(select(ArticleDataDB)).scalars().all()
-    # TODO: is there something else from SQLAlchemy that would be better than __dict__
-    data["article_data"] = [ad.__dict__ for ad in article_data_records]
+    data["article_data"] = [
+        ArticleData.model_validate(ad).model_dump(exclude={"polymorphic_source"})
+        for ad in article_data_records
+    ]
     logger.log_info_section_end("article_data", len(data["article_data"]))
 
-    logger.log_info_section_start("analysis_view")
+    logger.log_info_section_start("analysis_views")
     analysis_view_records = db_session.execute(select(AnalysisViewDB)).scalars().all()
-    data["analysis_view"] = [ad.__dict__ for ad in analysis_view_records]
-    logger.log_info_section_end("analysis_view", len(data["analysis_view"]))
+    data["analysis_views"] = [
+        AnalysisView.model_validate(av).model_dump() for av in analysis_view_records
+    ]
+    logger.log_info_section_end("analysis_views", len(data["analysis_views"]))
 
-    logger.log_info_section_start("sentiment_analysis")
+    logger.log_info_section_start("sentiment_analyses")
     sentiment_analysis_records = (
         db_session.execute(select(SentimentAnalysisDB)).scalars().all()
     )
-    data["sentiment_analyses"] = [ad.__dict__ for ad in sentiment_analysis_records]
-    logger.log_info_section_end("sentiment_analysis", len(data["sentiment_analyses"]))
+    data["sentiment_analyses"] = [
+        SentimentAnalysis.model_validate(sa).model_dump(exclude={"source"})
+        for sa in sentiment_analysis_records
+    ]
+    logger.log_info_section_end("sentiment_analyses", len(data["sentiment_analyses"]))
 
-    logger.log_info_section_start("stock")
+    logger.log_info_section_start("sources")
+    sources_records = db_session.execute(select(SourceDB)).scalars().all()
+    data["sources"] = [
+        Source.model_validate(src).model_dump(exclude={"data"})
+        for src in sources_records
+    ]
+    logger.log_info_section_end("sources", len(data["sources"]))
+
+    logger.log_info_section_start("stocks")
     stock_records = db_session.execute(select(StockDB)).scalars().all()
-    data["stocks"] = [ad.__dict__ for ad in stock_records]
-    logger.log_info_section_end("stock", len(data["stocks"]))
+    data["stocks"] = [Stock.model_validate(stk).model_dump() for stk in stock_records]
+    logger.log_info_section_end("stocks", len(data["stocks"]))
 
     logger.log_info_section_start("user")
     user_records = db_session.execute(select(UserDB)).scalars().all()
-    data["users"] = [ad.__dict__ for ad in user_records]
+    data["users"] = [User.model_validate(usr).model_dump() for usr in user_records]
     logger.log_info_section_end("user", len(data["users"]))
 
     db_session.close()
 
-    enum_types_tuple = SentimentEnum
+    enum_types_tuple = tuple([SentimentEnum, SourceDiscriminatorEnum])
 
     logger.log_info_centered(" 'Making the data serializable...'  ")
     for key in data:
