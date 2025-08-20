@@ -22,7 +22,7 @@ LAST_RETURN_STATUS_CODE=$?
 
 dbIsNotReady() {
     pg_isready -h database > /dev/null 2>&1;
-    local status = $?;
+    status = $?;
     return $(( $status == 0 ? 1 : 0 ));  # Flip the exit code: return 1 if ready, 0 if not ready
 }
 
