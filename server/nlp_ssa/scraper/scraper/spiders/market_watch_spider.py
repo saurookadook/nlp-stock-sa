@@ -1,16 +1,10 @@
 import arrow
 import json
 import logging
-import nltk
 import re
-import scrapy
 import scrapy_splash
-import sys
 import uuid
-from pathlib import Path
-from pprint import pprint as prettyprint
-from rich import inspect
-from sqlalchemy import select
+from rich import inspect, pretty
 
 from nlp_ssa.config.logging import ExtendedLogger
 from nlp_ssa.db import db_session
@@ -64,7 +58,7 @@ class MarketWatchSpider(BaseSpider):
             header_text=f"{self.follow_quote_news_links.__qualname__} : news_item_configs",
             variables=[news_item_configs],
         )
-        for item_config in news_item_configs[0:1]:
+        for item_config in news_item_configs:
             self._debug_logger(header_text="item_config", variables=[item_config])
             yield scrapy_splash.SplashRequest(
                 url=item_config["url"],
@@ -148,7 +142,7 @@ class MarketWatchSpider(BaseSpider):
             # logger.log_info_centered(" AFTER COMMIT ")
             # inspect(article_data_record)
         except Exception as e:
-            logger.error(e, file=sys.stderr)
+            self._handle_parse_method_exception(logger, source_url, e)
 
         item = ScraperItem()
         item["Sentence"] = cleaned_text
@@ -210,7 +204,7 @@ class MarketWatchSpider(BaseSpider):
                 logger.warning(f"Skipping item:\n {item} ")
                 continue
 
-            item_thumbnail = item.css("figure img::attr(data-srcset)").get()
+            item_thumbnail = item.css("figure img::attr(data-srcset)").get(default="")
             item_thumbnail_match = re.match(
                 r"[^\s]+", item_thumbnail, flags=re.MULTILINE
             )

@@ -144,7 +144,7 @@ class NewsSpider(BaseSpider):
             # logger.log_info_centered(" AFTER COMMIT ")
             # inspect(article_data_record)
         except Exception as e:
-            logger.error(e, file=sys.stderr)
+            self._handle_parse_method_exception(logger, source_url, e)
 
         item = ScraperItem()
         item["Sentence"] = cleaned_text

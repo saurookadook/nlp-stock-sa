@@ -1,7 +1,6 @@
 import nltk
 import re
 import scrapy
-import sys
 from bs4 import BeautifulSoup
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
@@ -77,6 +76,10 @@ class BaseSpider(scrapy.Spider):
             if query_param_start_index > -1
             else url_str
         )
+
+    def _handle_parse_method_exception(self, logger, source_url, exception):
+        logger.error(f"Caught exception while parsing '{source_url}':\n")
+        logger.exception(exception)
 
     def _debug_logger(
         self, *, header_text: str, variables: list = [], width: int = 200
