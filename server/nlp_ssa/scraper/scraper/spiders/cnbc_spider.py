@@ -59,7 +59,8 @@ class CNBCNewsSpider(BaseSpider):
         news_item_configs = self._get_non_ad_non_pro_news_items_from_response(response)
 
         self._debug_logger(
-            header_text="news_item_configs", variables=[news_item_configs]
+            header_text=f"{self.follow_quote_news_links.__qualname__} : news_item_configs for '{stock_slug}'",
+            variables=[news_item_configs],
         )
         for item_config in news_item_configs:
             self._debug_logger(header_text="item_config", variables=[item_config])
@@ -110,14 +111,14 @@ class CNBCNewsSpider(BaseSpider):
         article_content = []
 
         for el in article_content_groups:
-            inspect(el, methods=True, sort=True)
+            # inspect(el, methods=True, sort=True)
 
             if el.css("[class*=RelatedContent]"):
                 continue
 
             article_content.append(el.get())
 
-        inspect(article_content)
+        # inspect(article_content)
 
         try:
             raw_text, cleaned_text = self.get_raw_and_cleaned_text(

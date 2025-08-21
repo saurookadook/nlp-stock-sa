@@ -55,7 +55,7 @@ class MarketWatchSpider(BaseSpider):
         news_item_configs = self._get_non_ad_non_pro_news_items_from_response(response)
 
         self._debug_logger(
-            header_text=f"{self.follow_quote_news_links.__qualname__} : news_item_configs",
+            header_text=f"{self.follow_quote_news_links.__qualname__} : news_item_configs for '{stock_slug}'",
             variables=[news_item_configs],
         )
         for item_config in news_item_configs:
@@ -104,7 +104,7 @@ class MarketWatchSpider(BaseSpider):
                 f"NOPETOWN FOR '{source_url}' FROM MarketWatch :[ - No article content!!!"
             )
 
-        inspect(main_content)
+        # inspect(main_content)
 
         raw_text, cleaned_text = self.get_cleaned_text(main_content)
         metadata = self._get_article_metadata(response)
