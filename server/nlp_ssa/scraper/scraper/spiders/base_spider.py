@@ -22,18 +22,18 @@ nltk.download("wordnet")
 
 
 class BaseSpider(scrapy.Spider):
-    article_data_facade = ArticleDataFacade(db_session=db_session)
-    custom_settings = {
+    article_data_facade: ArticleDataFacade = ArticleDataFacade(db_session=db_session)
+    custom_settings: dict = {
         "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15",
         "DOWNLOAD_DELAY": 2,
     }
-    stock_slugs = []
-    lemmatizer = WordNetLemmatizer()
-    tokenizer = PunktSentenceTokenizer()
+    stock_slugs: list[str] = []
+    lemmatizer: WordNetLemmatizer = WordNetLemmatizer()
+    tokenizer: PunktSentenceTokenizer = PunktSentenceTokenizer()
 
     # TODO: need to add a 'type' column to `stocks` so we can
     # differentiate between stocks, funds, etc.
-    fund_slugs = ["IJR", "SCHD", "SPY", "SWPPX", "VOO", "VO", "VYM"]
+    fund_slugs: list[str] = ["IJR", "SCHD", "SPY", "SWPPX", "VOO", "VO", "VYM"]
 
     def preprocess(self, documents):
         """

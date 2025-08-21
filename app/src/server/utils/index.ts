@@ -15,7 +15,7 @@ export const createTerminationHandler = (server, options = { coredump: false, ti
             });
         }
 
-        server.close(exitCallback);
+        server.close(exitCallback).unref();
         setTimeout(exitCallback, options.timeout);
         // .unref();
     };

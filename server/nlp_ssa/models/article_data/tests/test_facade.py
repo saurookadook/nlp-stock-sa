@@ -11,7 +11,6 @@ from models.article_data import (
 )
 from models.article_data.factories import ArticleDataFactory
 from models.stock.factories import StockFactory
-from utils.testing_mocks import get_mock_utcnow
 
 
 def test_get_one_by_id(article_data_facade, mock_db_session):
@@ -115,7 +114,6 @@ def test_create_or_update_new_article_data(article_data_facade, mock_db_session)
     assert result.polymorphic_source.data_type == SourceDiscriminatorEnum.ArticleDataDB
     assert result.raw_content == article_data_dict.get("raw_content")
     assert result.sentence_tokens == article_data_dict.get("sentence_tokens")
-    # TODO: find better way to mock server 'now' function
     assert isinstance(result.created_at, arrow.Arrow)
     assert isinstance(result.updated_at, arrow.Arrow)
 
@@ -125,7 +123,9 @@ def test_create_or_update_new_article_data(article_data_facade, mock_db_session)
     assert result.title == ""
 
 
-def test_create_or_update_existing_article_data(article_data_facade, mock_db_session):
+def test_create_or_update_existing_article_data(
+    article_data_facade, mock_db_session, mock_utcnow
+):
     mock_stock = StockFactory(quote_stock_symbol="DIS")
     mock_db_session.commit()
 
@@ -148,6 +148,8 @@ def test_create_or_update_existing_article_data(article_data_facade, mock_db_ses
             "                    good business                       amazing"
             " returns                                           "
         ),
+        "last_updated_date": mock_utcnow,
+        "published_date": mock_utcnow.shift(months=-6),
     }
 
     article_data_facade.create_or_update(payload=updated_article_data_dict)
@@ -168,12 +170,13 @@ def test_create_or_update_existing_article_data(article_data_facade, mock_db_ses
     assert result.polymorphic_source.data_type == SourceDiscriminatorEnum.ArticleDataDB
     assert result.raw_content == updated_article_data_dict.get("raw_content")
     assert result.sentence_tokens == updated_article_data_dict.get("sentence_tokens")
-    assert result.created_at == get_mock_utcnow()
-    # TODO: find better way to mock server 'now' function
+    assert isinstance(result.created_at, arrow.Arrow)
     assert isinstance(result.updated_at, arrow.Arrow)
 
     assert result.author == ""
-    assert result.last_updated_date is None
-    assert result.published_date is None
+    assert result.last_updated_date == updated_article_data_dict.get(
+        "last_updated_date"
+    )
+    assert result.published_date == updated_article_data_dict.get("published_date")
     assert result.thumbnail_image_url == ""
     assert result.title == ""

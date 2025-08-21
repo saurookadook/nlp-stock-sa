@@ -16,12 +16,22 @@ from nlp_ssa.models.sentiment_analysis import SentimentAnalysisDB
 from scraper.items import ScraperItem
 from scraper.spiders.base_spider import BaseSpider
 
-logger: ExtendedLogger = logging.getLogger(__file__)
+logger: ExtendedLogger = logging.getLogger("news_spider")
 
 
 class YahooNewsSpider(BaseSpider):
-    name = "news"
-    base_url = "https://finance.yahoo.com"
+    name: str = "news"
+    base_url: str = "https://finance.yahoo.com"
+    selectors: dict[str, str] = {
+        "article_content": "div.morpheusGridBody div.caas-body, div.body-wrap div.body",
+        "article_title": 'meta[property="og:title"]::attr(content)',
+        "byline_wrapper": '.byline-attr, [class*="byline-wrapper"]',
+        "byline_author": '[class*="byline-attr-author"]::text, [class*="item-author"] *::text',
+        "byline_time": '[class*="byline-attr-time-"] time::attr(datetime), time::attr(datetime)',
+        "item_link": "a::attr(href)",
+        "item_thumbnail": "img::attr(src)",
+        "news_items": "div.news-stream .stream-item",
+    }
 
     def start_requests(self):
         # all_article_data = select(ArticleDataDB).where(ArticleDataDB.title == "")
@@ -97,8 +107,11 @@ class YahooNewsSpider(BaseSpider):
             header_text="NewsSpider.parse", variables=[response.url, stock_slug]
         )
 
-        article_content = response.css("div.morpheusGridBody div.caas-body").get()
+        article_content = response.css(self.selectors["article_content"]).get()
         if not article_content:
+            self.logger.warning(
+                f"UH OH! :o  ||  No article content found for '{response.url}'"
+            )
             return
 
         raw_text, cleaned_text = self.get_cleaned_text(article_content)
@@ -147,14 +160,15 @@ class YahooNewsSpider(BaseSpider):
             self._handle_parse_method_exception(logger, source_url, e)
 
         item = ScraperItem()
-        item["Sentence"] = cleaned_text
-        item["GroupId"] = source_group_id
+        item["record_id"] = str(article_data_record.id)
+        item["sentence"] = cleaned_text
+        item["source_group_id"] = source_group_id
 
         yield item
 
     # NOTE: can potentially remove this
     def update_metadata_from_page(self, response, current_ad, stock_slug):
-        article_content = response.css("div.morpheusGridBody div.caas-body").get()
+        article_content = response.css(self.selectors["article_content"]).get()
         if not article_content:
             return
 
@@ -185,7 +199,7 @@ class YahooNewsSpider(BaseSpider):
             logger.error(e, file=sys.stderr)
 
         item = ScraperItem()
-        # item["ArticleData"] = str(current_ad.id)
+        item["record_id"] = str(current_ad.id)
         self._debug_logger(
             header_text="NewsSpider.update_metadata_from_page",
             variables=[f"{key}: {metadata[key]} " for key in metadata.keys()],
@@ -195,17 +209,17 @@ class YahooNewsSpider(BaseSpider):
         yield item
 
     def _get_non_ad_news_items_from_response(self, response):
-        news_items = response.css("div.news-stream .stream-item")
+        news_items = response.css(self.selectors["news_items"])
 
         news_item_configs = []
         for item in news_items:
-            item_link = item.css("a::attr(href)").get()
+            item_link = item.css(self.selectors["item_link"]).get()
             if (
                 item_link is None
                 or not item_link.startswith("/")
                 or "finance.yahoo.com" not in item_link
             ):
-                logger.warning(f" WARNING: Skipping item: {item} ")
+                logger.warning(f"Skipping item:\n{item}")
                 continue
 
             trimmed_link = self._trim_query_params(item_link)
@@ -214,7 +228,8 @@ class YahooNewsSpider(BaseSpider):
                 if trimmed_link.startswith("/")
                 else trimmed_link
             )
-            item_thumbnail = item.css("img::attr(src)").get()
+            item_thumbnail = item.css(self.selectors["item_thumbnail"]).get()
+
             # self._debug_logger(
             #     header_text="news_item", variables=[item, item_link, item_thumbnail]
             # )
@@ -238,21 +253,21 @@ class YahooNewsSpider(BaseSpider):
         )
 
         try:
-            byline_wrapper = response.css('[class*="byline-wrapper"]')
+            byline_wrapper = response.css(self.selectors["byline_wrapper"])
             if byline_wrapper:
                 metadata_dict["author"] = byline_wrapper.css(
-                    '[class*="item-author"] *::text'
+                    self.selectors["byline_author"]
                 ).get(default="")
                 metadata_dict["last_updated_date"] = byline_wrapper.css(
-                    "time::attr(datetime)"
+                    self.selectors["byline_time"]
                 ).get(default="")
                 metadata_dict["published_date"] = byline_wrapper.css(
-                    "time::attr(datetime)"
+                    self.selectors["byline_time"]
                 ).get(default="")
 
-            metadata_dict["title"] = response.css(
-                'meta[property="og:title"]::attr(content)'
-            ).get(default="")
+            metadata_dict["title"] = response.css(self.selectors["article_title"]).get(
+                default=""
+            )
         except Exception as e:
             self._debug_logger(header_text="Error getting metadata", variables=[e])
 

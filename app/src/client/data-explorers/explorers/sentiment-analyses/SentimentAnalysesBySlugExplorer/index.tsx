@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import {
     Flex, // force formatting
     Heading,
+    Spinner,
     Table,
     Thead,
     Tbody,
@@ -19,6 +20,16 @@ import { MultiSeriesLineGraph, NoDataMessage } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 import { fetchSentimentAnalysesByStockSlug } from 'client/data-explorers/store/actions';
 
+function shouldReloadGraph(
+    sentimentAnalysesBySlug: DataExplorersStore['sentimentAnalysesBySlug'],
+    stockSlugFromParams: string = '',
+) {
+    return (
+        sentimentAnalysesBySlug == null ||
+        (sentimentAnalysesBySlug != null && sentimentAnalysesBySlug.quoteStockSymbol !== stockSlugFromParams)
+    );
+}
+
 function SentimentAnalysesBySlugExplorer() {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
@@ -27,10 +38,17 @@ function SentimentAnalysesBySlugExplorer() {
     const { sentimentAnalysesBySlug } = state as DataExplorersStore;
 
     useEffect(() => {
-        if (sentimentAnalysesBySlug == null) {
+        console.log({
+            component: 'SentimentAnalysesBySlugExplorer',
+            shouldReloadGraph: shouldReloadGraph(sentimentAnalysesBySlug, params.stockSlug),
+        });
+        if (shouldReloadGraph(sentimentAnalysesBySlug, params.stockSlug)) {
             fetchSentimentAnalysesByStockSlug({ dispatch, stockSlug: params.stockSlug });
         }
-    }, [params.stockSlug]);
+    }, [
+        params.stockSlug,
+        (state.sentimentAnalysesBySlug as DataExplorersStore['sentimentAnalysesBySlug'])?.sentimentAnalyses,
+    ]);
 
     console.log('data-explorers.sentiment-analyses - SentimentAnalysesBySlugExplorer', { state });
     return (
@@ -38,10 +56,27 @@ function SentimentAnalysesBySlugExplorer() {
             <Heading>Sentiment Analysis for {params.stockSlug}</Heading>
             {(sentimentAnalysesBySlug || {}).sentimentAnalyses != null ? (
                 <Flex alignItems="center" flexDirection="column">
-                    <MultiSeriesLineGraph
-                        sentimentAnalysesData={sentimentAnalysesBySlug.sentimentAnalyses}
-                        width={16 * 70}
-                    />
+                    <Flex
+                        alignItems="center" // force formatting
+                        flexDirection="column"
+                        justifyContent="center"
+                        minHeight="30rem"
+                    >
+                        {shouldReloadGraph(sentimentAnalysesBySlug, params.stockSlug) ? (
+                            <Spinner // force formatting
+                                color="teal"
+                                emptyColor="gray.200"
+                                size="xl"
+                                speed="0.65s"
+                                thickness="4px"
+                            />
+                        ) : (
+                            <MultiSeriesLineGraph
+                                sentimentAnalysesData={sentimentAnalysesBySlug.sentimentAnalyses}
+                                width={16 * 70}
+                            />
+                        )}
+                    </Flex>
                     <TableContainer
                         className="sentiment-analyses-wrapper"
                         // alignSelf="stretch" flexDirection="column"

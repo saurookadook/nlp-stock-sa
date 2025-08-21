@@ -127,4 +127,4 @@ const getStoryStockData: StoryStockDataFn = () => ({
     ],
 });
 
-export default getStoryStockData;
+export { getStoryStockData };

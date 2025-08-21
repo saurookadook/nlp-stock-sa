@@ -1,8 +1,14 @@
 import express, { NextFunction, Request, Response } from 'express';
 
+import { baseRequestURL } from 'server/constants';
 import { asyncWrapper } from 'server/utils';
 
 const router = express.Router();
+
+// const fetchHeaders = new Headers({
+//     Accept: '*/*',
+//     'Content-Type': 'application/json',
+// });
 
 router.use(
     '/article-data/:stockSlug',
@@ -17,8 +23,7 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            // const pageDataResponse = await global.fetch(`https://nlp-ssa.dev/api/article-data/${stockSlug}`);
-            const pageDataResponse = await global.fetch(`/api/article-data/${stockSlug}`);
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data/${stockSlug}`);
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -27,7 +32,8 @@ router.use(
 
             initialPageData = await pageDataResponse.json();
         } catch (e) {
-            console.warn(`[article-data by stock route] - caught exception: ${e}`);
+            console.warn(`[article-data by stock route] - caught exception:`);
+            console.warn(e);
         }
 
         try {
@@ -56,8 +62,7 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            // const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/article-data');
-            const pageDataResponse = await global.fetch('/api/article-data');
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data`);
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -66,7 +71,8 @@ router.use(
 
             initialPageData = await pageDataResponse.json();
         } catch (e) {
-            console.warn(`[article-data list route] - caught exception: ${e}`);
+            console.warn(`[article-data list route] - caught exception:`);
+            console.warn(e);
         }
 
         try {
@@ -96,8 +102,7 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            // const pageDataResponse = await global.fetch(`https://nlp-ssa.dev/api/sentiment-analyses/${stockSlug}`);
-            const pageDataResponse = await global.fetch(`/api/sentiment-analyses/${stockSlug}`);
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/sentiment-analyses/${stockSlug}`);
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -106,7 +111,8 @@ router.use(
 
             initialPageData = await pageDataResponse.json();
         } catch (e) {
-            console.warn(`[sentiment-analyses by stock route] - caught exception: ${e}`);
+            console.warn(`[sentiment-analyses by stock route] - caught exception:`);
+            console.warn(e);
         }
 
         try {
@@ -139,8 +145,7 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            // const pageDataResponse = await global.fetch(`https://nlp-ssa.dev/api/stocks/${stockSlug}`);
-            const pageDataResponse = await global.fetch(`/api/stocks/${stockSlug}`);
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks/${stockSlug}`);
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -149,7 +154,8 @@ router.use(
 
             initialPageData = await pageDataResponse.json();
         } catch (e) {
-            console.warn(`[data-explorers - single stock view] - caught exception: ${e}`);
+            console.warn(`[data-explorers - single stock view] - caught exception:`);
+            console.warn(e);
         }
 
         try {
@@ -178,8 +184,7 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            // const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/stocks');
-            const pageDataResponse = await global.fetch('/api/stocks');
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks`);
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -188,7 +193,8 @@ router.use(
 
             initialPageData = await pageDataResponse.json();
         } catch (e) {
-            console.warn(`[data-explorers - stocks list] - caught exception: ${e}`);
+            console.warn(`[data-explorers - stocks list] - caught exception:`);
+            console.warn(e);
         }
 
         try {
@@ -211,14 +217,29 @@ router.use(
         console.log(' data-explorers handler [explorers list] '.padStart(100, '=').padEnd(200, '='));
         console.log({ url: req.url, params: req.params });
 
-        // if (/^\/\S+/im.test(req.url)) {
-        //     return next();
-        // }
+        let initialPageData = {
+            data: null,
+        };
+
+        try {
+            // TODO: add some user-specific thing to request?
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks`);
+
+            if (pageDataResponse.status >= 400) {
+                const errorMessage = await pageDataResponse.text();
+                throw new Error(errorMessage);
+            }
+
+            initialPageData = await pageDataResponse.json();
+        } catch (e) {
+            console.warn(`[data-explorers - explorers list] - caught exception:`);
+            console.warn(e);
+        }
 
         try {
             return res.render('index', {
                 layout: 'index',
-                initialPageData: JSON.stringify({ reqParams: req.params }),
+                initialPageData: JSON.stringify({ stockDataAll: initialPageData.data, reqParams: req.params }),
                 ...res.locals.manifest['common'],
                 ...res.locals.manifest['dataExplorers'],
             });
@@ -246,8 +267,7 @@ router.use(
 
 //         try {
 //             // TODO: add some user-specific thing to request?
-//             // const pageDataResponse = await global.fetch('https://nlp-ssa.dev/api/article-data');
-//             const pageDataResponse = await global.fetch('/api/article-data');
+//             const pageDataResponse = await global.fetch(`${baseRequestURL}/api/article-data`);
 
 //             if (pageDataResponse.status >= 400) {
 //                 const errorMessage = await pageDataResponse.text();
