@@ -1,4 +1,5 @@
 import arrow
+from rich import inspect, pretty
 from sqlalchemy import desc, literal_column, or_, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm.exc import NoResultFound
@@ -8,7 +9,6 @@ from uuid import UUID
 from constants import SourceDiscriminatorEnum
 from models.article_data import ArticleDataDB, ArticleData
 from models.source.db import SourceDB
-from rich import inspect
 
 
 class ArticleDataFacade:
@@ -53,21 +53,21 @@ class ArticleDataFacade:
         return [ArticleData.model_validate(result) for result in results]
 
     def create_or_update(self, *, payload: Dict) -> ArticleData:
+        prepared_payload = self._prepare_payload(payload)
+
         maybe_one = self._find_one_if_exists(
-            id=payload.get("id"), source_url=payload.get("source_url")
+            id=prepared_payload.get("id"), source_url=prepared_payload.get("source_url")
         )
         if maybe_one:
-            return self.update(payload=payload)
+            return self.update(payload=prepared_payload)
 
-        insert_stmt = insert(ArticleDataDB).values(**payload)
+        prepared_payload.setdefault("updated_at", arrow.utcnow())
+
+        insert_stmt = insert(ArticleDataDB).values(**prepared_payload)
 
         full_stmt = insert_stmt.on_conflict_do_update(
             constraint=ArticleDataDB.__table__.primary_key,
-            set_={
-                **payload,
-                # "created_at": arrow.utcnow(),
-                "updated_at": arrow.utcnow(),
-            },
+            set_=dict(**prepared_payload),
         ).returning(ArticleDataDB)
 
         article_data_row = self.db_session.execute(full_stmt).fetchone()
@@ -98,6 +98,7 @@ class ArticleDataFacade:
 
         return ArticleData.model_validate(updated_record)
 
+    # TODO: this can be WAY more efficient (it doesn't need to return a whole row)
     def _find_one_if_exists(self, *, id, source_url):
         try:
             return self.get_one_by_id(id)
@@ -110,6 +111,13 @@ class ArticleDataFacade:
             pass
 
         return None
+
+    def _prepare_payload(self, payload):
+        polymorphic_source = payload.get("polymorphic_source", None)
+        if polymorphic_source is None:
+            payload.pop("polymorphic_source", None)
+
+        return payload
 
     def _create_source_if_not_exists(self, *, record: ArticleDataDB):
         if hasattr(record, "polymorphic_source") and record.polymorphic_source is None:

@@ -1,15 +1,22 @@
+import logging
+from pprint import pprint as prettyprint
+from rich import inspect
+
 # Define here the models for your spider middleware
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-
-from scrapy import signals
-import logging
+from scrapy import downloadermiddlewares, signals
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
 
+from nlp_ssa.config.logging import ExtendedLogger
 
+logger: ExtendedLogger = logging.getLogger(__file__)
+
+
+# NOTE: I have no idea why this isn't getting loaded properly :']
 class ScraperSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -57,7 +64,8 @@ class ScraperSpiderMiddleware:
         spider.logger.info("Spider opened: %s" % spider.name)
 
 
-class ScraperDownloaderMiddleware:
+# NOTE: I have no idea why this isn't getting loaded properly :']
+class ScraperDownloaderMiddleware(downloadermiddlewares.DownloaderMiddleware):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
@@ -72,6 +80,10 @@ class ScraperDownloaderMiddleware:
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader
         # middleware.
+        debug_logger(
+            header_text=ScraperDownloaderMiddleware.process_request.__name__,
+            variables=[request],
+        )
 
         # Must either:
         # - return None: continue processing this request
@@ -83,6 +95,10 @@ class ScraperDownloaderMiddleware:
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
+        debug_logger(
+            header_text=ScraperDownloaderMiddleware.process_response.__name__,
+            variables=[request, response],
+        )
 
         # Must either;
         # - return a Response object
@@ -102,3 +118,14 @@ class ScraperDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info("Spider opened: %s" % spider.name)
+
+
+def debug_logger(
+    *, header_text: str, variables: list = [], width: int = 200  # force formatting
+):
+    logger.info(f" {header_text} ".center(width, "="))
+    for var in variables:
+        # prettyprint(var, indent=4, width=width, sort_dicts=True)
+        inspect(var, dunder=True, methods=True)
+    if len(variables) > 0:
+        logger.info("=" * width)
