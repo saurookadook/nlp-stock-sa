@@ -1,20 +1,11 @@
 import arrow
 import json
 import logging
-import nltk
-import re
-import scrapy
 import scrapy_splash
 import sys
 import uuid
-from bs4 import BeautifulSoup
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
-from nltk.corpus import stopwords
-from nltk.tokenize import PunktSentenceTokenizer
 from pathlib import Path
-from pprint import pprint as prettyprint
-from rich import inspect
+from rich import inspect, pretty
 from sqlalchemy import select
 
 from nlp_ssa.config.logging import ExtendedLogger
@@ -23,34 +14,14 @@ from nlp_ssa.models.article_data import ArticleDataFacade, ArticleDataDB
 from nlp_ssa.models.stock import StockDB
 from nlp_ssa.models.sentiment_analysis import SentimentAnalysisDB
 from scraper.items import ScraperItem
-
-nltk.download("punkt")
-nltk.download("stopwords")
-nltk.download("wordnet")
+from scraper.spiders.base_spider import BaseSpider
 
 logger: ExtendedLogger = logging.getLogger(__file__)
 
 
-class NewsSpider(scrapy.Spider):
+class NewsSpider(BaseSpider):
     name = "news"
-    article_data_facade = ArticleDataFacade(db_session=db_session)
     base_url = "https://finance.yahoo.com"
-    custom_settings = {
-        "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15",
-        "DOWNLOAD_DELAY": 2,
-    }
-    stock_slugs = []
-    lemmatizer = WordNetLemmatizer()
-    tokenizer = PunktSentenceTokenizer()
-
-    def preprocess(self, documents):
-        """
-        Preprocesses a list of text documents by cleaning each one.
-        """
-        preprocessed_docs = []
-        for doc in documents:
-            preprocessed_docs.append(self.clean(doc))
-        return preprocessed_docs
 
     def start_requests(self):
         # all_article_data = select(ArticleDataDB).where(ArticleDataDB.title == "")
@@ -87,7 +58,7 @@ class NewsSpider(scrapy.Spider):
         self._debug_logger(
             header_text="news_item_configs", variables=[news_item_configs]
         )
-        for item_config in news_item_configs:
+        for item_config in news_item_configs[0:1]:
             self._debug_logger(header_text="item_config", variables=[item_config])
             yield scrapy_splash.SplashRequest(
                 url=item_config["url"],
@@ -98,7 +69,7 @@ class NewsSpider(scrapy.Spider):
                     thumbnail_url=item_config["thumbnail_url"],
                 ),
                 args={
-                    "wait": 2,
+                    "wait": 4,
                     # set rendering arguments here
                     "html": 1,
                     "png": 1,
@@ -130,9 +101,7 @@ class NewsSpider(scrapy.Spider):
         if not article_content:
             return
 
-        soup = BeautifulSoup(article_content, "html.parser")
-        raw_text = soup.get_text()
-        cleaned_text = self.clean(raw_text)
+        raw_text, cleaned_text = self.get_cleaned_text(article_content)
         source_group_id = uuid.uuid4()
 
         self._debug_logger(
@@ -175,7 +144,7 @@ class NewsSpider(scrapy.Spider):
             # logger.log_info_centered(" AFTER COMMIT ")
             # inspect(article_data_record)
         except Exception as e:
-            logger.error(e, file=sys.stderr)
+            self._handle_parse_method_exception(logger, source_url, e)
 
         item = ScraperItem()
         item["Sentence"] = cleaned_text
@@ -183,6 +152,7 @@ class NewsSpider(scrapy.Spider):
 
         yield item
 
+    # NOTE: can potentially remove this
     def update_metadata_from_page(self, response, current_ad, stock_slug):
         article_content = response.css("div.morpheusGridBody div.caas-body").get()
         if not article_content:
@@ -224,49 +194,38 @@ class NewsSpider(scrapy.Spider):
 
         yield item
 
-    def clean(self, text):
-        """
-        Cleans text by:
-        - Removing URLs
-        - Converting text to lowercase
-        - Removing punctuation
-        - Removing stopwords
-        - Lemmatizing words
-        """
-        text = re.sub(r"http\S+", "", text)  # Remove URLs
-        text = text.lower()  # Convert to lowercase
-        text = re.sub(r"[^a-zA-Z0-9]", " ", text)  # Remove punctuation
-
-        text = self.tokenizer.tokenize(text)
-        stops = set(stopwords.words("english"))
-        text = [word for word in text if word not in stops]  # Remove stopwords
-        text = [self.lemmatizer.lemmatize(word=word_1) for word_1 in text]  # Lemmatize
-        return text
-
     def _get_non_ad_news_items_from_response(self, response):
         news_items = response.css("div.news-stream .stream-item")
 
         news_item_configs = []
         for item in news_items:
             item_link = item.css("a::attr(href)").get()
-            if item_link is None:
+            if (
+                item_link is None
+                or not item_link.startswith("/")
+                or "finance.yahoo.com" not in item_link
+            ):
                 logger.warning(f" WARNING: Skipping item: {item} ")
                 continue
 
+            trimmed_link = self._trim_query_params(item_link)
+            item_url = (
+                self.base_url + trimmed_link
+                if trimmed_link.startswith("/")
+                else trimmed_link
+            )
             item_thumbnail = item.css("img::attr(src)").get()
             # self._debug_logger(
             #     header_text="news_item", variables=[item, item_link, item_thumbnail]
             # )
             # logger.debug(f"item_link: '{item_link}'")
             # logger.debug(f"item_thumbnail: '{item_thumbnail}'")
-            if item_link.startswith("/"):
-                news_item_configs.append(
-                    dict(url=self.base_url + item_link, thumbnail_url=item_thumbnail)
+            news_item_configs.append(
+                dict(
+                    url=item_url,
+                    thumbnail_url=item_thumbnail,
                 )
-            elif "finance.yahoo.com" in item_link:
-                news_item_configs.append(
-                    dict(url=item_link, thumbnail_url=item_thumbnail)
-                )
+            )
 
         return news_item_configs
 
@@ -298,12 +257,3 @@ class NewsSpider(scrapy.Spider):
             self._debug_logger(header_text="Error getting metadata", variables=[e])
 
         return metadata_dict
-
-    def _debug_logger(
-        self, *, header_text: str, variables: list = [], width: int = 200
-    ):
-        print(f" {header_text} ".center(width, "="))
-        for var in variables:
-            prettyprint(var, indent=4, width=width, sort_dicts=True)
-        if len(variables) > 0:
-            print("=" * width)
