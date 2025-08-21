@@ -56,7 +56,6 @@ def get_fields_from_polarity_scores(
         `polarity_scores_dict`: Dictionary of polarity scores returned from the \
             `SentimentIntensityAnalyzer.polarity_scores` instance method
     """
-    score = 0
     sentiment = SentimentEnum.COMPOUND
 
     compound_score = polarity_scores_dict.get("compound")
@@ -68,7 +67,7 @@ def get_fields_from_polarity_scores(
     elif compound_score <= -0.05:
         sentiment = SentimentEnum.NEGATIVE
     else:
-        logger.warn(
+        logger.warning(
             f"get_fields_from_polarity_scores: Somethin's borked up with this compound_score '{compound_score}'"
         )
 
