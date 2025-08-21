@@ -19,7 +19,7 @@ from scraper.spiders.base_spider import BaseSpider
 logger: ExtendedLogger = logging.getLogger(__file__)
 
 
-class NewsSpider(BaseSpider):
+class YahooNewsSpider(BaseSpider):
     name = "news"
     base_url = "https://finance.yahoo.com"
 
