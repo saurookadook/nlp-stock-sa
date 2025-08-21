@@ -62,20 +62,17 @@ def get_fields_from_polarity_scores(
     compound_score = polarity_scores_dict.get("compound")
 
     if compound_score >= 0.05:
-        score = polarity_scores_dict.get("pos")
         sentiment = SentimentEnum.POSITIVE
     elif compound_score > -0.05 and compound_score < 0.05:
-        score = polarity_scores_dict.get("neu")
         sentiment = SentimentEnum.NEUTRAL
     elif compound_score <= -0.05:
-        score = polarity_scores_dict.get("neg")
         sentiment = SentimentEnum.NEGATIVE
     else:
         logger.warn(
             f"get_fields_from_polarity_scores: Somethin's borked up with this compound_score '{compound_score}'"
         )
 
-    return float(score), sentiment
+    return float(compound_score), sentiment
 
 
 def get_scores_and_create_rows(
