@@ -53,15 +53,19 @@ class BaseSpider(scrapy.Spider):
         - Removing stopwords
         - Lemmatizing words
         """
-        text = re.sub(r"http\S+", "", text)  # Remove URLs
-        text = text.lower()  # Convert to lowercase
-        text = re.sub(r"[^a-zA-Z0-9]", " ", text)  # Remove punctuation
+        cleaned_text = re.sub(r"http\S+", "", text)  # Remove URLs
+        cleaned_text = cleaned_text.lower()  # Convert to lowercase
+        cleaned_text = re.sub(r"[^a-zA-Z0-9]", " ", cleaned_text)  # Remove punctuation
 
-        text = self.tokenizer.tokenize(text)
+        cleaned_text = self.tokenizer.tokenize(cleaned_text)
         stops = set(stopwords.words("english"))
-        text = [word for word in text if word not in stops]  # Remove stopwords
-        text = [self.lemmatizer.lemmatize(word=word_1) for word_1 in text]  # Lemmatize
-        return text
+        cleaned_text = [
+            word for word in cleaned_text if word not in stops
+        ]  # Remove stopwords
+        cleaned_text = [
+            self.lemmatizer.lemmatize(word=word_1) for word_1 in cleaned_text
+        ]  # Lemmatize
+        return cleaned_text
 
     def get_raw_and_cleaned_text(self, content):
         soup = BeautifulSoup(content, "html.parser")
