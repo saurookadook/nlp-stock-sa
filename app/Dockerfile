@@ -1,33 +1,40 @@
-FROM node:18-bullseye AS frontend-dev
-ENV YARN_VERSION 4.1.1
-ENV NODE_ENV development
-ENV NODE_ENV $NODE_ENV
+FROM node:18-bullseye AS frontend-packages-dev
+ARG NODE_ENV=development
+ENV NODE_ENV=$NODE_ENV
+ENV YARN_VERSION=4.1.1
+ENV yarn='corepack yarn'
 EXPOSE 8080 9229
-WORKDIR /frontend
-COPY ./app/.yarn /frontend/.yarn
-COPY ./app/src/client /frontend/src/client
-COPY ./app/src/server /frontend/src/server
-COPY ./app/src/types /frontend/src/types
-COPY ./app/.yarnrc.yml /frontend/.yarnrc.yml
-COPY ./app/customTSNodeLoader.js /frontend/customTSNodeLoader.js
-COPY ./app/package.json /frontend/package.json
-COPY ./app/tsconfig.json /frontend/tsconfig.json
-COPY ./app/webpack.config.js /frontend/webpack.config.js
-COPY ./app/yarn.lock /frontend/yarn.lock
+WORKDIR /opt/nlpssa-frontend/
+COPY ./app/.yarn ./.yarn
+COPY ./app/src/client ./src/client
+COPY ./app/src/server ./src/server
+COPY ./app/src/types ./src/types
+COPY ./app/.yarnrc.yml ./.yarnrc.yml
+COPY ./app/customTSNodeLoader.js ./customTSNodeLoader.js
+COPY ./app/package.json ./package.json
+COPY ./app/tsconfig.json ./tsconfig.json
+COPY ./app/webpack.config.js ./webpack.config.js
+COPY ./app/yarn.lock ./yarn.lock
 RUN corepack enable
-RUN yarn install && yarn build:dev
-CMD corepack enable && yarn serve
+RUN corepack use yarn@$YARN_VERSION
+RUN $yarn install
+RUN $yarn build:dev
 
-FROM frontend-packages-dev AS frontend-test
-COPY ./app/client ./client
+FROM frontend-packages-dev AS frontend-dev
+ENTRYPOINT [ "corepack", "yarn" ]
+CMD [ "serve" ]
 
 FROM node:18-bullseye AS frontend-packages-release
-ENV NODE_ENV production
+ARG NODE_ENV=production
+ENV NODE_ENV=$NODE_ENV
+ENV YARN_VERSION=4.1.1
+ENV yarn='corepack yarn'
 WORKDIR /opt/nlpssa-frontend
 COPY ./.yarnrc.yml .yarnrc.yml
 COPY ./package.json package.json
 COPY ./yarn.lock yarn.lock
 RUN corepack enable
+RUN corepack use yarn@$YARN_VERSION
 RUN yarn install --production=false
 
 FROM frontend-packages-release AS frontend-release

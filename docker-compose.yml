@@ -30,13 +30,13 @@ services:
       - db_volume:/var/lib/postgresql/data
 
   frontend:
-    env_file: .env
-    environment:
-      EXAMPLE: woof
     build:
       context: .
       dockerfile: app/Dockerfile
       target: frontend-dev
+    env_file: .env
+    environment:
+      EXAMPLE: woof
     networks:
       - main_app
     platform: linux/amd64
@@ -44,7 +44,16 @@ services:
       - "8080:8080"
       - "9229:9229"
     volumes:
-      - ./app:/opt/nlpssa-frontend
+      - ./app/.yarn:/opt/nlpssa-frontend/.yarn
+      - ./app/src/client:/opt/nlpssa-frontend/src/client
+      - ./app/src/server:/opt/nlpssa-frontend/src/server
+      - ./app/src/types:/opt/nlpssa-frontend/src/types
+      - ./app/.yarn.yml:/opt/nlpssa-frontend/.yarn.yml
+      - ./app/customTSNodeLoader.js:/opt/nlpssa-frontend/customTSNodeLoader.js
+      - ./app/package.json:/opt/nlpssa-frontend/package.json
+      - ./app/tsconfig.json:/opt/nlpssa-frontend/tsconfig.json
+      - ./app/webpack.config.js:/opt/nlpssa-frontend/webpack.config.js
+      - ./app/yarn.lock:/opt/nlpssa-frontend/yarn.lock
       - /opt/nlpssa-frontend/node_modules
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
@@ -66,10 +75,10 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./app/dist/:/etc/nginx/html/
       - ./nginx-reverse-proxy/conf/:/etc/nginx/conf.d/:ro
-      - ./nginx-reverse-proxy/certs:/etc/nginx/certs
-    command: [ "nginx", "-g", "daemon off;" ]
+      - ./nginx-reverse-proxy/certs/:/etc/nginx/ssl/:ro
+      # Assets to be served by NGINX
+      - ./app/dist/:/etc/nginx/html/
 
   server:
     depends_on:
