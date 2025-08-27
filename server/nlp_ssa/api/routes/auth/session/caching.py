@@ -3,12 +3,13 @@ import logging
 from pymemcache import Client
 from pymemcache.client.retrying import RetryingClient
 from pymemcache.exceptions import MemcacheUnexpectedCloseError
+from rich import inspect, pretty
 from typing import Dict, Union
 
 from config import env_vars
 from config.logging import ExtendedLogger, configure_logging
 
-configure_logging(__file__)
+
 logger: ExtendedLogger = logging.getLogger(__file__)
 
 base_client = Client(
@@ -82,6 +83,7 @@ def get_or_set_user_session_cache(
     *, cache_key: str, details: Dict[str, Union[str, bool, int, float]]
 ):
     logger.debug(" get_or_set_user_session_cache ".center(120, "="))
+    pretty.pprint({"cache_key": cache_key, "details": details}, expand_all=True)
 
     cache_value = safe_get_from_session_cache(cache_key=cache_key)
 

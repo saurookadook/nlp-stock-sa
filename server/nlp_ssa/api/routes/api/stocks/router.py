@@ -7,7 +7,7 @@ from api.routes.api.stocks.models import AllStocksResponse, SingularStockRespons
 from config.logging import ExtendedLogger, configure_logging
 from db import db_session
 
-configure_logging(__file__)
+
 logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 

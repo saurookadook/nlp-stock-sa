@@ -12,11 +12,10 @@ from api.routes.api.article_data.route_handlers import (
 )
 from api.routes.auth.session.caching import build_cache_key, safe_get_from_session_cache
 from config import env_vars
-from config.logging import ExtendedLogger, configure_logging
+from config.logging import ExtendedLogger
 from db import db_session
 
 
-configure_logging(__file__)
 logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 

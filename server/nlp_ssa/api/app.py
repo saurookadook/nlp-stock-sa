@@ -16,6 +16,7 @@ from api.routes.auth.login import router as login
 from config import env_config
 from config.logging import ExtendedLogger, configure_logging
 
+
 configure_logging(app_name=__file__)
 logger: ExtendedLogger = logging.getLogger(__file__)
 

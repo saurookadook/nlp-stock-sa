@@ -18,9 +18,9 @@ window_width = (
     raw_window_width - 120
 )  # to account for characters added by logging handlers
 
-print("=" * 100)
+print("=" * raw_window_width)
 print(f"raw_window_width: {raw_window_width}  ||  window_width: {window_width}")
-print("=" * 100, end="\n\n")
+print("=" * raw_window_width, end="\n\n")
 
 
 class LogLevelEnum(Enum):

@@ -6,11 +6,10 @@ from api.routes.api.sentiment_analyses.route_handlers import (
     get_all_sentiment_analyses_by_stock_slug,
 )
 from config import env_vars
-from config.logging import ExtendedLogger, configure_logging
+from config.logging import ExtendedLogger
 from db import db_session
 
 
-configure_logging(__file__)
 logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 

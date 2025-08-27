@@ -5,7 +5,7 @@ from sqlalchemy import select
 from config.logging import ExtendedLogger, configure_logging
 from db import db_session
 
-configure_logging(app_name=__file__)
+
 logger = logging.getLogger(__file__)
 router = APIRouter()
 
