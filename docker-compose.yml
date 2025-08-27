@@ -86,7 +86,9 @@ services:
       - session-cache
     env_file: .env
     environment:
-      EXAMPLE: woof
+      COLUMNS: ${COLUMNS}
+      HOST: ${HOST}
+      PORT: ${PORT}
       WORKERS: 1
     build:
       context: .

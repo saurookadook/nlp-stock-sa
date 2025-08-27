@@ -6,6 +6,22 @@ from config import env_vars
 
 BaseLoggerClass = logging.getLoggerClass()
 
+try:
+    import os
+    import shutil
+
+    raw_window_width, _ = shutil.get_terminal_size()
+except OSError:
+    raw_window_width = 200
+
+window_width = (
+    raw_window_width - 120
+)  # to account for characters added by logging handlers
+
+print("=" * 100)
+print(f"raw_window_width: {raw_window_width}  ||  window_width: {window_width}")
+print("=" * 100, end="\n\n")
+
 
 class LogLevelEnum(Enum):
 
@@ -25,16 +41,8 @@ class ExtendedLogger(BaseLoggerClass):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        try:
-            import os
-
-            raw_window_width, _ = os.get_terminal_size()
-        except OSError:
-            raw_window_width = 200
         self.raw_window_width = raw_window_width
-        self.window_width = (
-            raw_window_width - 120
-        )  # to account for characters added by logging handlers
+        self.window_width = raw_window_width
 
     # TODO: type annotation for "int in this Enum"?
     def log_centered(self, log_level: int, msg: str, *args, **kwargs):
@@ -123,11 +131,13 @@ def configure_logging(app_name: str):
         )
 
     root_logger.setLevel(getattr(logging, env_vars.LOG_LEVEL.upper()))
-    console_handler.setFormatter(
-        logging.Formatter(
-            "{asctime} [{name}: {lineno}] [{levelname}]: {message}", style="{"
-        )
+
+    format_str = (
+        "{asctime} [{name}: {lineno}] [{levelname:<10s}]: {message:<"
+        + str(window_width)
+        + "s}"
     )
+    console_handler.setFormatter(logging.Formatter(format_str, style="{"))
     root_logger.addHandler(console_handler)
 
     # from rich import inspect

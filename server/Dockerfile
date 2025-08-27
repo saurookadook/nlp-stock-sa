@@ -39,6 +39,8 @@ COPY --from=install-dev /opt/.venv /opt/.venv
 FROM dev-base AS server-dev
 ARG HOST
 ARG PORT
+# ENV PYTHONUNBUFFERED 1
+ENV FORCE_COLOR 1
 # TODO: figure out why $HOST and $PORT aren't getting interpolated correctly
 EXPOSE 3000
 CMD ["uvicorn", "nlp_ssa.api.app:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]
