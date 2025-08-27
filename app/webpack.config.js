@@ -47,6 +47,7 @@ const buildConfig = (env, argv) => ({
         login: ['@babel/polyfill', path.resolve(__dirname, 'src/client/login/entry.tsx')],
     },
     output: {
+        clean: true,
         filename: '[name]-[chunkhash].min.js',
         path: path.resolve(__dirname, 'dist/bundles'),
         publicPath: '/',
