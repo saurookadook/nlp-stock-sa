@@ -39,7 +39,7 @@ COPY --from=install-dev /opt/.venv /opt/.venv
 FROM dev-base AS server-dev
 ARG HOST
 ARG PORT
-# ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED=1
 ENV FORCE_COLOR=1
 # TODO: figure out why $HOST and $PORT aren't getting interpolated correctly
 EXPOSE 3000

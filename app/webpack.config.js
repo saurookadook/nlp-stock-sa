@@ -15,7 +15,8 @@ const babelOptions = {
 
 const buildConfig = (env, argv) => ({
     context: path.resolve(__dirname),
-    devtool: 'inline-source-map',
+    devtool: 'eval-source-map',
+    // devtool: 'inline-source-map',
     // devServer: {
     //     host: 'localhost',
     //     open: true,
