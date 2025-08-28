@@ -10,6 +10,8 @@ const router = express.Router();
 //     'Content-Type': 'application/json',
 // });
 
+// TODO: I _really_ need to DRY this whole thing up @_@
+
 router.use(
     '/article-data/:stockSlug',
     asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
@@ -23,7 +25,11 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data/${stockSlug}`);
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data/${stockSlug}`, {
+                headers: {
+                    Cookie: req.headers.cookie || '',
+                },
+            });
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -34,6 +40,14 @@ router.use(
         } catch (e) {
             console.warn(`[article-data by stock route] - caught exception:`);
             console.warn(e);
+        }
+
+        if (res.locals.user != null) {
+            Object.assign(initialPageData, {
+                user: {
+                    ...res.locals.user,
+                },
+            });
         }
 
         try {
@@ -62,7 +76,11 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data`);
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data`, {
+                headers: {
+                    Cookie: req.headers.cookie || '',
+                },
+            });
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -73,6 +91,14 @@ router.use(
         } catch (e) {
             console.warn(`[article-data list route] - caught exception:`);
             console.warn(e);
+        }
+
+        if (res.locals.user != null) {
+            Object.assign(initialPageData, {
+                user: {
+                    ...res.locals.user,
+                },
+            });
         }
 
         try {
@@ -102,7 +128,11 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await fetch(`${baseRequestURL}/api/sentiment-analyses/${stockSlug}`);
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/sentiment-analyses/${stockSlug}`, {
+                headers: {
+                    Cookie: req.headers.cookie || '',
+                },
+            });
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -113,6 +143,14 @@ router.use(
         } catch (e) {
             console.warn(`[sentiment-analyses by stock route] - caught exception:`);
             console.warn(e);
+        }
+
+        if (res.locals.user != null) {
+            Object.assign(initialPageData, {
+                user: {
+                    ...res.locals.user,
+                },
+            });
         }
 
         try {
@@ -145,7 +183,11 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks/${stockSlug}`);
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks/${stockSlug}`, {
+                headers: {
+                    Cookie: req.headers.cookie || '',
+                },
+            });
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -156,6 +198,14 @@ router.use(
         } catch (e) {
             console.warn(`[data-explorers - single stock view] - caught exception:`);
             console.warn(e);
+        }
+
+        if (res.locals.user != null) {
+            Object.assign(initialPageData, {
+                user: {
+                    ...res.locals.user,
+                },
+            });
         }
 
         try {
@@ -184,7 +234,11 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks`);
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks`, {
+                headers: {
+                    Cookie: req.headers.cookie || '',
+                },
+            });
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -195,6 +249,14 @@ router.use(
         } catch (e) {
             console.warn(`[data-explorers - stocks list] - caught exception:`);
             console.warn(e);
+        }
+
+        if (res.locals.user != null) {
+            Object.assign(initialPageData, {
+                user: {
+                    ...res.locals.user,
+                },
+            });
         }
 
         try {
@@ -223,7 +285,11 @@ router.use(
 
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks`);
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks`, {
+                headers: {
+                    Cookie: req.headers.cookie || '',
+                },
+            });
 
             if (pageDataResponse.status >= 400) {
                 const errorMessage = await pageDataResponse.text();
@@ -234,6 +300,14 @@ router.use(
         } catch (e) {
             console.warn(`[data-explorers - explorers list] - caught exception:`);
             console.warn(e);
+        }
+
+        if (res.locals.user != null) {
+            Object.assign(initialPageData, {
+                user: {
+                    ...res.locals.user,
+                },
+            });
         }
 
         try {

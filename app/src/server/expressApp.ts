@@ -1,16 +1,16 @@
-import path from 'path';
-
+import path from 'node:path';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { RequestHandler } from 'express';
 import { engine } from 'express-handlebars';
 
+import accountRouter from './account';
 import dataExplorersRouter from './data-explorers';
 import homeRouter from './home';
 import loginRouter from './login';
-import { manifestMiddleware } from './middleware';
+import { manifestMiddleware, sessionMiddleware } from './middleware';
 
 const __dirname = path.resolve();
-// console.log('\n'.padStart(220, '='), `dirname: ${__dirname}`, '\n'.padEnd(220, '='));
 
 const expressApp = express();
 
@@ -23,6 +23,7 @@ expressApp.engine(
 );
 expressApp.set('views', path.join(__dirname, 'src/server/views'));
 
+expressApp.use(cookieParser() as RequestHandler);
 // Enable cors to be able to reach the backend on localhost:3000 while running React.js in dev mode on localhost:8081
 // You might want to disbale this on production.
 expressApp.use(cors());
@@ -42,6 +43,7 @@ expressApp.use(express.json() as RequestHandler);
 //     }
 // });
 
+expressApp.use(sessionMiddleware);
 expressApp.use(manifestMiddleware);
 
 if (process.env.ENV !== 'production') {
@@ -53,7 +55,8 @@ if (process.env.ENV !== 'production') {
 }
 
 expressApp.use('/app/data-explorers', dataExplorersRouter);
-expressApp.use('/app/login/*', loginRouter);
+expressApp.use('/app/account', accountRouter);
+expressApp.use('/app/login', loginRouter);
 expressApp.use('/app/', homeRouter);
 
 export default expressApp;

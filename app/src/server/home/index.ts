@@ -10,7 +10,11 @@ router.use(
         let initialPageData = {};
         try {
             // TODO: add some user-specific thing to request?
-            const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data`);
+            const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data`, {
+                headers: {
+                    Cookie: req.headers.cookie || '',
+                },
+            });
             initialPageData = await pageDataResponse.json();
         } catch (e) {
             console.warn(`[home route] - caught exception: ${e}`);
@@ -22,6 +26,14 @@ router.use(
         //     { localsManifest: res.locals.manifest },
         //     '\n'.padEnd(220, '='),
         // );
+
+        if (res.locals.user != null) {
+            Object.assign(initialPageData, {
+                user: {
+                    ...res.locals.user,
+                },
+            });
+        }
 
         try {
             return res.render('index', {
