@@ -44,7 +44,7 @@ def safe_get_from_session_cache(*, cache_key: str):
     logger.debug(cached_value)
 
     if not cached_value:
-        logger.warning(f"No value found for '{cache_key}' in session cache")
+        logger.debug(f"No value found for '{cache_key}' in session cache")
         return None
 
     try:
@@ -80,14 +80,16 @@ def safe_set_in_session_cache(
 
 
 def get_or_set_user_session_cache(
-    *, cache_key: str, details: Dict[str, Union[str, bool, int, float]]
+    *,
+    cache_key: str,
+    details: Dict[str, Union[str, bool, int, float]] = None,
 ):
     logger.debug(" get_or_set_user_session_cache ".center(120, "="))
     pretty.pprint({"cache_key": cache_key, "details": details}, expand_all=True)
 
     cache_value = safe_get_from_session_cache(cache_key=cache_key)
 
-    if not cache_value:
+    if not cache_value and details is not None:
         cache_value = safe_set_in_session_cache(cache_key=cache_key, details=details)
 
     logger.debug("=" * 100)

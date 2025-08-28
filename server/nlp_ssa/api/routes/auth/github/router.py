@@ -6,8 +6,7 @@ from fastapi.responses import RedirectResponse
 from typing import Dict
 from urllib import parse
 
-from pprint import pprint as prettyprint
-from rich import inspect
+from rich import inspect, pretty
 
 # TODO: remove
 from api.routes.auth.session.caching import (
@@ -54,19 +53,26 @@ def get_auth_info_from_github(request: Request):
 
     # example 'token_data' shape:
     # {
-    #     'access_token': 'ghu_KC1E4TezUCrudeKxQm7tMu7Nsfq8k21JjQ0r',
+    #     'access_token': 'ghu_<shorter token>',
     #     'expires_in': 28800,
     #     'refresh_token':
-    #     'ghr_5zHgUi6Z6Vz9NwsjqbY70SRfFe1bYnjtPoucXMtrcJujfyU9mrV6hFSO'+20,
+    #     'ghr_<big long token>',
     #     'refresh_token_expires_in': 15897600,
     #     'token_type': 'bearer',
     #     'scope': ''
     # }
 
     if token := token_data.get("access_token"):
-        print("=" * 100)
-        print(f"token: {token}")
-        print("=" * 100, end="\n\n")
+        print("-" * 160)
+        pretty.pprint(
+            {
+                "name": "get_auth_info_from_github",
+                "req_query_params": request.query_params,
+                "token": token,
+            },
+            expand_all=True,
+        )
+        print("-" * 160, end="\n\n")
     else:
         raise Exception("get_user_info_from_github: no token!!! :o")
 
@@ -93,9 +99,28 @@ def get_auth_info_from_github(request: Request):
 
 # TODO: better name...?
 def create_or_update_user_session(
-    request: Request, auth_info: Dict = Depends(get_auth_info_from_github)
+    request: Request,  # force formatting
 ):
     user_session_key = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
+    session_cookie_config = dict(
+        key=env_vars.AUTH_COOKIE_KEY,
+        value=user_session_key,
+        max_age=ONE_DAY_IN_SECONDS,
+        domain=env_vars.BASE_DOMAIN,
+        httponly=True,
+        # samesite='strict'
+    )
+
+    user_session_from_cache = get_or_set_user_session_cache(
+        cache_key=build_cache_key(entity_key=user_session_key)
+    )
+
+    if user_session_from_cache:
+        logger.debug(f"WOOOOO USER SESSION FROM CACHE!!!")
+        logger.debug(inspect(user_session_from_cache))
+        return session_cookie_config
+
+    auth_info = get_auth_info_from_github(request)
 
     token_data = auth_info.get("token_data")
     user_info = auth_info.get("user_info")
