@@ -66,10 +66,20 @@ interface FinalReducers {
 }
 
 /**********************************************************************
+ * Users
+ **********************************************************************/
+type UserData = {
+    firstName?: string;
+    lastName?: string;
+    username: string;
+};
+
+/**********************************************************************
  * Home
  **********************************************************************/
 type HomeStore = {
-    pageData: GroupedArticleData[] | null;
+    pageData: NullableValue<GroupedArticleData[]>;
+    user: NullableValue<UserData>;
 };
 
 /**********************************************************************

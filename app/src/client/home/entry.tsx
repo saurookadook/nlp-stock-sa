@@ -16,9 +16,15 @@ window.renderApp = async (initialPageData) => {
     });
 
     root.render(
-        <AppStateProvider initialState={{ pageData: initialPageData.data }}>
+        <AppStateProvider
+            initialState={{
+                pageData: initialPageData.data,
+                user: initialPageData.user,
+            }}
+        >
             <ChakraProvider theme={theme}>
                 <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+
                 <HomeApp />
             </ChakraProvider>
         </AppStateProvider>,
