@@ -236,6 +236,7 @@ type DataExplorersStore = {
     sentimentAnalysesBySlug: SentimentAnalysesBySlugStateSlice;
     stockDataAll: StockDataAllStateSlice;
     stockDataSingular: StockDataSingularStateSlice;
+    user: UserData;
 };
 
 /**********************************************************************

@@ -14,7 +14,10 @@ function BaseDataExplorer({
     console.log('data-explorers - BaseDataExplorer', { initialPageData });
 
     return (
-        <BasePage pageTitle={`Data Explorers: <something-dynamic-here>`}>
+        <BasePage // force formatting
+            pageTitle={`Data Explorers: <something-dynamic-here>`}
+            userData={initialPageData?.user}
+        >
             <AppStateProvider initialState={initialPageData}>
                 <RouterProvider router={browserRouter} />
             </AppStateProvider>
