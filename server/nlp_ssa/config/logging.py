@@ -133,7 +133,8 @@ def configure_logging(app_name: str):
     root_logger.setLevel(getattr(logging, env_vars.LOG_LEVEL.upper()))
 
     format_str = (
-        "{asctime} [{name}: {lineno}] [{levelname:<10s}]: {message:<"
+        # "{asctime} [{name}: {lineno}] [{levelname:<10s}]: {message:<"
+        "{asctime} [{name}: {lineno}]: {message:<"
         + str(window_width)
         + "s}"
     )

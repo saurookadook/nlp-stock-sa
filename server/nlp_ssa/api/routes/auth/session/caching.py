@@ -7,7 +7,7 @@ from rich import inspect, pretty
 from typing import Dict, Union
 
 from config import env_vars
-from config.logging import ExtendedLogger, configure_logging
+from config.logging import ExtendedLogger
 
 
 logger: ExtendedLogger = logging.getLogger(__file__)
