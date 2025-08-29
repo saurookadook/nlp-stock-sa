@@ -40,12 +40,13 @@ def upgrade() -> None:
         "user_sessions",
         sa.Column("id", sa.UUID(), nullable=False),
         sa.Column("user_id", sa.UUID(), nullable=False),
+        sa.Column("access_token", sa.String(), nullable=False, unique=True),
         sa.Column("auth_provider", auth_providers, nullable=False),
-        sa.Column("expires_in", db.db.ArrowDateClass(timezone=True), nullable=False),
+        sa.Column("expires_in", sa.INTEGER(), nullable=False),
         sa.Column("refresh_token", sa.String(), nullable=True),
         sa.Column(
-            "refresh_token_expres_in",
-            db.db.ArrowDateClass(timezone=True),
+            "refresh_token_expires_in",
+            sa.INTEGER(),
             nullable=True,
         ),
         sa.Column(

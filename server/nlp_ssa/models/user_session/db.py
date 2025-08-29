@@ -1,8 +1,7 @@
 import uuid
-from sqlalchemy import Column, ForeignKey, String
+from sqlalchemy import ForeignKey
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import List
 
 from constants.db_types import (
     AuthProviderEnum,
@@ -10,7 +9,7 @@ from constants.db_types import (
     TokenTypeEnum,
     TokenTypeEnumDB,
 )
-from db import ArrowDate, Base
+from db import Base
 from models.mixins import TimestampsDB
 
 
@@ -22,13 +21,14 @@ class UserSessionDB(Base, TimestampsDB):
     )
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     user: Mapped["UserDB"] = relationship(back_populates="user_sessions")
+    access_token: Mapped[str] = mapped_column(nullable=False, unique=True)
     auth_provider: Mapped[AuthProviderEnum] = mapped_column(
         AuthProviderEnumDB, nullable=False, unique=False
     )
-    expires_in = Column(ArrowDate(), nullable=False, unique=False)
+    expires_in: Mapped[int] = mapped_column(nullable=False, unique=False)
     # TODO: should this have some other validation? and/or encrypted somehow?
-    refresh_token: Mapped[str] = mapped_column(nullable=True, unique=True)
-    refresh_token_expres_in = Column(ArrowDate(), nullable=True, unique=False)
+    refresh_token: Mapped[str] = mapped_column(nullable=True)
+    refresh_token_expires_in: Mapped[int] = mapped_column(nullable=True, unique=False)
     token_type: Mapped[TokenTypeEnum] = mapped_column(
         TokenTypeEnumDB, nullable=False, unique=False
     )

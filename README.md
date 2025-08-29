@@ -186,7 +186,7 @@ _TODO_ 🫠
 Run current database migrations for test database:
 
 ```sh
-docker compose run -e DATABASE_NAME=test_the_money_maker server-migrations upgrade head
+docker compose run --rm --remove-orphans -e DATABASE_NAME=test_the_money_maker server-migrations upgrade head
 ```
 
 Run tests with:
