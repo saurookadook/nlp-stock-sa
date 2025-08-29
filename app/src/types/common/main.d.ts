@@ -75,11 +75,19 @@ type UserData = {
 };
 
 /**********************************************************************
+ * Account
+ **********************************************************************/
+type AccountStore = {
+    accountData: AmbiguousObject;
+    user: UserData;
+};
+
+/**********************************************************************
  * Home
  **********************************************************************/
 type HomeStore = {
-    pageData: NullableValue<GroupedArticleData[]>;
-    user: NullableValue<UserData>;
+    pageData: GroupedArticleData[];
+    user: UserData;
 };
 
 /**********************************************************************

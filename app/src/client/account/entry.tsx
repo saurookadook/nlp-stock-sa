@@ -2,10 +2,16 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
+import type { AccountStore, NullableValue, UserData } from '@nlpssa-app-types/common/main';
 import { AccountApp } from 'client/account/components';
+import { AppStateProvider } from 'client/account/store';
 // import reportWebVitals from 'client/reportWebVitals';
 
-window.renderApp = async (initialPageData) => {
+type AccountInitialPageData = {
+    user?: NullableValue<UserData>;
+};
+
+window.renderApp = async (initialPageData: AccountInitialPageData) => {
     const root = createRoot(document.getElementById('nlpssa-main'));
     console.log({ page: 'account', initialPageData });
 
@@ -15,11 +21,15 @@ window.renderApp = async (initialPageData) => {
     });
 
     root.render(
-        <ChakraProvider theme={theme}>
-            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <AppStateProvider // force formatting
+            initialState={{ user: initialPageData?.user } as AccountStore}
+        >
+            <ChakraProvider theme={theme}>
+                <ColorModeScript initialColorMode={theme.config.initialColorMode} />
 
-            <AccountApp initialPageData={initialPageData} />
-        </ChakraProvider>,
+                <AccountApp />
+            </ChakraProvider>
+        </AppStateProvider>,
     );
 };
 

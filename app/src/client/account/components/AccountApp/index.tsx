@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Center, Container, Spacer, Spinner } from '@chakra-ui/react';
 
-import type { AmbiguousObject, NullableValue, UserData } from '@nlpssa-app-types/common/main';
+import type { AccountStore, AmbiguousObject, NullableValue, UserData } from '@nlpssa-app-types/common/main';
 import { BasePage } from 'client/common/layouts';
+import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 
-type AccountAppProps = {
-    initialPageData: {
-        user?: NullableValue<UserData>;
-    };
-};
+function AccountApp(): React.ReactElement {
+    const state = useContext(BaseStateContext);
+    const dispatch = useContext(BaseDispatchContext);
 
-function AccountApp({ initialPageData }: AccountAppProps) {
-    console.log('account - AccountApp', { initialPageData });
+    const { accountData = { details: 'placeholder' }, user } = state as AccountStore;
 
-    const [accountData, setAccountData] = useState({ ...initialPageData } as AmbiguousObject);
+    console.log('account - AccountApp', { accountData, user });
 
     const isAccountDataLoaded = () => Object.keys(accountData).length > 0;
 
@@ -22,7 +20,7 @@ function AccountApp({ initialPageData }: AccountAppProps) {
             className="App"
             headingChildren={<Spacer />}
             pageTitle={<span>{`💸 Login 💸`}</span>}
-            userData={initialPageData?.user}
+            userData={user}
         >
             <Container className="home" margin="0 auto" maxWidth="40rem">
                 <Center
