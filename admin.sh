@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# -----------------------------------------------------------------------------
+#                           NOTES
+# At some point, I need to either clean this script up or rewrite it with a tool
+# like `click` in Python or `commander` in Node.js.
+# -----------------------------------------------------------------------------
+
 getDatabaseContainerID() {
     docker ps -qf name=database
 }
