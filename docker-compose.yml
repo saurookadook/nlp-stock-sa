@@ -103,10 +103,14 @@ services:
       - ./server:/opt/nlp-stock-sa/server
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
+  server-migrations:
+    build:
+      target: server-migrations
+    extends: server
+
   server-test:
     build:
       target: server-test
-    env_file: .env
     environment:
       DATABASE_NAME: test_the_money_maker
       ENV: test

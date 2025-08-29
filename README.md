@@ -85,13 +85,6 @@ Create `.env`:
 cp .env.example .env
 ```
 
-Make scripts for reverse proxy executable and run `install.sh`:
-
-```sh
-chmod +x nginx-reverse-proxy/generate-certs.sh nginx-reverse-proxy/install.sh nginx-reverse-proxy/uninstall.sh
-./nginx-reverse-proxy/install.sh
-```
-
 Initial install for frontend:
 
 ```sh
@@ -156,28 +149,30 @@ docker compose up scraper --build -d
 
 ### DB Migrations
 
+Database migrations are managed with [alembic](https://alembic.sqlalchemy.org/).
+
 Run current database migrations:
 
 ```sh
-docker compose run --rm server alembic upgrade head
+docker compose run --rm server-migrations upgrade head
 ```
 
 Reset to base version
 
 ```sh
-docker compose run --rm server alembic downgrade
+docker compose run --rm server-migrations downgrade
 ```
 
 Run revisions:
 
 ```sh
-docker compose run --rm server alembic revision -m "some migration message"
+docker compose run --rm server-migrations revision -m "some migration message"
 ```
 
 Autogenerate revisions:
 
 ```sh
-docker compose run --rm server alembic revision --autogenerate -m "some migration message"
+docker compose run --rm server-migrations revision --autogenerate -m "some migration message"
 ```
 
 ### Frontend
@@ -191,19 +186,19 @@ _TODO_ 🫠
 Run current database migrations for test database:
 
 ```sh
-docker compose run -e DATABASE_NAME=test_the_money_maker server alembic upgrade head
+docker compose run -e DATABASE_NAME=test_the_money_maker server-migrations upgrade head
 ```
 
 Run tests with:
 
 ```sh
-docker compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server python -m pytest -s --import-mode=append
+docker compose run --rm --remove-orphans server-test
 ```
 
 Or run in watch mode:
 
 ```sh
-docker compose run -e DATABASE_NAME=test_the_money_maker -e ENV=test --rm server pytest-watch
+docker compose run --rm --remove-orphans server-test pytest-watch
 ```
 
 ---

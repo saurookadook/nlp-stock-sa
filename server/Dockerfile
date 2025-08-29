@@ -43,16 +43,23 @@ ENV PYTHONUNBUFFERED=1
 ENV FORCE_COLOR=1
 # TODO: figure out why $HOST and $PORT aren't getting interpolated correctly
 EXPOSE 3000
-ENTRYPOINT ["uvicorn", "nlp_ssa.api.app:app" ]
+ENTRYPOINT [ "uvicorn", "nlp_ssa.api.app:app" ]
 CMD [ "--host", "0.0.0.0", "--port", "3000", "--reload" ]
+
+FROM dev-base AS server-migrations
+ARG HOST
+ARG PORT
+ENV PYTHONUNBUFFERED=1
+ENV FORCE_COLOR=1
+ENTRYPOINT [ "alembic" ]
 
 FROM dev-base AS server-test
 ARG HOST
 ARG PORT
 ENV PYTHONUNBUFFERED=1
 ENV FORCE_COLOR=1
-ENTRYPOINT [ "python", "-m", "pytest" ]
-CMD [ "-s", "--import-mode=append" ]
+ENTRYPOINT [ "python" ]
+CMD [ "-m", "pytest", "-s", "--import-mode=append" ]
 
 FROM dev-base AS scraper-dev
 ENV PATH="$venv/bin:$PATH"
