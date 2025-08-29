@@ -26,9 +26,7 @@ router.use(
         try {
             // TODO: add some user-specific thing to request?
             const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data/${stockSlug}`, {
-                headers: {
-                    Cookie: req.headers.cookie || '',
-                },
+                headers: res.locals.apiHeaders,
             });
 
             if (pageDataResponse.status >= 400) {
@@ -77,9 +75,7 @@ router.use(
         try {
             // TODO: add some user-specific thing to request?
             const pageDataResponse = await fetch(`${baseRequestURL}/api/article-data`, {
-                headers: {
-                    Cookie: req.headers.cookie || '',
-                },
+                headers: res.locals.apiHeaders,
             });
 
             if (pageDataResponse.status >= 400) {
@@ -129,9 +125,7 @@ router.use(
         try {
             // TODO: add some user-specific thing to request?
             const pageDataResponse = await fetch(`${baseRequestURL}/api/sentiment-analyses/${stockSlug}`, {
-                headers: {
-                    Cookie: req.headers.cookie || '',
-                },
+                headers: res.locals.apiHeaders,
             });
 
             if (pageDataResponse.status >= 400) {
@@ -184,9 +178,7 @@ router.use(
         try {
             // TODO: add some user-specific thing to request?
             const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks/${stockSlug}`, {
-                headers: {
-                    Cookie: req.headers.cookie || '',
-                },
+                headers: res.locals.apiHeaders,
             });
 
             if (pageDataResponse.status >= 400) {
@@ -235,9 +227,7 @@ router.use(
         try {
             // TODO: add some user-specific thing to request?
             const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks`, {
-                headers: {
-                    Cookie: req.headers.cookie || '',
-                },
+                headers: res.locals.apiHeaders,
             });
 
             if (pageDataResponse.status >= 400) {
@@ -286,9 +276,7 @@ router.use(
         try {
             // TODO: add some user-specific thing to request?
             const pageDataResponse = await fetch(`${baseRequestURL}/api/stocks`, {
-                headers: {
-                    Cookie: req.headers.cookie || '',
-                },
+                headers: res.locals.apiHeaders,
             });
 
             if (pageDataResponse.status >= 400) {

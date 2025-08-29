@@ -24,9 +24,7 @@ router.use(
         try {
             // TODO: add some user-specific thing to request?
             const pageDataResponse = await fetch(`${baseRequestURL}/api/auth/login`, {
-                headers: {
-                    Cookie: req.headers.cookie || '',
-                },
+                headers: res.locals.apiHeaders,
             });
             initialPageData = await pageDataResponse.json();
         } catch (e) {

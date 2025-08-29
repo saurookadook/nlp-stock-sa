@@ -25,13 +25,18 @@ export function sessionMiddleware(
     if (authCookie != null) {
         const [username, token] = authCookie.split(':');
 
-        res.locals.auth = {
-            cookie: authCookie,
-            token,
-        };
-        res.locals.user = {
-            username,
-        };
+        Object.assign(res.locals, {
+            apiHeaders: new Headers({
+                Cookie: req.headers.cookie || '',
+            }),
+            auth: {
+                cookie: authCookie,
+                token,
+            },
+            user: {
+                username,
+            },
+        });
     }
 
     next();
