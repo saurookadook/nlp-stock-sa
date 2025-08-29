@@ -18,7 +18,7 @@ from config import env_config
 from config.logging import ExtendedLogger, configure_logging
 
 
-configure_logging(app_name=__file__)
+configure_logging(app_name="nlpssa-server-api")
 logger: ExtendedLogger = logging.getLogger(__file__)
 
 
