@@ -10,6 +10,7 @@ from models.mixins import TimestampsDB
 
 class UserDB(Base, TimestampsDB):
     from models.analysis_view import AnalysisViewDB
+    from models.user_session import UserSessionDB
 
     __tablename__ = "users"
 
@@ -30,3 +31,5 @@ class UserDB(Base, TimestampsDB):
     # https://docs.sqlalchemy.org/en/20/orm/examples.html#module-examples.generic_associations
     #####
     analysis_views: Mapped[List[AnalysisViewDB]] = relationship(back_populates="user")
+
+    user_sessions: Mapped[List[UserSessionDB]] = relationship(back_populates="user")
