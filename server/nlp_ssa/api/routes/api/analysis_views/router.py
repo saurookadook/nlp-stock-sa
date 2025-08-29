@@ -2,11 +2,11 @@ import logging
 from fastapi import APIRouter
 from sqlalchemy import select
 
-from config.logging import ExtendedLogger, configure_logging
+from config.logging import ExtendedLogger
 from db import db_session
 
-configure_logging(app_name=__file__)
-logger = logging.getLogger(__file__)
+
+logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 
 

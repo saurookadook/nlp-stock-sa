@@ -1,17 +1,24 @@
 import React from 'react';
-import { Box, Button, Heading, Spacer, useColorMode } from '@chakra-ui/react';
+import { Avatar, Box, Button, Heading, Spacer, useColorMode } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
+import type { NullableValue, UserData } from '@nlpssa-app-types/common/main';
 import { NavHeader } from 'client/common/components';
 
+type BasePageProps = React.PropsWithChildren<{
+    className?: string;
+    headingChildren?: React.ReactNode;
+    pageTitle?: string | JSX.Element;
+    userData?: NullableValue<UserData>;
+}>;
+
 function BasePage({
-    headingChildren, // force formatting
     children,
+    headingChildren, // force formatting
     pageTitle,
+    userData,
     ...props
-}: React.PropsWithChildren<{ headingChildren?: React.ReactNode; pageTitle?: string | JSX.Element }> & {
-    className?: string; // TODO: there must be a better way to fix this type issue
-}) {
+}: BasePageProps) {
     const { colorMode, toggleColorMode } = useColorMode();
 
     const prompts = [
@@ -21,7 +28,7 @@ function BasePage({
         'Are you sure now?',
     ];
 
-    function annoyingClickHandler(e) {
+    function annoyingClickHandler(e: React.MouseEvent<HTMLButtonElement>) {
         const random = (Math.ceil(Math.random() * 4) || 1) - 1;
         console.log(`random: ${random}`);
         if (window.confirm(prompts[random])) {
@@ -31,24 +38,42 @@ function BasePage({
         return annoyingClickHandler(e);
     }
 
+    console.log(
+        JSON.parse(
+            JSON.stringify({
+                name: BasePage.name,
+                userData: userData,
+            }),
+        ),
+    );
+
     return (
         <Box {...props}>
             <NavHeader>
                 <Spacer />
+
                 {headingChildren}
-                <Button colorScheme="teal" marginLeft="1rem" onClick={annoyingClickHandler}>
+
+                <Button colorScheme="teal" onClick={annoyingClickHandler}>
                     Want&nbsp;free&nbsp;Money? Click&nbsp;Me!
                 </Button>
-                <Button marginLeft="1rem" onClick={toggleColorMode}>
+
+                <Button
+                    onClick={toggleColorMode} // force formatting
+                >
                     {colorMode === 'light' ? <SunIcon /> : <MoonIcon />}
                 </Button>
+
+                <Avatar size="sm" name={userData?.username || 'anonymous'} />
             </NavHeader>
+
             <Box as="section" display="flex" flexDirection="column" paddingY="1rem">
                 {pageTitle != null && (
                     <Heading marginTop="0.5rem" marginBottom="1rem" textAlign="center">
                         {pageTitle}
                     </Heading>
                 )}
+
                 {children}
             </Box>
         </Box>

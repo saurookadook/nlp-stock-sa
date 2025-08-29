@@ -6,6 +6,7 @@ from fastapi_csrf_protect import CsrfProtect
 from fastapi_csrf_protect.exceptions import CsrfProtectError
 from pydantic import BaseModel
 
+from api.middlewares.common import add_process_time_header
 from api.routes.api.analysis_views import router as api_analysis_views
 from api.routes.api.article_data import router as api_article_data
 from api.routes.api.sentiment_analyses import router as api_sentiment_analyses
@@ -16,7 +17,8 @@ from api.routes.auth.login import router as login
 from config import env_config
 from config.logging import ExtendedLogger, configure_logging
 
-configure_logging(app_name=__file__)
+
+configure_logging(app_name="nlpssa-server-api")
 logger: ExtendedLogger = logging.getLogger(__file__)
 
 
@@ -49,6 +51,9 @@ async def read_health_check():
     # return JSONResponse(status_code=200, content={"message": "Hello, world!"})
     return {"message": "Yaaaaaay, health! Salud!"}
 
+
+# NOTE: middleware executed bottom to top
+app.middleware("http")(add_process_time_header)
 
 app.include_router(api_analysis_views.router)
 app.include_router(api_article_data.router)

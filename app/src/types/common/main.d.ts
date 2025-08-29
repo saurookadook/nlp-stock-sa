@@ -66,10 +66,28 @@ interface FinalReducers {
 }
 
 /**********************************************************************
+ * Users
+ **********************************************************************/
+type UserData = {
+    firstName?: string;
+    lastName?: string;
+    username: string;
+};
+
+/**********************************************************************
+ * Account
+ **********************************************************************/
+type AccountStore = {
+    accountData: AmbiguousObject;
+    user: UserData;
+};
+
+/**********************************************************************
  * Home
  **********************************************************************/
 type HomeStore = {
-    pageData: GroupedArticleData[] | null;
+    pageData: GroupedArticleData[];
+    user: UserData;
 };
 
 /**********************************************************************
@@ -226,6 +244,7 @@ type DataExplorersStore = {
     sentimentAnalysesBySlug: SentimentAnalysesBySlugStateSlice;
     stockDataAll: StockDataAllStateSlice;
     stockDataSingular: StockDataSingularStateSlice;
+    user: UserData;
 };
 
 /**********************************************************************

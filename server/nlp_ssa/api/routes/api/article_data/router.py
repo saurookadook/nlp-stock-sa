@@ -1,7 +1,8 @@
 import logging
 from fastapi import APIRouter, Depends, Request
-from rich import inspect
+from rich import inspect, pretty
 
+from api.dependencies.user_session import handle_user_session
 from api.routes.api.article_data.models import (
     ArticleDataResponse,
     ArticleDataBySlugResponse,
@@ -12,17 +13,24 @@ from api.routes.api.article_data.route_handlers import (
 )
 from api.routes.auth.session.caching import build_cache_key, safe_get_from_session_cache
 from config import env_vars
-from config.logging import ExtendedLogger, configure_logging
+from config.logging import ExtendedLogger
 from db import db_session
 
 
-configure_logging(__file__)
 logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 
 
 @router.get("/api/article-data/{stock_slug}", response_model=ArticleDataBySlugResponse)
-async def read_article_data_by_slug(stock_slug: str):
+async def read_article_data_by_slug(
+    stock_slug: str, user_session=Depends(handle_user_session)
+):
+    logger.debug(
+        " read_article_data_by_slug - user_session ".center(logger.window_width, "+")
+    )
+    pretty.pprint(user_session, expand_all=True)
+    logger.debug("+" * logger.window_width)
+
     article_data_rows = []
 
     try:
@@ -37,21 +45,8 @@ async def read_article_data_by_slug(stock_slug: str):
     }
 
 
-def maybe_get_user_from_cache(request: Request):
-    user_session_key = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
-    logger.log_info_centered(f" user_session_key: {user_session_key} ")
-    maybe_user_from_cache = safe_get_from_session_cache(
-        cache_key=build_cache_key(entity_key=user_session_key)
-    )
-
-    logger.log_info_centered(" maybe_user_from_cache ")
-    inspect(maybe_user_from_cache, sort=True)
-
-    return maybe_user_from_cache
-
-
 @router.get("/api/article-data", response_model=ArticleDataResponse)
-async def read_article_data(maybe_user_from_cache=Depends(maybe_get_user_from_cache)):
+async def read_article_data(user_session=Depends(handle_user_session)):
     """Endpoint for getting all article data.
 
     Query results are
@@ -59,6 +54,10 @@ async def read_article_data(maybe_user_from_cache=Depends(maybe_get_user_from_ca
     - grouped by stock slug
     - ordered by date_modified (published date?) descending
     """
+
+    logger.debug(" read_article_data - user_session ".center(logger.window_width, "+"))
+    pretty.pprint(user_session, expand_all=True)
+    logger.debug("+" * logger.window_width)
 
     article_data_grouped_by_stock_slug = []
 

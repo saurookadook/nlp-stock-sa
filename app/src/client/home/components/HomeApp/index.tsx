@@ -11,7 +11,7 @@ function HomeApp(): React.ReactElement {
     const state = useContext(BaseStateContext);
     const dispatch = useContext(BaseDispatchContext);
 
-    const { pageData } = state as HomeStore;
+    const { pageData, user } = state as HomeStore;
 
     useEffect(() => {
         if (state.pageData == null) {
@@ -28,6 +28,7 @@ function HomeApp(): React.ReactElement {
                     <b>Home</b>: Article Data
                 </span>
             }
+            userData={user}
         >
             <Container className="home" margin="0 auto" maxWidth="75vw">
                 <Center

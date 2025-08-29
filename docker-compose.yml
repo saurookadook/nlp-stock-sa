@@ -44,16 +44,16 @@ services:
       - "8080:8080"
       - "9229:9229"
     volumes:
-      - ./app/.yarn:/opt/nlpssa-frontend/.yarn
-      - ./app/src/client:/opt/nlpssa-frontend/src/client
-      - ./app/src/server:/opt/nlpssa-frontend/src/server
-      - ./app/src/types:/opt/nlpssa-frontend/src/types
-      - ./app/.yarn.yml:/opt/nlpssa-frontend/.yarn.yml
-      - ./app/customTSNodeLoader.js:/opt/nlpssa-frontend/customTSNodeLoader.js
-      - ./app/package.json:/opt/nlpssa-frontend/package.json
-      - ./app/tsconfig.json:/opt/nlpssa-frontend/tsconfig.json
-      - ./app/webpack.config.js:/opt/nlpssa-frontend/webpack.config.js
-      - ./app/yarn.lock:/opt/nlpssa-frontend/yarn.lock
+      - ./app/.yarn/:/opt/nlpssa-frontend/.yarn/:ro
+      - ./app/src/client:/opt/nlpssa-frontend/src/client:ro
+      - ./app/src/server:/opt/nlpssa-frontend/src/server:ro
+      - ./app/src/types:/opt/nlpssa-frontend/src/types:ro
+      - ./app/.yarnrc.yml:/opt/nlpssa-frontend/.yarnrc.yml:ro
+      - ./app/customTSNodeLoader.js:/opt/nlpssa-frontend/customTSNodeLoader.js:ro
+      - ./app/package.json:/opt/nlpssa-frontend/package.json:ro
+      - ./app/tsconfig.json:/opt/nlpssa-frontend/tsconfig.json:ro
+      - ./app/webpack.config.js:/opt/nlpssa-frontend/webpack.config.js:ro
+      - ./app/yarn.lock:/opt/nlpssa-frontend/yarn.lock:ro
       - /opt/nlpssa-frontend/node_modules
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
@@ -86,7 +86,9 @@ services:
       - session-cache
     env_file: .env
     environment:
-      EXAMPLE: woof
+      COLUMNS: ${COLUMNS}
+      HOST: ${HOST}
+      PORT: ${PORT}
       WORKERS: 1
     build:
       context: .

@@ -38,6 +38,7 @@ const baseInitialData = (): GenericStateStore<DataExplorersStore> => ({
     sentimentAnalysesBySlug: null,
     stockDataAll: null,
     stockDataSingular: null,
+    user: null,
 });
 
 export const BaseDataExplorerArticleDataNoData: Story = {

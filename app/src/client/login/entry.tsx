@@ -17,6 +17,7 @@ window.renderApp = async (initialPageData) => {
     root.render(
         <ChakraProvider theme={theme}>
             <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+
             <LoginApp initialPageData={initialPageData} />
         </ChakraProvider>,
     );
