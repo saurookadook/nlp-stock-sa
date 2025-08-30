@@ -31,18 +31,21 @@ class UserSessionFacade:
     def get_first_by_user_id_and_auth_provider(
         self, user_id: UUID, auth_provider: AuthProviderEnum
     ):
-        user_session = (
-            self.db_session.execute(
-                select(UserSessionDB).where(
-                    and_(
-                        UserSessionDB.auth_provider == auth_provider,
-                        UserSessionDB.user_id == user_id,
+        try:
+            user_session = (
+                self.db_session.execute(
+                    select(UserSessionDB).where(
+                        and_(
+                            UserSessionDB.auth_provider == auth_provider,
+                            UserSessionDB.user_id == user_id,
+                        )
                     )
                 )
+                .scalars()
+                .first()
             )
-            .scalars()
-            .first()
-        )
+        except Exception as e:
+            raise e
 
         if not user_session:
             return None
@@ -60,8 +63,8 @@ class UserSessionFacade:
                 .scalars()
                 .all()
             )
-        except NoResultFound:
-            raise UserSessionFacade.NoResultFound
+        except Exception as e:
+            raise e
 
         return [UserSession.model_validate(us) for us in user_sessions]
 
