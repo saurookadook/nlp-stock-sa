@@ -8,4 +8,5 @@ __all__ = [
     "stock",
     "user",
     # "user_sentiment_analysis",
+    "user_session",
 ]

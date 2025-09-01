@@ -17,6 +17,22 @@ class ExtendedEnum(Enum):
         return None
 
 
+class AuthProviderEnum(ExtendedEnum):
+
+    APPLE = "apple"
+    GITHUB = "github"
+    GOOGLE = "google"
+    MICROSOFT = "microsoft"
+
+    @staticmethod
+    def db_type_name() -> Literal["auth_providers"]:
+        return "auth_providers"
+
+    @classmethod
+    def get_default(cls):
+        return cls.GITHUB
+
+
 class SentimentEnum(ExtendedEnum):
 
     COMPOUND = "compound"
@@ -47,4 +63,20 @@ class SourceDiscriminatorEnum(ExtendedEnum):
         return cls.ArticleDataDB
 
 
+class TokenTypeEnum(ExtendedEnum):
+
+    ACCESS = "access"  # Not sure if this is a real token type...?
+    BEARER = "bearer"
+
+    @staticmethod
+    def db_type_name() -> Literal["token_types"]:
+        return "token_types"
+
+    @classmethod
+    def get_default(cls):
+        return cls.BEARER
+
+
 ONE_DAY_IN_SECONDS = 60 * 60 * 24
+EIGHT_HOURS_IN_SECONDS = 28800
+SIX_MONTHS_IN_SECONDS = 15897600

@@ -50,10 +50,9 @@ def get_auth_info_from_github(request: Request):
     # example 'token_data' shape:
     # {
     #     'access_token': 'ghu_<shorter token>',
-    #     'expires_in': 28800,
-    #     'refresh_token':
-    #     'ghr_<big long token>',
-    #     'refresh_token_expires_in': 15897600,
+    #     'expires_in': 28800, # 8 hours in seconds
+    #     'refresh_token': 'ghr_<big long token>',
+    #     'refresh_token_expires_in': 15897600, # 6 months in seconds
     #     'token_type': 'bearer',
     #     'scope': ''
     # }

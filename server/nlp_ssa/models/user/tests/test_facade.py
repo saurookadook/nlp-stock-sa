@@ -11,8 +11,8 @@ from models.user.factories import UserFactory
 
 @pytest.fixture()
 def mock_facade_now(mocker, mock_utcnow):
-    mock_facade_urcnow = mocker.patch("nlp_ssa.models.user.facade.arrow.utcnow")
-    mock_facade_urcnow.return_value = mock_utcnow
+    mock_facade_utcnow = mocker.patch("nlp_ssa.models.user.facade.arrow.utcnow")
+    mock_facade_utcnow.return_value = mock_utcnow
 
 
 def test_get_one_by_id(mock_db_session, user_facade):
