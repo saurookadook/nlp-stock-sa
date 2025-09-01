@@ -70,9 +70,8 @@ class ArticleDataFacade:
             set_=dict(**prepared_payload),
         ).returning(ArticleDataDB)
 
-        article_data_row = self.db_session.execute(full_stmt).fetchone()
+        article_data = self.db_session.execute(full_stmt).scalar_one()
         self.db_session.flush()
-        article_data = article_data_row[0]
 
         self._create_source_if_not_exists(record=article_data)
 
@@ -90,9 +89,8 @@ class ArticleDataFacade:
             .values(**payload)
         ).returning(ArticleDataDB)
 
-        updated_row = self.db_session.execute(update_stmt).fetchone()
+        updated_record = self.db_session.execute(update_stmt).scalar_one()
         self.db_session.flush()
-        updated_record = updated_row[0]
 
         self._create_source_if_not_exists(record=updated_record)
 

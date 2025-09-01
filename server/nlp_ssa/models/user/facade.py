@@ -76,9 +76,9 @@ class UserFacade:
                 "created_at": arrow.utcnow(),
                 "updated_at": arrow.utcnow(),
             },
-        ).returning(literal_column("*"))
+        ).returning(UserDB)
 
-        user = self.db_session.execute(full_stmt).fetchone()
+        user = self.db_session.execute(full_stmt).scalar_one()
         self.db_session.flush()
 
         return User.model_validate(user)

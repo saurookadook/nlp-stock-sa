@@ -52,9 +52,9 @@ class StockFacade:
                 # "created_at": arrow.utcnow(),
                 "updated_at": arrow.utcnow(),
             },
-        ).returning(literal_column("*"))
+        ).returning(StockDB)
 
-        stock = self.db_session.execute(full_stmt).fetchone()
+        stock = self.db_session.execute(full_stmt).scalar_one()
         self.db_session.flush()
 
         return Stock.model_validate(stock)
@@ -69,9 +69,9 @@ class StockFacade:
                 )
             )
             .values(**payload)
-        ).returning(literal_column("*"))
+        ).returning(StockDB)
 
-        updated_record = self.db_session.execute(update_stmt).fetchone()
+        updated_record = self.db_session.execute(update_stmt).scalar_one()
         self.db_session.flush()
 
         return Stock.model_validate(updated_record)
