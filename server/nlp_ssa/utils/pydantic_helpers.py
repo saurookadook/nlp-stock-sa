@@ -15,6 +15,8 @@ from pydantic.functional_validators import WrapValidator
 from pydantic_core import core_schema
 from typing import Annotated, Any, Iterator
 
+from models.mixins import TimestampsMixin
+
 
 def is_recursion_validation_error(exc: ValidationError) -> bool:
     errors = exc.errors()
@@ -125,6 +127,10 @@ class ArrowType(Arrow):
 
 
 SerializerArrowType = Annotated[Arrow, ArrowType]
+
+
+class BaseAppModel(BaseModel, TimestampsMixin):
+    model_config = ConfigDict(from_attributes=True)
 
 
 class BaseResponseModel(BaseModel):

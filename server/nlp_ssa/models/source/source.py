@@ -1,21 +1,18 @@
 from __future__ import annotations
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import Field, field_validator
 from typing import Annotated, Optional, Union
 from uuid import UUID
 
 from constants import SourceDiscriminatorEnum
-from models.mixins import TimestampsMixin
 from utils.pydantic_helpers import (
+    BaseAppModel,
     generic_validator_with_default,
     generic_cyclic_references_validator,
 )
 
 
-class Source(TimestampsMixin, BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
+class Source(BaseAppModel):
     id: UUID
-
     data_type_id: Annotated[Optional[UUID], Field(default_factory=lambda: None)]
     data_type: Annotated[
         Optional[SourceDiscriminatorEnum], Field(default_factory=lambda: None)

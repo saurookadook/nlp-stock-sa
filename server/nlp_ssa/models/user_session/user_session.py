@@ -1,16 +1,14 @@
 from __future__ import annotations
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import Field
 from typing import Annotated
 from uuid import UUID
 
 from constants import AuthProviderEnum, TokenTypeEnum
-from models.mixins import TimestampsMixin
 from models.user.user import User
+from utils.pydantic_helpers import BaseAppModel
 
 
-class UserSession(BaseModel, TimestampsMixin):
-    model_config = ConfigDict(from_attributes=True)
-
+class UserSession(BaseAppModel):
     id: UUID
     user_id: Annotated[UUID, Field()]
     user: Annotated[User, Field()]

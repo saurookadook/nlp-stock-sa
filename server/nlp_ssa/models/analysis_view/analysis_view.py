@@ -1,12 +1,9 @@
-from pydantic import BaseModel, ConfigDict
 from uuid import UUID
 
-from models.mixins import TimestampsMixin
+from utils.pydantic_helpers import BaseAppModel
 
 
-class AnalysisView(BaseModel, TimestampsMixin):
-    model_config = ConfigDict(from_attributes=True)
-
+class AnalysisView(BaseAppModel):
     id: UUID
     source_group_id: UUID
     # owner_id: UUID

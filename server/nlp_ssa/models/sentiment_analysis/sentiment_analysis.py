@@ -4,9 +4,9 @@ from typing import Annotated, Optional
 from uuid import UUID
 
 from constants import SentimentEnum
-from models.mixins import TimestampsMixin
 from models.source import Source
 from utils.pydantic_helpers import (
+    BaseAppModel,
     generic_cyclic_references_validator,
     generic_validator_with_default,
 )
@@ -21,9 +21,7 @@ class AnalysisOutput(BaseModel):
     pos: float
 
 
-class SentimentAnalysis(BaseModel, TimestampsMixin):
-    model_config = ConfigDict(from_attributes=True)
-
+class SentimentAnalysis(BaseAppModel):
     id: UUID
     quote_stock_symbol: str
     source_group_id: UUID

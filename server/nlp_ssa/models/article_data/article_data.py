@@ -1,11 +1,11 @@
 from __future__ import annotations
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import Field, field_validator
 from typing import Annotated, Optional
 from uuid import UUID
 
-from models.mixins import TimestampsMixin
 from models.source import Source
 from utils.pydantic_helpers import (
+    BaseAppModel,
     SerializerArrowType,
     generic_cyclic_references_validator,
     generic_validator_with_default,
@@ -14,11 +14,8 @@ from utils.pydantic_helpers import (
 
 class ArticleData(
     # OwnedByPolymorphicSourceMixin,
-    TimestampsMixin,
-    BaseModel,
+    BaseAppModel
 ):
-    model_config = ConfigDict(from_attributes=True)
-
     id: UUID
     quote_stock_symbol: str
     source_group_id: UUID

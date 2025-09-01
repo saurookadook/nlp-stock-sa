@@ -1,12 +1,10 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import ConfigDict
 from uuid import UUID
 
-from models.mixins import TimestampsMixin
+from utils.pydantic_helpers import BaseAppModel
 
 
-class User(BaseModel, TimestampsMixin):
-    model_config = ConfigDict(from_attributes=True)
-
+class User(BaseAppModel):
     id: UUID
     username: str
     email: str
