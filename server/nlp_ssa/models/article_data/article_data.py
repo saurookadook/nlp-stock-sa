@@ -3,6 +3,7 @@ from pydantic import Field, field_validator
 from typing import Annotated, Optional
 from uuid import UUID
 
+from models.mixins import TimestampsMixin
 from models.source import Source
 from utils.pydantic_helpers import (
     BaseAppModel,
@@ -14,7 +15,8 @@ from utils.pydantic_helpers import (
 
 class ArticleData(
     # OwnedByPolymorphicSourceMixin,
-    BaseAppModel
+    BaseAppModel,
+    TimestampsMixin,
 ):
     id: UUID
     quote_stock_symbol: str

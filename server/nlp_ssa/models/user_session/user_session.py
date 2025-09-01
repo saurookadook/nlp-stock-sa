@@ -4,11 +4,12 @@ from typing import Annotated
 from uuid import UUID
 
 from constants import AuthProviderEnum, TokenTypeEnum
+from models.mixins import TimestampsMixin
 from models.user.user import User
 from utils.pydantic_helpers import BaseAppModel
 
 
-class UserSession(BaseAppModel):
+class UserSession(BaseAppModel, TimestampsMixin):
     id: UUID
     user_id: Annotated[UUID, Field()]
     user: Annotated[User, Field()]

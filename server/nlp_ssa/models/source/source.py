@@ -4,6 +4,7 @@ from typing import Annotated, Optional, Union
 from uuid import UUID
 
 from constants import SourceDiscriminatorEnum
+from models.mixins import TimestampsMixin
 from utils.pydantic_helpers import (
     BaseAppModel,
     generic_validator_with_default,
@@ -11,7 +12,7 @@ from utils.pydantic_helpers import (
 )
 
 
-class Source(BaseAppModel):
+class Source(BaseAppModel, TimestampsMixin):
     id: UUID
     data_type_id: Annotated[Optional[UUID], Field(default_factory=lambda: None)]
     data_type: Annotated[
