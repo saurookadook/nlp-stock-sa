@@ -1,8 +1,10 @@
 import arrow
 from sqlalchemy import literal_column, or_, select, update
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.orm import Session, scoped_session
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict
+from uuid import UUID
 
 from models.stock import StockDB
 from models.stock.stock import Stock
@@ -13,10 +15,10 @@ class StockFacade:
     class NoResultFound(Exception):
         pass
 
-    def __init__(self, *, db_session):
+    def __init__(self, *, db_session: scoped_session[Session]):
         self.db_session = db_session
 
-    def get_one_by_id(self, id):
+    def get_one_by_id(self, id: UUID | str) -> Stock:
         try:
             stock = self.db_session.execute(
                 select(StockDB).where(StockDB.id == id)
@@ -26,7 +28,7 @@ class StockFacade:
 
         return Stock.model_validate(stock)
 
-    def get_one_by_quote_stock_symbol(self, quote_stock_symbol):
+    def get_one_by_quote_stock_symbol(self, quote_stock_symbol: str) -> Stock:
         try:
             stock = self.db_session.execute(
                 select(StockDB).where(StockDB.quote_stock_symbol == quote_stock_symbol)
@@ -76,7 +78,9 @@ class StockFacade:
 
         return Stock.model_validate(updated_record)
 
-    def _find_one_if_exists(self, *, id, quote_stock_symbol):
+    def _find_one_if_exists(
+        self, *, id: UUID | str, quote_stock_symbol: str
+    ) -> Stock | None:
         try:
             return self.get_one_by_id(id)
         except StockFacade.NoResultFound:

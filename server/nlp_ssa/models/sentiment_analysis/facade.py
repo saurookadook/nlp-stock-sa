@@ -2,6 +2,7 @@ import arrow
 from rich import inspect, pretty
 from sqlalchemy import asc, or_, select, update
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.orm import Session, scoped_session
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict, List
 from uuid import UUID
@@ -16,10 +17,10 @@ class SentimentAnalysisFacade:
     class NoResultFound(Exception):
         pass
 
-    def __init__(self, *, db_session):
+    def __init__(self, *, db_session: scoped_session[Session]):
         self.db_session = db_session
 
-    def get_one_by_id(self, row_id: str | UUID) -> SentimentAnalysis:
+    def get_one_by_id(self, row_id: UUID | str) -> SentimentAnalysis:
         try:
             sentiment_analysis = self.db_session.execute(
                 select(SentimentAnalysisDB).where(SentimentAnalysisDB.id == row_id)
@@ -30,7 +31,7 @@ class SentimentAnalysisFacade:
         return SentimentAnalysis.model_validate(sentiment_analysis)
 
     def get_one_by_source_group_id(
-        self, source_group_id: str | UUID
+        self, source_group_id: UUID | str
     ) -> SentimentAnalysis:
         # TODO: update this method to get by source_id?
         try:
@@ -111,7 +112,7 @@ class SentimentAnalysisFacade:
 
     # TODO: this can be WAY more efficient (it doesn't need to return a whole row)
     def _find_one_if_exists(
-        self, *, row_id: str | UUID = None, source_id: str | UUID = None
+        self, *, row_id: UUID | str = None, source_id: UUID | str = None
     ):
         try:
             return self.get_one_by_id(row_id)

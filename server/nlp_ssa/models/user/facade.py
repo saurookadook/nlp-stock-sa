@@ -1,8 +1,9 @@
 import arrow
 from sqlalchemy import and_, literal_column, select
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.orm import Session, scoped_session
 from sqlalchemy.orm.exc import NoResultFound
-from typing import Dict
+from typing import Dict, List
 from uuid import UUID
 
 from models.user import UserDB
@@ -14,10 +15,10 @@ class UserFacade:
     class NoResultFound(Exception):
         pass
 
-    def __init__(self, *, db_session):
+    def __init__(self, *, db_session: scoped_session[Session]):
         self.db_session = db_session
 
-    def get_one_by_id(self, id):
+    def get_one_by_id(self, id: UUID | str) -> User:
         try:
             user = self.db_session.execute(
                 select(UserDB).where(UserDB.id == id)
@@ -27,7 +28,7 @@ class UserFacade:
 
         return User.model_validate(user)
 
-    def get_one_by_username(self, username):
+    def get_one_by_username(self, username: str) -> User:
         try:
             user = self.db_session.execute(
                 select(UserDB).where(UserDB.username == username)
@@ -38,8 +39,8 @@ class UserFacade:
         return User.model_validate(user)
 
     def get_analysis_views_by_quote_stock_symbol(
-        self, user_id: UUID, quote_stock_symbol: str
-    ):
+        self, user_id: UUID | str, quote_stock_symbol: str
+    ) -> List[User]:
         from models.analysis_view.db import AnalysisViewDB
         from models.sentiment_analysis.db import SentimentAnalysisDB
 

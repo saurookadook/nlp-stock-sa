@@ -2,6 +2,7 @@ import arrow
 from rich import inspect, pretty
 from sqlalchemy import desc, literal_column, or_, select, update
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.orm import Session, scoped_session
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Dict, List, Union
 from uuid import UUID
@@ -16,7 +17,7 @@ class ArticleDataFacade:
     class NoResultFound(Exception):
         pass
 
-    def __init__(self, *, db_session):
+    def __init__(self, *, db_session: scoped_session[Session]):
         self.db_session = db_session
 
     def get_one_by_id(self, id: Union[UUID, str]) -> ArticleData:
@@ -97,7 +98,9 @@ class ArticleDataFacade:
         return ArticleData.model_validate(updated_record)
 
     # TODO: this can be WAY more efficient (it doesn't need to return a whole row)
-    def _find_one_if_exists(self, *, id, source_url):
+    def _find_one_if_exists(
+        self, *, id: UUID | str, source_url: str
+    ) -> ArticleData | None:
         try:
             return self.get_one_by_id(id)
         except ArticleDataFacade.NoResultFound:

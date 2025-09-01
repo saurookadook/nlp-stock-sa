@@ -1,8 +1,9 @@
 import arrow
 from sqlalchemy import and_, delete, literal_column, select, update
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.orm import Session, scoped_session
 from sqlalchemy.orm.exc import NoResultFound
-from typing import Dict
+from typing import Dict, List
 from uuid import UUID
 
 from constants import AuthProviderEnum
@@ -15,10 +16,10 @@ class UserSessionFacade:
     class NoResultFound(Exception):
         pass
 
-    def __init__(self, *, db_session):
+    def __init__(self, *, db_session: scoped_session[Session]):
         self.db_session = db_session
 
-    def get_one_by_id(self, id: UUID):
+    def get_one_by_id(self, id: UUID | str) -> UserSession:
         try:
             user_session = self.db_session.execute(
                 select(UserSessionDB).where(UserSessionDB.id == id)
@@ -29,8 +30,8 @@ class UserSessionFacade:
         return UserSession.model_validate(user_session)
 
     def get_first_by_user_id_and_auth_provider(
-        self, user_id: UUID, auth_provider: AuthProviderEnum
-    ):
+        self, user_id: UUID | str, auth_provider: AuthProviderEnum
+    ) -> UserSession | None:
         try:
             user_session = (
                 self.db_session.execute(
@@ -52,7 +53,7 @@ class UserSessionFacade:
 
         return UserSession.model_validate(user_session)
 
-    def get_all_by_user_id(self, user_id: UUID):
+    def get_all_by_user_id(self, user_id: UUID | str) -> List[UserSession]:
         try:
             user_sessions = (
                 self.db_session.execute(
@@ -69,7 +70,7 @@ class UserSessionFacade:
         return [UserSession.model_validate(us) for us in user_sessions]
 
     def create_or_update(self, *, payload: Dict) -> UserSession:
-        maybe_one = self._find_one_if_exists(payload)
+        maybe_one = self._one_exists(payload)
         if maybe_one:
             return self.update(payload=payload)
 
@@ -101,7 +102,7 @@ class UserSessionFacade:
 
         return UserSession.model_validate((updated_record))
 
-    def delete_one_by_id(self, id: UUID):
+    def delete_one_by_id(self, id: UUID | str):
         if not self._exists_for_id(id=id):
             raise UserSessionFacade.NoResultFound
 
@@ -115,7 +116,7 @@ class UserSessionFacade:
 
         return record
 
-    def _find_one_if_exists(self, payload):
+    def _one_exists(self, payload: Dict) -> bool:
         try:
             return self._exists_for_id(payload["id"])
         except (UserSessionFacade.NoResultFound, KeyError):
@@ -128,7 +129,7 @@ class UserSessionFacade:
         except KeyError:
             pass
 
-        return None
+        return False
 
     def _exists_for_id(self, id: UUID | str):
         try:
