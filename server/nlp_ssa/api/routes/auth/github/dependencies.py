@@ -7,14 +7,20 @@ from rich import inspect, pretty
 from typing import Dict
 from urllib import parse
 
+from api.routes.auth.session.models import (
+    SessionCookieConfig,
+    TokenData,
+    UserSessionCacheDetails,
+)
 from api.routes.auth.session.caching import (
     build_cache_key,
-    safe_set_in_session_cache,
-    get_or_set_user_session_cache,
+    get_user_session,
+    get_or_set_user_session,
+    upsert_user_session,
 )
 from config import env_vars
 from config.logging import ExtendedLogger
-from constants import ONE_DAY_IN_SECONDS
+from constants import AuthProviderEnum, ONE_DAY_IN_SECONDS
 
 
 logger: ExtendedLogger = logging.getLogger(__file__)
@@ -84,7 +90,7 @@ def get_auth_info_from_github(request: Request):
 
     try:
         return dict(
-            token_data=token_data,
+            token_data=TokenData(**token_data),
             user_info=github_api_response.json(),
         )
     except Exception as e:
@@ -95,19 +101,22 @@ def get_auth_info_from_github(request: Request):
 # TODO: better name...?
 def create_or_update_user_session(
     request: Request,  # force formatting
+    auth_provider: AuthProviderEnum = AuthProviderEnum.GITHUB,  # TODO: maybe this can be inferred from the request URL?
 ):
     user_session_key = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
-    session_cookie_config = dict(
+    logger.log_debug_centered(f" user_session_key: '{user_session_key}' ")
+    session_cookie_config = SessionCookieConfig(
         key=env_vars.AUTH_COOKIE_KEY,
-        value=user_session_key,
+        value=user_session_key or "",
         max_age=ONE_DAY_IN_SECONDS,
         domain=env_vars.BASE_DOMAIN,
         httponly=True,
         # samesite='strict'
     )
 
-    user_session_from_cache = get_or_set_user_session_cache(
-        cache_key=build_cache_key(entity_key=user_session_key)
+    user_session_from_cache = get_user_session(
+        auth_provider=auth_provider,
+        cache_key=build_cache_key(entity_key=user_session_key),
     )
 
     if user_session_from_cache:
@@ -122,18 +131,18 @@ def create_or_update_user_session(
 
     username = user_info.get("login")
     cookie_value = user_session_key or f"{username}:{secrets.token_urlsafe(17)}"
-    session_cookie_config = dict(
-        key=env_vars.AUTH_COOKIE_KEY,
-        value=cookie_value,
-        max_age=ONE_DAY_IN_SECONDS,
-        domain=env_vars.BASE_DOMAIN,
-        httponly=True,
-        # samesite='strict'
+    session_cookie_config.value = cookie_value
+
+    user_session_cache_details = UserSessionCacheDetails(
+        auth_provider=auth_provider,
+        cookie_config=session_cookie_config,
+        token_data=token_data,
     )
 
-    updated = get_or_set_user_session_cache(
+    updated = upsert_user_session(
+        auth_provider=auth_provider,
         cache_key=build_cache_key(entity_key=cookie_value),
-        details=dict(cookie_config=session_cookie_config, token_data=token_data),
+        details=user_session_cache_details,
     )
 
     if not updated:
@@ -141,3 +150,9 @@ def create_or_update_user_session(
         return HTTPException(status_code=500, detail="cache miss :(")
 
     return session_cookie_config
+
+
+def handle_user_auth(
+    request: Request,  # force formatting
+):
+    pass
