@@ -126,6 +126,20 @@ class UserSessionFacade:
 
         return record
 
+    def delete_one_by_cache_key(self, cache_key: str):
+        if not self._exists_for_cache_key(cache_key=cache_key):
+            raise UserSessionFacade.NoResultFound
+
+        delete_stmt = (
+            delete(UserSessionDB)
+            .where(UserSessionDB.cache_key == cache_key)
+            .returning(UserSessionDB.id, UserSessionDB.user_id)
+        )
+
+        record = self.db_session.execute(delete_stmt).fetchone()
+
+        return record
+
     def _one_exists(self, payload: Dict) -> bool:
         try:
             return self._exists_for_id(payload["id"])
@@ -147,6 +161,22 @@ class UserSessionFacade:
                 self.db_session.execute(
                     select(UserSessionDB.id).where(
                         UserSessionDB.id == id,
+                    )
+                )
+                .scalars()
+                .first()
+            )
+        except:
+            pass
+
+        return bool(user_session)
+
+    def _exists_for_cache_key(self, cache_key: str):
+        try:
+            user_session = (
+                self.db_session.execute(
+                    select(UserSessionDB.id).where(
+                        UserSessionDB.cache_key == cache_key,
                     )
                 )
                 .scalars()
