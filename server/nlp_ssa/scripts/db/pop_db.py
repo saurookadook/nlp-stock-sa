@@ -48,7 +48,7 @@ def populate_db():
         article_data_payload = dict(
             **article_data_model.model_dump(exclude=EXCLUDABLE_FIELDS_SET)
         )
-        # pretty.pprint(article_data_payload, expand_all=True)
+        # logger.log_info_pretty(article_data_payload)
         article_data_facade.create_or_update(payload=article_data_payload)
         db_session.commit()
     logger.log_info_section_end("article_data", len(data["article_data"]))
@@ -63,7 +63,7 @@ def populate_db():
         sentiment_analysis_payload = dict(
             **sentiment_analysis_model.model_dump(exclude=EXCLUDABLE_FIELDS_SET)
         )
-        # pretty.pprint(article_data_payload, expand_all=True)
+        # logger.log_info_pretty(article_data_payload)
         sentiment_analysis_facade.create_or_update(payload=sentiment_analysis_payload)
         db_session.commit()
     logger.log_info_section_end("sentiment_analyses", len(data["sentiment_analyses"]))
