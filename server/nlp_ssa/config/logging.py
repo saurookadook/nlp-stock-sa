@@ -92,6 +92,15 @@ class ExtendedLogger(BaseLoggerClass):
     def log_info_section_end(self, *args, **kwargs):
         self.log_section_end(LogLevelEnum.INFO.value, *args, **kwargs)
 
+    def log_debug_centered(self, *args, **kwargs):
+        self.log_centered(LogLevelEnum.DEBUG.value, *args, **kwargs)
+
+    def log_debug_section_start(self, *args, **kwargs):
+        self.log_section_start(LogLevelEnum.DEBUG.value, *args, **kwargs)
+
+    def log_debug_section_end(self, *args, **kwargs):
+        self.log_section_end(LogLevelEnum.DEBUG.value, *args, **kwargs)
+
     def log_warn_centered(self, *args, **kwargs):
         self.log_centered(LogLevelEnum.WARNING.value, *args, **kwargs)
 
