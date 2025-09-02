@@ -21,6 +21,10 @@ class UserSessionFactory(
         sqlalchemy_session = db_session
 
     id = factory.LazyFunction(lambda: uuid4())
+    # TODO: set or generate username?
+    cache_key = factory.LazyFunction(
+        lambda: f"username_placeholder:{secrets.token_urlsafe(17)}"
+    )
     access_token = factory.LazyFunction(lambda: "ghu_" + secrets.token_hex(18))
     auth_provider = AuthProviderEnum.GITHUB.value
     expires_in = EIGHT_HOURS_IN_SECONDS

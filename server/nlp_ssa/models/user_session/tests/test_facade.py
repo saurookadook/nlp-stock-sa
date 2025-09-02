@@ -29,6 +29,28 @@ def test_get_one_by_id_no_result(user_session_facade: UserSessionFacade):
         user_session_facade.get_one_by_id(id="4c24beca-922f-4f10-819e-37931d949a29")
 
 
+def test_get_one_by_cache_key(mock_db_session, user_session_facade: UserSessionFacade):
+    test_user = UserFactory()
+    mock_db_session.commit()
+
+    test_user_session = UserSessionFactory(
+        cache_key=f"{test_user.username}:{secrets.token_urlsafe(17)}",
+        user_id=test_user.id,
+    )
+    mock_db_session.commit()
+
+    result = user_session_facade.get_one_by_cache_key(test_user_session.cache_key)
+
+    assert result == UserSession.model_validate(test_user_session)
+
+
+def test_get_one_by_cache_key_no_result(user_session_facade: UserSessionFacade):
+    with pytest.raises(UserSessionFacade.NoResultFound):
+        user_session_facade.get_one_by_cache_key(
+            cache_key=f"not_real:{secrets.token_urlsafe(17)}"
+        )
+
+
 def test_get_first_by_user_id_and_auth_provider(
     mock_db_session, user_session_facade: UserSessionFacade
 ):

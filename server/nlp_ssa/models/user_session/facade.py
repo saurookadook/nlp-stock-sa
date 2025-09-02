@@ -29,6 +29,16 @@ class UserSessionFacade:
 
         return UserSession.model_validate(user_session)
 
+    def get_one_by_cache_key(self, cache_key: str) -> UserSession:
+        try:
+            user_session = self.db_session.execute(
+                select(UserSessionDB).where(UserSessionDB.cache_key == cache_key)
+            ).scalar_one()
+        except NoResultFound:
+            raise UserSessionFacade.NoResultFound
+
+        return UserSession.model_validate(user_session)
+
     def get_first_by_user_id_and_auth_provider(
         self, user_id: UUID | str, auth_provider: AuthProviderEnum
     ) -> UserSession | None:
