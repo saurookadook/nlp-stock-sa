@@ -108,6 +108,11 @@ services:
       target: server-migrations
     extends: server
 
+  server-scripts:
+    build:
+      target: server-scripts
+    extends: server
+
   server-test:
     build:
       target: server-test

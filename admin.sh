@@ -83,7 +83,7 @@ createDatabase() {
         psql $PSQL_CONNECTION \
         -f "/opt/db/scripts/init_db.sql"
 
-    docker compose run --rm server python nlp_ssa/scripts/db/initialize.py
+    docker compose run --rm server-scripts nlp_ssa/scripts/db/initialize.py
 }
 
 createTestDatabase() {
@@ -98,7 +98,7 @@ createTestDatabase() {
     docker compose run \
         -e DATABASE_NAME=$TEST_DATABASE_NAME \
         -e ENV=test \
-        --rm server python nlp_ssa/scripts/db/initialize.py
+        --rm server-scripts nlp_ssa/scripts/db/initialize.py
 }
 
 initDatabase() {
@@ -143,7 +143,7 @@ seedDatabase() {
     isDbReady
 
     if [[ ! $(dbExists) ]]; then
-        docker compose run --rm server python nlp_ssa/scripts/db/seeding/seed_db.py
+        docker compose run --rm server-scripts nlp_ssa/scripts/db/seeding/seed_db.py
     fi
 }
 
@@ -151,7 +151,7 @@ seedStocks() {
     isDbReady
 
     if [[ ! $(dbExists) ]]; then
-        docker compose run --rm server python nlp_ssa/scripts/db/seeding/seed_stocks.py
+        docker compose run --rm server-scripts nlp_ssa/scripts/db/seeding/seed_stocks.py
     fi
 }
 
@@ -179,8 +179,8 @@ scriptController() {
             echo "m arg: ${$arg}"
             case ${arg} in
                 m)
-                    echo "m: "${$OPTARG}
-                    docker compose run --rm server alembic revision --autogenerate -m "'${OPTARG}'"
+                    echo "m: ${$OPTARG}"
+                    docker compose run --rm server-migrations revision --autogenerate -m "'${OPTARG}'"
                     exit 0
                     ;;
             esac
@@ -196,15 +196,15 @@ scriptController() {
         elif [ "$2" == "drop-test" ]; then
             dropTestDatabase
         elif [ "$2" == "sandbox" ]; then
-            docker compose run --rm server python nlp_ssa/scripts/db/sandbox.py
+            docker compose run --rm server-scripts nlp_ssa/scripts/db/sandbox.py
         elif [ "$2" == "stash" ]; then
-            docker compose run --rm server python nlp_ssa/scripts/db/stash_db.py
+            docker compose run --rm server-scripts nlp_ssa/scripts/db/stash_db.py
         elif [ "$2" == "pop" ]; then
-            docker compose run --rm server python nlp_ssa/scripts/db/pop_db.py
+            docker compose run --rm server-scripts nlp_ssa/scripts/db/pop_db.py
         elif [ "$2" == "up-head" ]; then
-            docker compose run --rm server alembic upgrade head
+            docker compose run --rm server-migrations upgrade head
         elif [ "$2" == "down-1" ]; then
-            docker compose run --rm server alembic downgrade -1
+            docker compose run --rm server-migrations downgrade -1
         elif [ "$2" == "init" ]; then
             echo ""
             echo "======================================================================================"
@@ -276,28 +276,28 @@ scriptController() {
             echo "Running 'stock_sentiment_analysis' script..."
             echo "======================================================================================"
             echo ""
-            docker compose run --rm server python nlp_ssa/scripts/analysis/ssa.py
+            docker compose run --rm server-scripts nlp_ssa/scripts/analysis/ssa.py
         elif [ "$2" == "clean-ad" ]; then
             echo ""
             echo "======================================================================================"
             echo "Running 'clean_article_data' script..."
             echo "======================================================================================"
             echo ""
-            docker compose run --rm server python nlp_ssa/scripts/data_cleaning/clean_article_data.py
+            docker compose run --rm server-scripts nlp_ssa/scripts/data_cleaning/clean_article_data.py
         elif [ "$2" == "del-orph-sa" ]; then
             echo ""
             echo "======================================================================================"
             echo "Running 'delete_orphaned_sentiment_analyses' script..."
             echo "======================================================================================"
             echo ""
-            docker compose run --rm server python nlp_ssa/scripts/data_cleaning/delete_orphaned_sentiment_analyses.py
+            docker compose run --rm server-scripts nlp_ssa/scripts/data_cleaning/delete_orphaned_sentiment_analyses.py
         elif [ "$2" == "ad-to-csv" ]; then
             echo ""
             echo "======================================================================================"
             echo "Running 'article_data_as_csv' script..."
             echo "======================================================================================"
             echo ""
-            docker compose run --rm server python nlp_ssa/scripts/downloads/article_data_as_csv.py
+            docker compose run --rm server-scripts nlp_ssa/scripts/downloads/article_data_as_csv.py
         fi
     elif [ "$1" == "test" ]; then
         if [ "$2" == "server" ]; then
