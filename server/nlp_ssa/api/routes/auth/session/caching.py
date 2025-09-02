@@ -1,3 +1,4 @@
+import arrow
 import json
 import logging
 from pymemcache import Client
@@ -8,8 +9,8 @@ from uuid import uuid4
 
 from api.routes.auth.session.models import (
     SessionCookieConfig,
-    TokenData,
     UserSessionCacheDetails,
+    UserSessionCacheValue,
 )
 from config import env_vars
 from config.logging import ExtendedLogger
@@ -20,6 +21,7 @@ from models.user_session import UserSessionFacade
 
 
 logger: ExtendedLogger = logging.getLogger(__file__)
+logger.setLevel(logging.WARNING)  # to shush the logs while not debugging
 
 base_client = Client(
     (env_vars.MEMCACHED_HOST, env_vars.MEMCACHED_PORT),
@@ -66,7 +68,7 @@ def get_user_session(cache_key: str):
 
         safe_set_in_session_cache(
             cache_key=cache_key,
-            details=UserSessionCacheDetails(
+            cache_value=UserSessionCacheValue(
                 auth_provider=user_session.auth_provider,
                 cookie_config=SessionCookieConfig(
                     key=env_vars.AUTH_COOKIE_KEY,
@@ -74,13 +76,9 @@ def get_user_session(cache_key: str):
                     max_age=ONE_DAY_IN_SECONDS,
                     domain=env_vars.BASE_DOMAIN,
                 ),
-                token_data=TokenData(
-                    access_token=user_session.access_token,
-                    expires_in=user_session.expires_in,
-                    refresh_token=user_session.refresh_token,
-                    refresh_token_expires_in=user_session.refresh_token_expires_in,
-                    token_type=user_session.token_type,
-                ),
+                # TODO: this value should come from the user_session
+                expires_at=get_expiration_date_in_seconds(user_session.expires_in),
+                user_session_id=user_session.id,
             ),
         )
     except Exception as e:
@@ -91,13 +89,13 @@ def get_user_session(cache_key: str):
 
 
 def safe_get_from_session_cache(*, cache_key: str):
-    logger.debug(f"{'-' * 24} safe_get_from_session_cache")
+    logger.log_debug_centered(" safe_get_from_session_cache ", fill_char="=")
     logger.debug(
         f"Attempting to retrieve value for '{cache_key}' from session cache..."
     )
 
     cached_value = retry_client.get(cache_key)
-    logger.debug(" response from memcached ".center(120, "="))
+    logger.debug(f"{'-' * 24} response from memcached ")
     logger.debug(cached_value)
 
     if not cached_value:
@@ -105,13 +103,25 @@ def safe_get_from_session_cache(*, cache_key: str):
         return None
 
     try:
-        return json.loads(cached_value.decode("utf-8"))
+        json_value = json.loads(cached_value.decode("utf-8"))
+        logger.debug(f"{'-' * 24} safe_get_from_session_cache: json_value")
+        logger.log_debug_pretty(json_value)
+        deserialized_value = UserSessionCacheValue.model_validate(
+            dict(
+                auth_provider=json_value["auth_provider"],
+                cookie_config=json_value["cookie_config"],
+                expires_at=json_value["expires_at"],
+                user_session_id=json_value["user_session_id"],
+            )
+        )
+
+        return deserialized_value
     except Exception as e:
         logger.warning(
             f"Encountered error deserializing cached value for '{cache_key}'"
         )
         logger.warning(e)
-        return cached_value
+        raise e
 
 
 def upsert_user_session(
@@ -125,7 +135,9 @@ def upsert_user_session(
     username = entity_key.split(":")[0]
 
     user_session = None
+    cache_details = None
 
+    # TODO: this whole try/except block smells a bit...
     try:
         local_db_session: scoped_session[Session] = db_session
 
@@ -150,13 +162,22 @@ def upsert_user_session(
         logger.log_debug_pretty(user_session)
 
         local_db_session.commit()
+
+        cache_details = safe_set_in_session_cache(
+            cache_key=cache_key,
+            cache_value=UserSessionCacheValue(
+                auth_provider=details.auth_provider,
+                cookie_config=details.cookie_config,
+                # TODO: this value should come from the user_session
+                expires_at=get_expiration_date_in_seconds(
+                    details.token_data.expires_in
+                ),
+                user_session_id=user_session.id,
+            ),
+        )
     except Exception as e:
         logger.debug(e)
         raise e
-
-    cache_details = safe_set_in_session_cache(
-        auth_provider=details.auth_provider, cache_key=cache_key, details=details
-    )
 
     logger.log_debug_centered(" upsert_user_session: END ", fill_char="=")
     # TODO: this feels messy...
@@ -166,7 +187,7 @@ def upsert_user_session(
 def safe_set_in_session_cache(
     *,
     cache_key: str,
-    details: UserSessionCacheDetails,
+    cache_value: UserSessionCacheValue,
 ):
     logger.debug(f"{'-' * 24} safe_set_in_session_cache")
     logger.info(
@@ -175,14 +196,12 @@ def safe_set_in_session_cache(
 
     cache_result = retry_client.set(
         cache_key,
-        # TODO:
-        # - should the stored value just be the user_session ID and details.cookie_config?
-        json.dumps(details.model_dump(mode="json")).encode("utf-8"),
+        json.dumps(cache_value.model_dump(mode="json")).encode("utf-8"),
         expire=TTL_SECONDS,
     )
 
     if cache_result:
-        return details
+        return cache_value
     else:
         logger.warning("safe_set_in_session_cache: cache miss!!! :o")
         return None
@@ -200,5 +219,5 @@ def parse_cache_key(cache_key: str):
     return entity_type, entity_key
 
 
-def debugging_wrapper(key):
-    return safe_get_from_session_cache(cache_key=key)
+def get_expiration_date_in_seconds(expires_in: int):
+    return arrow.now().int_timestamp + expires_in

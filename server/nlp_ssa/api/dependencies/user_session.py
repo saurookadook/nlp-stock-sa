@@ -1,15 +1,12 @@
 import logging
 from fastapi import Request
-from rich import inspect, pretty
 
-from api.routes.auth.session.models import SessionCookieConfig
 from api.routes.auth.session.caching import (
     build_cache_key,
     get_user_session,
 )
 from config import env_vars
 from config.logging import ExtendedLogger
-from constants import AuthProviderEnum, ONE_DAY_IN_SECONDS
 
 
 logger: ExtendedLogger = logging.getLogger(__file__)
@@ -27,25 +24,15 @@ async def handle_user_session(request: Request) -> dict | None:
     """
     user_session_key = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
 
-    session_cookie_config = SessionCookieConfig(
-        key=env_vars.AUTH_COOKIE_KEY,
-        value=user_session_key,
-        max_age=ONE_DAY_IN_SECONDS,
-        domain=env_vars.BASE_DOMAIN,
-        httponly=True,
-        # samesite='strict'
-    )
-
-    user_session_from_cache = get_user_session(
+    active_user_session = get_user_session(
         cache_key=build_cache_key(entity_key=user_session_key)
     )
 
-    if not user_session_from_cache:
-        return None
+    if active_user_session is not None:
+        logger.log_debug_centered(
+            " handle_user_session: active_user_session ", fill_char="!"
+        )
+        logger.log_debug_pretty(active_user_session)
+        return active_user_session
 
-    # TODO: get `user_session` record with ID from cache
-    logger.log_debug_centered(
-        " handle_user_session: user_session_from_cache ", fill_char="!"
-    )
-    logger.log_debug_pretty(user_session_from_cache)
-    return session_cookie_config
+    return None
