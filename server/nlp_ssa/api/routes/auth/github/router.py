@@ -22,4 +22,5 @@ async def github_oauth_callback(
     response = RedirectResponse("https://nlp-ssa.dev/app")
     response.set_cookie(**session_cookie_config.model_dump(mode="json"))
 
+    logger.log_debug_centered(" github_oauth_callback: before end ", fill_char="!")
     return response

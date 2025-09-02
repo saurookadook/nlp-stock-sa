@@ -3,8 +3,6 @@ import requests
 import secrets
 from fastapi import APIRouter, Depends, Request, HTTPException, status
 from fastapi.responses import RedirectResponse
-from rich import inspect, pretty
-from typing import Dict
 from urllib import parse
 
 from api.routes.auth.session.models import (
@@ -15,7 +13,6 @@ from api.routes.auth.session.models import (
 from api.routes.auth.session.caching import (
     build_cache_key,
     get_user_session,
-    get_or_set_user_session,
     upsert_user_session,
 )
 from config import env_vars
@@ -64,16 +61,15 @@ def get_auth_info_from_github(request: Request):
     # }
 
     if token := token_data.get("access_token"):
-        print("-" * 160)
-        pretty.pprint(
+        logger.debug("-" * 160)
+        logger.log_debug_pretty(
             {
                 "name": "get_auth_info_from_github",
                 "req_query_params": request.query_params,
                 "token": token,
-            },
-            expand_all=True,
+            }
         )
-        print("-" * 160, end="\n\n")
+        logger.debug("-" * 160)
     else:
         raise Exception("get_user_info_from_github: no token!!! :o")
 
@@ -90,7 +86,10 @@ def get_auth_info_from_github(request: Request):
 
     try:
         return dict(
-            token_data=TokenData(**token_data),
+            token_data=TokenData(
+                **token_data,
+                auth_provider=AuthProviderEnum.GITHUB,
+            ),
             user_info=github_api_response.json(),
         )
     except Exception as e:
@@ -115,23 +114,25 @@ def create_or_update_user_session(
     )
 
     user_session_from_cache = get_user_session(
-        auth_provider=auth_provider,
         cache_key=build_cache_key(entity_key=user_session_key),
     )
 
     if user_session_from_cache:
         logger.debug(f"WOOOOO USER SESSION FROM CACHE!!!")
-        logger.debug(inspect(user_session_from_cache))
+        logger.log_debug_pretty(user_session_from_cache)
         return session_cookie_config
 
     auth_info = get_auth_info_from_github(request)
 
+    # TODO START --------------------------------------------------------------
+    # this smells...
     token_data = auth_info.get("token_data")
     user_info = auth_info.get("user_info")
 
     username = user_info.get("login")
     cookie_value = user_session_key or f"{username}:{secrets.token_urlsafe(17)}"
     session_cookie_config.value = cookie_value
+    # TODO END ----------------------------------------------------------------
 
     user_session_cache_details = UserSessionCacheDetails(
         auth_provider=auth_provider,
@@ -140,7 +141,6 @@ def create_or_update_user_session(
     )
 
     updated = upsert_user_session(
-        auth_provider=auth_provider,
         cache_key=build_cache_key(entity_key=cookie_value),
         details=user_session_cache_details,
     )

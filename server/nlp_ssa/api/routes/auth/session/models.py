@@ -9,7 +9,7 @@ class SessionCookieConfig(BaseResponseModel):
     value: str = ""
     max_age: int
     domain: str
-    httponly: bool
+    httponly: bool = True
 
 
 class TokenData(BaseResponseModel):
@@ -22,6 +22,6 @@ class TokenData(BaseResponseModel):
 
 
 class UserSessionCacheDetails(BaseResponseModel):
-    auth_provider: AuthProviderEnum
+    auth_provider: AuthProviderEnum = AuthProviderEnum.GITHUB
     cookie_config: SessionCookieConfig
     token_data: Optional[TokenData]
