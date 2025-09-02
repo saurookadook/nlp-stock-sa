@@ -7,14 +7,14 @@ from fastapi_csrf_protect import CsrfProtect
 # from jose import JWTError, jwt
 from oauthlib.oauth2 import WebApplicationClient
 
-from api.routes.auth.login.models import LoginResponse
+from api.routes.auth.models.responses import LoginResponse, LogoutResponse
 from config import env_vars
-
 
 logger = logging.getLogger(__file__)
 router = APIRouter()
 
-
+# TODO: START -----------------------------------------------------------------
+# - all of this should maybe go into `api.routes.auth.github.dependencies`...?
 oauth2_auth_code_scheme = OAuth2AuthorizationCodeBearer(
     authorizationUrl=env_vars.GITHUB_OAUTH_AUTH_URL,
     tokenUrl=env_vars.GITHUB_OAUTH_TOKEN_URL,
@@ -40,6 +40,9 @@ def build_github_url(request: Request):
     return github_url
 
 
+# TODO: END -----------------------------------------------------------------
+
+
 @router.get("/login", response_model=LoginResponse)
 async def read_login(
     request: Request,
@@ -47,3 +50,10 @@ async def read_login(
 ):
 
     return {"github_url": github_url}
+
+
+@router.delete("/logout", response_model=LogoutResponse)
+async def read_login(
+    request: Request,
+):
+    pass

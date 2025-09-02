@@ -14,6 +14,7 @@ from api.routes.api.stocks import router as api_stocks
 from api.routes.api.users import router as api_users
 from api.routes.auth.github import router as github_oauth
 from api.routes.auth.login import router as login
+from api.routes.auth import router as generic_auth_router
 from config import env_config
 from config.logging import ExtendedLogger, configure_logging
 
@@ -60,5 +61,6 @@ app.include_router(api_article_data.router)
 app.include_router(api_sentiment_analyses.router)
 app.include_router(api_stocks.router)
 app.include_router(api_users.router)
-app.include_router(login.router, prefix="/api/auth")
+app.include_router(generic_auth_router.router, prefix="/api/auth")
+# app.include_router(login.router, prefix="/api/auth")
 app.include_router(github_oauth.router, prefix="/api/auth")
