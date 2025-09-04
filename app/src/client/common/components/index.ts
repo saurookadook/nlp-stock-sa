@@ -1,12 +1,13 @@
-import ArticleDataList from 'client/common/components/ArticleDataList';
-import BaseLink from 'client/common/components/BaseLink';
-import ButtonLink from 'client/common/components/ButtonLink';
-import MainNav from 'client/common/components/MainNav';
-import MultiSeriesLineGraph from 'client/common/components/MultiSeriesLineGraph';
-import NavHeader from 'client/common/components/NavHeader';
-import NoDataMessage from 'client/common/components/NoDataMessage';
-import StockArticleDataGroup from 'client/common/components/StockArticleDataGroup';
-import UnderConstructionMessage from 'client/common/components/UnderConstructionMessage';
+import ArticleDataList from './ArticleDataList';
+import BaseLink from './BaseLink';
+import ButtonLink from './ButtonLink';
+import MainNav from './MainNav';
+import MultiSeriesLineGraph from './MultiSeriesLineGraph';
+import NavHeader from './NavHeader';
+import NoDataMessage from './NoDataMessage';
+import StockArticleDataGroup from './StockArticleDataGroup';
+import UnderConstructionMessage from './UnderConstructionMessage';
+import UserAvatarMenu from './UserAvatarMenu';
 
 export {
     ArticleDataList, // force formatting
@@ -18,4 +19,5 @@ export {
     NoDataMessage,
     StockArticleDataGroup,
     UnderConstructionMessage,
+    UserAvatarMenu,
 };

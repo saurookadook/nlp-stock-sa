@@ -1,9 +1,9 @@
 import React from 'react';
-import { Avatar, Box, Button, Heading, Spacer, useColorMode } from '@chakra-ui/react';
+import { Box, Button, Heading, Spacer, useColorMode } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
 import type { NullableValue, UserData } from '@nlpssa-app-types/common/main';
-import { NavHeader } from 'client/common/components';
+import { NavHeader, UserAvatarMenu } from 'client/common/components';
 
 type BasePageProps = React.PropsWithChildren<{
     className?: string;
@@ -64,7 +64,7 @@ function BasePage({
                     {colorMode === 'light' ? <SunIcon /> : <MoonIcon />}
                 </Button>
 
-                <Avatar size="sm" name={userData?.username || 'anonymous'} />
+                <UserAvatarMenu username={userData?.username} />
             </NavHeader>
 
             <Box as="section" display="flex" flexDirection="column" paddingY="1rem">
