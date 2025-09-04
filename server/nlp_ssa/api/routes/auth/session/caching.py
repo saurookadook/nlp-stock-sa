@@ -148,7 +148,7 @@ def upsert_user_session(
         user_session = UserSessionFacade(db_session=local_db_session).create_or_update(
             payload=dict(
                 id=uuid4(),
-                cache_key=cache_key,
+                cache_key=entity_key,  # this was poorly named :[
                 user_id=user.id,
                 access_token=details.token_data.access_token,
                 auth_provider=details.auth_provider,

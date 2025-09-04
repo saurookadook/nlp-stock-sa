@@ -9,4 +9,4 @@ class LoginResponse(BaseResponseModel):
 
 
 class LogoutResponse(BaseResponseModel):
-    pass
+    message: str
