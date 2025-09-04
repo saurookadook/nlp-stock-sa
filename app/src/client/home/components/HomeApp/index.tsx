@@ -22,6 +22,7 @@ function HomeApp(): React.ReactElement {
     console.log('home - HomeApp', { state, pageData });
     return (
         <BasePage
+            appDispatch={dispatch}
             headingChildren={<Button>I&nbsp;AM BUTTON</Button>}
             pageTitle={
                 <span>
