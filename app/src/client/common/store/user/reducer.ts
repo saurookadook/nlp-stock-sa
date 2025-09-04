@@ -3,6 +3,7 @@ import type {
     GenericStateSliceReducer,
     UserData,
 } from '@nlpssa-app-types/common/main';
+import { COMPLETE_LOGOUT } from 'client/common/constants/actionTypes';
 
 type UserDataReducer = GenericStateSliceReducer<
     UserData | null | undefined, // force formatting
@@ -12,6 +13,8 @@ type UserDataReducer = GenericStateSliceReducer<
 const user: UserDataReducer = [
     (stateSlice, action) => {
         switch (action.type) {
+            case COMPLETE_LOGOUT:
+                return null;
             default:
                 return stateSlice;
         }
