@@ -22,9 +22,12 @@ export async function attemptLogout({ dispatch }) {
         }
 
         console.log(`${logPrefix} - apiResponse:`, { apiResponse });
-        return completeLogout({ dispatch });
+        completeLogout({ dispatch });
+
+        return apiData;
     } catch (e) {
         console.warn(`${logPrefix} - caught exception:\n`, e);
+        return null;
     }
 }
 

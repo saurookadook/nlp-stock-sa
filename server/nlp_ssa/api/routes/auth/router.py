@@ -1,6 +1,6 @@
 import logging
 import secrets
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Response
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from fastapi_csrf_protect import CsrfProtect
 
@@ -9,8 +9,11 @@ from oauthlib.oauth2 import WebApplicationClient
 
 from api.routes.auth.models.responses import LoginResponse, LogoutResponse
 from config import env_vars
+from config.logging import ExtendedLogger
+from db import db_session
+from models.user_session import UserSessionFacade
 
-logger = logging.getLogger(__file__)
+logger: ExtendedLogger = logging.getLogger(__file__)
 router = APIRouter()
 
 # TODO: START -----------------------------------------------------------------
@@ -53,7 +56,25 @@ async def read_login(
 
 
 @router.delete("/logout", response_model=LogoutResponse)
-async def read_login(
+async def do_logout(
     request: Request,
+    response: Response,
 ):
-    pass
+    logger.log_debug_centered(" do_logout ")
+    logger.log_debug_pretty(request)
+    # TODO: this might be a good dependency :]
+    user_session_key = request.cookies.get(env_vars.AUTH_COOKIE_KEY)
+
+    deleted_user_session = UserSessionFacade(
+        db_session=db_session
+    ).delete_one_by_cache_key(user_session_key)
+
+    if not deleted_user_session:
+        return {
+            "message": "Logout unsuccessful. Are you sure that you're currently logged in?"
+        }
+
+    response.delete_cookie(key=env_vars.AUTH_COOKIE_KEY, domain=env_vars.BASE_DOMAIN)
+    return {
+        "message": "Logout successful",
+    }
