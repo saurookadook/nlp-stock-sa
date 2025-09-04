@@ -27,7 +27,7 @@ const buildConfig = (env, argv) => ({
     // },
     entry: {
         // Maybe don't need this...?
-        // 'react-vendors': [
+        // 'vendors': [
         //     '@babel/polyfill',
         //     '@chakra-ui/react',
         //     '@emotion/react',
@@ -35,14 +35,23 @@ const buildConfig = (env, argv) => ({
         //     'react',
         //     'react-dom',
         // ],
+        // account: {
+        //     import: path.resolve(__dirname, 'src/client/account/entry.tsx'),
+        //     dependOn: 'vendors',
+        // },
+        // dataExplorers: {
+        //     import: path.resolve(__dirname, 'src/client/data-explorers/entry.tsx'),
+        //     dependOn: 'vendors',
+        // },
         // home: {
         //     import: path.resolve(__dirname, 'src/client/home/entry.tsx'),
-        //     dependOn: 'react-vendors',
+        //     dependOn: 'vendors',
         // },
         // login: {
         //     import: path.resolve(__dirname, 'src/client/login/entry.tsx'),
-        //     dependOn: 'react-vendors',
+        //     dependOn: 'vendors',
         // },
+        account: ['@babel/polyfill', path.resolve(__dirname, 'src/client/account/entry.tsx')],
         dataExplorers: ['@babel/polyfill', path.resolve(__dirname, 'src/client/data-explorers/entry.tsx')],
         home: ['@babel/polyfill', path.resolve(__dirname, 'src/client/home/entry.tsx')],
         login: ['@babel/polyfill', path.resolve(__dirname, 'src/client/login/entry.tsx')],

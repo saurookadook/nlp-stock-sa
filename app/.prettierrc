@@ -2,7 +2,7 @@
     "arrowParens": "always",
     "bracketSameLine": false,
     "multilineArraysWrapThreshold": 2,
-    "printWidth": 120,
+    "printWidth": 88,
     "proseWrap": "always",
     "semi": true,
     "singleQuote": true,
