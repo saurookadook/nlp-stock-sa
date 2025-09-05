@@ -1,5 +1,7 @@
 import logging
 from enum import Enum
+from rich import pretty
+from typing import Any
 
 from config import env_vars
 
@@ -15,7 +17,7 @@ except OSError:
     raw_window_width = 200
 
 window_width = (
-    raw_window_width - 120
+    raw_window_width - 160
 )  # to account for characters added by logging handlers
 
 print("=" * raw_window_width)
@@ -42,24 +44,18 @@ class ExtendedLogger(BaseLoggerClass):
         super().__init__(*args, **kwargs)
 
         self.raw_window_width = raw_window_width
-        self.window_width = raw_window_width
+        self.window_width = max(100, window_width)
 
     # TODO: type annotation for "int in this Enum"?
-    def log_centered(self, log_level: int, msg: str, *args, **kwargs):
-        if (
-            not isinstance(log_level, int)
-            or log_level not in LogLevelEnum.level_values()
-        ):
-            log_level = LogLevelEnum.INFO.value
-        self.log(log_level, msg.center(self.window_width, "-"), *args, **kwargs)
+    def log_centered(
+        self, log_level: int, msg: str, *args, fill_char: str = "-", **kwargs
+    ):
+        self._log_impl(
+            log_level, msg.center(self.window_width, fill_char), *args, **kwargs
+        )
 
     def log_section_start(self, log_level: int, entity_name: str, *args, **kwargs):
-        if (
-            not isinstance(log_level, int)
-            or log_level not in LogLevelEnum.level_values()
-        ):
-            log_level = LogLevelEnum.INFO.value
-        self.log(
+        self._log_impl(
             log_level,
             f" 'Getting `{entity_name}` records...' ".center(self.window_width, "="),
             *args,
@@ -69,17 +65,41 @@ class ExtendedLogger(BaseLoggerClass):
     def log_section_end(
         self, log_level: int, entity_name: str, entity_count: int, *args, **kwargs
     ):
-        if (
-            not isinstance(log_level, int)
-            or log_level not in LogLevelEnum.level_values()
-        ):
-            log_level = LogLevelEnum.INFO.value
-        self.log(
+        self._log_impl(
             log_level,
             f" 'Done with `{entity_name}` records! Total: {entity_count}' ".center(
                 self.window_width, "="
             ),
             *args,
+            **kwargs,
+        )
+
+    def log_pretty(
+        self,
+        log_level: int,
+        msg_obj: Any,
+        *,
+        max_width: int = window_width,
+        indent_size: int = 4,
+        max_length: int | None = None,
+        max_string: int | None = None,
+        max_depth: int | None = None,
+        expand_all: bool = True,
+        **kwargs,
+    ):
+        prettified_msg_obj = "\n" + pretty.pretty_repr(
+            msg_obj,
+            max_width=max_width,
+            indent_size=indent_size,
+            max_length=max_length,
+            max_string=max_string,
+            max_depth=max_depth,
+            expand_all=expand_all,
+        )
+
+        self._log_impl(
+            log_level,
+            prettified_msg_obj,
             **kwargs,
         )
 
@@ -92,6 +112,21 @@ class ExtendedLogger(BaseLoggerClass):
     def log_info_section_end(self, *args, **kwargs):
         self.log_section_end(LogLevelEnum.INFO.value, *args, **kwargs)
 
+    def log_info_pretty(self, msg_obj: Any, **kwargs):
+        self.log_pretty(LogLevelEnum.INFO.value, msg_obj, **kwargs)
+
+    def log_debug_centered(self, *args, **kwargs):
+        self.log_centered(LogLevelEnum.DEBUG.value, *args, **kwargs)
+
+    def log_debug_section_start(self, *args, **kwargs):
+        self.log_section_start(LogLevelEnum.DEBUG.value, *args, **kwargs)
+
+    def log_debug_section_end(self, *args, **kwargs):
+        self.log_section_end(LogLevelEnum.DEBUG.value, *args, **kwargs)
+
+    def log_debug_pretty(self, msg_obj: Any, **kwargs):
+        self.log_pretty(LogLevelEnum.DEBUG.value, msg_obj, **kwargs)
+
     def log_warn_centered(self, *args, **kwargs):
         self.log_centered(LogLevelEnum.WARNING.value, *args, **kwargs)
 
@@ -101,6 +136,9 @@ class ExtendedLogger(BaseLoggerClass):
     def log_warn_section_end(self, *args, **kwargs):
         self.log_section_end(LogLevelEnum.WARNING.value, *args, **kwargs)
 
+    def log_warn_pretty(self, msg_obj: Any, **kwargs):
+        self.log_pretty(LogLevelEnum.WARNING.value, msg_obj, **kwargs)
+
     def log_error_centered(self, *args, **kwargs):
         self.log_centered(LogLevelEnum.ERROR.value, *args, **kwargs)
 
@@ -109,6 +147,17 @@ class ExtendedLogger(BaseLoggerClass):
 
     def log_error_section_end(self, *args, **kwargs):
         self.log_section_end(LogLevelEnum.ERROR.value, *args, **kwargs)
+
+    def log_erro_pretty(self, msg_obj: Any, **kwargs):
+        self.log_pretty(LogLevelEnum.ERROR.value, msg_obj, **kwargs)
+
+    def _log_impl(self, log_level: int, *args, **kwargs):
+        if (
+            not isinstance(log_level, int)
+            or log_level not in LogLevelEnum.level_values()
+        ):
+            log_level = LogLevelEnum.INFO.value
+        self.log(log_level, *args, **kwargs)
 
 
 logging.setLoggerClass(ExtendedLogger)

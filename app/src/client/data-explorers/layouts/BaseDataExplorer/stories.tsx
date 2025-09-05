@@ -6,10 +6,14 @@ import {
     withRouter,
 } from 'storybook-addon-remix-react-router';
 
-import type { DataExplorersStore, GenericStateStore } from '@nlpssa-app-types/common/main';
+import type {
+    DataExplorersStore,
+    GenericStateStore,
+} from '@nlpssa-app-types/common/main';
 import { getStoryArticleData } from 'client/_story-data';
 import { BaseDataExplorer } from 'client/data-explorers/layouts';
 import { dataExplorersRoutes } from 'client/data-explorers/routes';
+import { AppStateProvider } from 'client/data-explorers/store';
 
 const articleData = getStoryArticleData().data as DataExplorersStore['articleData'];
 
@@ -42,12 +46,6 @@ const baseInitialData = (): GenericStateStore<DataExplorersStore> => ({
 });
 
 export const BaseDataExplorerArticleDataNoData: Story = {
-    args: {
-        initialPageData: {
-            ...baseInitialData(),
-            articleData: [],
-        },
-    },
     parameters: {
         reactRouter: reactRouterParameters({
             location: {
@@ -55,16 +53,19 @@ export const BaseDataExplorerArticleDataNoData: Story = {
             },
         }),
     },
-    render: (args) => <BaseDataExplorer initialPageData={args.initialPageData} />,
+    render: (args) => (
+        <AppStateProvider
+            initialState={{
+                ...baseInitialData(),
+                articleData: [],
+            }}
+        >
+            <BaseDataExplorer />
+        </AppStateProvider>
+    ),
 };
 
 export const BaseDataExplorerArticleData: Story = {
-    args: {
-        initialPageData: {
-            ...baseInitialData(),
-            articleData: articleData,
-        },
-    },
     parameters: {
         reactRouter: reactRouterParameters({
             location: {
@@ -72,17 +73,20 @@ export const BaseDataExplorerArticleData: Story = {
             },
         }),
     },
-    render: (args) => <BaseDataExplorer initialPageData={args.initialPageData} />,
+    render: (args) => (
+        <AppStateProvider
+            initialState={{
+                ...baseInitialData(),
+                articleData: articleData,
+            }}
+        >
+            <BaseDataExplorer />
+        </AppStateProvider>
+    ),
 };
 
 // TODO: is it possible to use controls from Storybook to change the slug value?
 export const BaseDataExplorerArticleDataBySlug: Story = {
-    args: {
-        initialPageData: {
-            ...baseInitialData(),
-            articleData: articleData,
-        },
-    },
     parameters: {
         reactRouter: reactRouterParameters({
             location: {
@@ -93,16 +97,19 @@ export const BaseDataExplorerArticleDataBySlug: Story = {
             },
         }),
     },
-    render: (args) => <BaseDataExplorer initialPageData={args.initialPageData} />,
+    render: (args) => (
+        <AppStateProvider
+            initialState={{
+                ...baseInitialData(),
+                articleData: articleData,
+            }}
+        >
+            <BaseDataExplorer />
+        </AppStateProvider>
+    ),
 };
 
 export const BaseDataExplorerStockDataNoData: Story = {
-    args: {
-        initialPageData: {
-            ...baseInitialData(),
-            stockDataAll: [],
-        },
-    },
     parameters: {
         reactRouter: reactRouterParameters({
             location: {
@@ -110,7 +117,14 @@ export const BaseDataExplorerStockDataNoData: Story = {
             },
         }),
     },
-    render: (args) => {
-        return <BaseDataExplorer initialPageData={args.initialPageData} />;
-    },
+    render: (args) => (
+        <AppStateProvider
+            initialState={{
+                ...baseInitialData(),
+                stockDataAll: [],
+            }}
+        >
+            <BaseDataExplorer />
+        </AppStateProvider>
+    ),
 };

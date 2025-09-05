@@ -1,10 +1,11 @@
 import arrow
 import pytest
 import secrets
-from rich import inspect
+from rich import inspect, pretty
 from sqlalchemy.exc import IntegrityError
 from uuid import UUID, uuid4
 
+from config.logging import window_width
 from constants import AuthProviderEnum
 from models.user import User, UserFacade
 from models.user.factories import UserFactory
@@ -27,6 +28,28 @@ def test_get_one_by_id(mock_db_session, user_session_facade: UserSessionFacade):
 def test_get_one_by_id_no_result(user_session_facade: UserSessionFacade):
     with pytest.raises(UserSessionFacade.NoResultFound):
         user_session_facade.get_one_by_id(id="4c24beca-922f-4f10-819e-37931d949a29")
+
+
+def test_get_one_by_cache_key(mock_db_session, user_session_facade: UserSessionFacade):
+    test_user = UserFactory()
+    mock_db_session.commit()
+
+    test_user_session = UserSessionFactory(
+        cache_key=f"{test_user.username}:{secrets.token_urlsafe(17)}",
+        user_id=test_user.id,
+    )
+    mock_db_session.commit()
+
+    result = user_session_facade.get_one_by_cache_key(test_user_session.cache_key)
+
+    assert result == UserSession.model_validate(test_user_session)
+
+
+def test_get_one_by_cache_key_no_result(user_session_facade: UserSessionFacade):
+    with pytest.raises(UserSessionFacade.NoResultFound):
+        user_session_facade.get_one_by_cache_key(
+            cache_key=f"not_real:{secrets.token_urlsafe(17)}"
+        )
 
 
 def test_get_first_by_user_id_and_auth_provider(
@@ -97,7 +120,11 @@ def test_create_or_update_new_record(
     test_user = UserFactory()
     mock_db_session.commit()
 
-    test_user_session_dict = dict(**expected_user_session_dict, user_id=test_user.id)
+    test_user_session_dict = dict(
+        **expected_user_session_dict,
+        cache_key=f"{test_user.username}:{secrets.token_urlsafe(17)}",
+        user_id=test_user.id,
+    )
 
     result = user_session_facade.create_or_update(payload=test_user_session_dict)
 
@@ -146,12 +173,54 @@ def test_delete_one_by_id(mock_db_session, user_session_facade: UserSessionFacad
     test_user_session = UserSessionFactory(user_id=test_user.id)
     mock_db_session.commit()
 
+    # NOTE:
+    # This test fails if I try to access `test_user_session.id` or
+    # `test_user_session.user_id` directly in the assert statements. In those cases,
+    # there's some weird race condition happening where the record gets
+    # deleted _before_ the assert statement executes.
+    expected_id = test_user_session.id
+    expected_user_id = test_user_session.user_id
+
     result = user_session_facade.delete_one_by_id(test_user_session.id)
 
-    assert result.id == test_user_session.id
-    assert result.user_id == test_user_session.user_id
+    assert result.id == expected_id
+    assert result.user_id == expected_user_id
 
 
 def test_delete_one_by_id_no_record_found(user_session_facade: UserSessionFacade):
     with pytest.raises(UserSessionFacade.NoResultFound):
         user_session_facade.delete_one_by_id("2cef01cf-a3b9-4abc-a776-ec50dad659b4")
+
+
+def test_delete_one_by_cache_key(
+    mock_db_session, user_session_facade: UserSessionFacade
+):
+    test_user = UserFactory()
+    mock_db_session.commit()
+
+    test_cache_key = f"{test_user.username}:{secrets.token_urlsafe(17)}"
+    test_user_session = UserSessionFactory(
+        cache_key=test_cache_key,
+        user_id=test_user.id,
+    )
+    mock_db_session.commit()
+
+    # NOTE:
+    # This test fails if I try to access `test_user_session.id` or
+    # `test_user_session.user_id` directly in the assert statements. In those cases,
+    # there's some weird race condition happening where the record gets
+    # deleted _before_ the assert statement executes.
+    expected_id = test_user_session.id
+    expected_user_id = test_user_session.user_id
+
+    result = user_session_facade.delete_one_by_cache_key(test_cache_key)
+
+    assert result.id == expected_id
+    assert result.user_id == expected_user_id
+
+
+def test_delete_one_by_cache_key_no_record_found(
+    user_session_facade: UserSessionFacade,
+):
+    with pytest.raises(UserSessionFacade.NoResultFound):
+        user_session_facade.delete_one_by_cache_key("not_real:agnopaHFEWUHnpaoe")

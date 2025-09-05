@@ -6,3 +6,7 @@ class LoginResponse(BaseResponseModel):
     github_url: str = ""
     google_url: str = ""
     microsoft_url: str = ""
+
+
+class LogoutResponse(BaseResponseModel):
+    message: str

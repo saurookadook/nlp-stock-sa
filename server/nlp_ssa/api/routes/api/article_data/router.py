@@ -25,11 +25,11 @@ router = APIRouter()
 async def read_article_data_by_slug(
     stock_slug: str, user_session=Depends(handle_user_session)
 ):
-    logger.debug(
-        " read_article_data_by_slug - user_session ".center(logger.window_width, "+")
+    logger.log_debug_centered(
+        " read_article_data_by_slug - user_session ", fill_char="+"
     )
-    pretty.pprint(user_session, expand_all=True)
-    logger.debug("+" * logger.window_width)
+    logger.log_debug_pretty(user_session)
+    logger.log_debug_centered("", fill_char="+")
 
     article_data_rows = []
 
@@ -55,9 +55,9 @@ async def read_article_data(user_session=Depends(handle_user_session)):
     - ordered by date_modified (published date?) descending
     """
 
-    logger.debug(" read_article_data - user_session ".center(logger.window_width, "+"))
-    pretty.pprint(user_session, expand_all=True)
-    logger.debug("+" * logger.window_width)
+    logger.log_debug_centered(" read_article_data - user_session ", fill_char="+")
+    logger.log_debug_pretty(user_session)
+    logger.log_debug_centered("", fill_char="+")
 
     article_data_grouped_by_stock_slug = []
 

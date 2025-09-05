@@ -2,9 +2,11 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
+import { AppStateProviderHOC } from 'client/common/store';
 import { LoginApp } from 'client/login/components';
 // import reportWebVitals from 'client/reportWebVitals';
 
+// TODO: add state store for AppStateProvider
 window.renderApp = async (initialPageData) => {
     const root = createRoot(document.getElementById('nlpssa-main'));
     console.log({ page: 'login', initialPageData });

@@ -65,6 +65,8 @@ interface FinalReducers {
     [key: string]: GenericReducerFunc;
 }
 
+type AppDispatch = React.Dispatch<BaseReducerAction>;
+
 /**********************************************************************
  * Users
  **********************************************************************/

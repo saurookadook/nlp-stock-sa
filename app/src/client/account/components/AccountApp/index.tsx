@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Box, Center, Container, Spacer, Spinner } from '@chakra-ui/react';
 
-import type { AccountStore, AmbiguousObject, NullableValue, UserData } from '@nlpssa-app-types/common/main';
+import type { AccountStore } from '@nlpssa-app-types/common/main';
 import { BasePage } from 'client/common/layouts';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
 
@@ -19,7 +19,7 @@ function AccountApp(): React.ReactElement {
         <BasePage // force formatting
             className="App"
             headingChildren={<Spacer />}
-            pageTitle={<span>{`💸 Login 💸`}</span>}
+            pageTitle={<span>{`🆔 Account Details 🆔`}</span>}
             userData={user}
         >
             <Container className="home" margin="0 auto" maxWidth="40rem">
@@ -35,7 +35,7 @@ function AccountApp(): React.ReactElement {
                 >
                     {isAccountDataLoaded() ? (
                         <Box display="flex" flexDirection="column" rowGap="1rem">
-                            <pre>
+                            <pre style={{ textAlign: 'left' }}>
                                 <code>{JSON.stringify(accountData, null, 2)}</code>
                             </pre>
                         </Box>

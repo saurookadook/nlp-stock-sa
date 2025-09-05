@@ -4,8 +4,9 @@ import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
 import type { DataExplorersStore } from '@nlpssa-app-types/common/main';
 import { BaseDataExplorer } from 'client/data-explorers/layouts';
+import { AppStateProvider } from 'client/data-explorers/store';
 // import reportWebVitals from 'client/reportWebVitals';
-import { cleanAndTransformSentimentAnalyses } from './utils/dataNormalizers';
+import { cleanAndTransformSentimentAnalyses } from 'client/data-explorers/utils/dataNormalizers';
 
 window.renderApp = async (data) => {
     const initialPageData = data as DataExplorersStore;
@@ -25,10 +26,13 @@ window.renderApp = async (data) => {
     }
 
     root.render(
-        <ChakraProvider theme={theme}>
-            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-            <BaseDataExplorer initialPageData={initialPageData} />
-        </ChakraProvider>,
+        <AppStateProvider initialState={initialPageData}>
+            <ChakraProvider theme={theme}>
+                <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+
+                <BaseDataExplorer />
+            </ChakraProvider>
+        </AppStateProvider>,
     );
 };
 

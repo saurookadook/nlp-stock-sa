@@ -11,6 +11,7 @@ from utils.pydantic_helpers import BaseAppModel
 
 class UserSession(BaseAppModel, TimestampsMixin):
     id: UUID
+    cache_key: str
     user_id: Annotated[UUID, Field()]
     user: Annotated[User, Field()]
     access_token: str

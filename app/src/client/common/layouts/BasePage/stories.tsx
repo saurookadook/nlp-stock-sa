@@ -32,3 +32,19 @@ export const BasePageWithTitle: Story = {
         </BasePage>
     ),
 };
+
+export const BasePageWithUserData: Story = {
+    args: {
+        pageTitle: 'Article Data Overview',
+        userData: {
+            username: 'rick-sanchez',
+        },
+    },
+    render: (args) => (
+        <BasePage {...args}>
+            {getStoryArticleData().data!.map((data, i) => (
+                <pre key={`article-data-${i}`}>{JSON.stringify(data, null, 4)}</pre>
+            ))}
+        </BasePage>
+    ),
+};
