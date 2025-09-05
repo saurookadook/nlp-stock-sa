@@ -24,5 +24,5 @@ GITHUB_OAUTH_TOKEN_URL = "https://github.com/login/oauth/access_token"
 GITHUB_OAUTH_SCOPES = []
 
 # Session Cache
-MEMCACHED_HOST = os.getenv("MEMCACHED_HOST", default="session-cache")
+MEMCACHED_HOST = os.getenv("MEMCACHED_HOST", default="memcached")
 MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT", default="11211"))

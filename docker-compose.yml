@@ -9,9 +9,9 @@ services:
     platform: linux/amd64
     depends_on:
       - frontend
+      - memcached
       - nginx
       - server
-      - session-cache
 
   # TODO: rename this to something better like `pg_database`?
   database:
@@ -57,6 +57,14 @@ services:
       - /opt/nlpssa-frontend/node_modules
       # - ~/.aws:/home/nlpstocksaapp/.aws:ro
 
+  memcached:
+    image: memcached:1.6.10
+    networks:
+      - main_app
+    platform: linux/amd64
+    ports:
+      - '11211:11211'
+
   nginx:
     build:
       context: .
@@ -83,7 +91,7 @@ services:
   server:
     depends_on:
       - database
-      - session-cache
+      - memcached
     env_file: .env
     environment:
       COLUMNS: ${COLUMNS}
@@ -120,14 +128,6 @@ services:
       DATABASE_NAME: test_the_money_maker
       ENV: test
     extends: server
-
-  session-cache:
-    image: memcached:1.6.10
-    networks:
-      - main_app
-    platform: linux/amd64
-    ports:
-      - '11211:11211'
 
   scraper:
     depends_on:
