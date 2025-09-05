@@ -4,6 +4,7 @@ import { Box, LinkBox, LinkOverlay } from '@chakra-ui/react';
 function AppleLinkBox({ href, ...props }) {
     return (
         <LinkBox
+            as="div"
             backgroundColor="#ffffff"
             borderColor="gray.500"
             borderStyle="solid"

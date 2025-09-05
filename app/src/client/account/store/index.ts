@@ -1,4 +1,6 @@
-import AppStateProvider from './AppStateProvider';
-import * as reducer from './reducer';
+import { AppStateProviderHOC } from 'client/common/store';
+import { default as reducer } from './reducer';
+
+const AppStateProvider = AppStateProviderHOC(reducer);
 
 export { AppStateProvider, reducer };

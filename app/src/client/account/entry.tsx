@@ -2,7 +2,11 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
-import type { AccountStore, NullableValue, UserData } from '@nlpssa-app-types/common/main';
+import type {
+    AccountStore,
+    NullableValue,
+    UserData,
+} from '@nlpssa-app-types/common/main';
 import { AccountApp } from 'client/account/components';
 import { AppStateProvider } from 'client/account/store';
 // import reportWebVitals from 'client/reportWebVitals';

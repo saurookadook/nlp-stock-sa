@@ -3,7 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
 
 import { HomeApp } from 'client/home/components';
-import AppStateProvider from 'client/home/store/AppStateProvider';
+import { AppStateProvider } from 'client/home/store';
+// import AppStateProvider from 'client/home/store/AppStateProvider';
 // import reportWebVitals from 'client/reportWebVitals';
 
 window.renderApp = async (initialPageData) => {
