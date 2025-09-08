@@ -38,7 +38,7 @@ retry_client = RetryingClient(
 TTL_SECONDS = 600  # 60s * 10 = 10min
 
 
-def get_user_session(cache_key: str):
+def get_user_session(cache_key: str) -> UserSessionCacheValue | None:
     logger.log_debug_centered(" get_user_session: START ", fill_char="=")
     cache_value = safe_get_from_session_cache(cache_key=cache_key)
 
@@ -48,8 +48,6 @@ def get_user_session(cache_key: str):
 
     _, entity_key = parse_cache_key(cache_key)
     username = entity_key.split(":")[0]
-
-    user_session = None
 
     logger.log_debug_centered(" get_user_session ")
     logger.debug(f"{'-'*12} username: '{username}'")
@@ -66,29 +64,31 @@ def get_user_session(cache_key: str):
         logger.debug(f"{'-' * 24} get_user_session: user_session")
         logger.log_debug_pretty(user_session)
 
+        cache_value = UserSessionCacheValue(
+            auth_provider=user_session.auth_provider,
+            cookie_config=SessionCookieConfig(
+                key=env_vars.AUTH_COOKIE_KEY,
+                value=cache_key,
+                max_age=ONE_DAY_IN_SECONDS,
+                domain=env_vars.BASE_DOMAIN,
+            ),
+            # TODO: this value should come from the user_session
+            expires_at=get_expiration_date_in_seconds(user_session.expires_in),
+            user_session_id=user_session.id,
+        )
+
         safe_set_in_session_cache(
             cache_key=cache_key,
-            cache_value=UserSessionCacheValue(
-                auth_provider=user_session.auth_provider,
-                cookie_config=SessionCookieConfig(
-                    key=env_vars.AUTH_COOKIE_KEY,
-                    value=cache_key,
-                    max_age=ONE_DAY_IN_SECONDS,
-                    domain=env_vars.BASE_DOMAIN,
-                ),
-                # TODO: this value should come from the user_session
-                expires_at=get_expiration_date_in_seconds(user_session.expires_in),
-                user_session_id=user_session.id,
-            ),
+            cache_value=cache_value,
         )
     except Exception as e:
         logger.debug(e)
 
     logger.log_debug_centered(" get_user_session: END (w/ DB result) ", fill_char="=")
-    return user_session
+    return cache_value
 
 
-def safe_get_from_session_cache(*, cache_key: str):
+def safe_get_from_session_cache(*, cache_key: str) -> UserSessionCacheValue | None:
     logger.log_debug_centered(" safe_get_from_session_cache ", fill_char="=")
     logger.debug(
         f"Attempting to retrieve value for '{cache_key}' from session cache..."
@@ -128,14 +128,13 @@ def upsert_user_session(
     *,
     cache_key: str,
     details: UserSessionCacheDetails,
-):
+) -> UserSessionCacheValue:
     logger.log_debug_centered(" upsert_user_session: START ", fill_char="=")
 
     _, entity_key = parse_cache_key(cache_key)
     username = entity_key.split(":")[0]
 
-    user_session = None
-    cache_details = None
+    cache_value = None
 
     # TODO: this whole try/except block smells a bit...
     try:
@@ -163,32 +162,31 @@ def upsert_user_session(
 
         local_db_session.commit()
 
-        cache_details = safe_set_in_session_cache(
+        cache_value = UserSessionCacheValue(
+            auth_provider=details.auth_provider,
+            cookie_config=details.cookie_config,
+            # TODO: this value should come from the user_session
+            expires_at=get_expiration_date_in_seconds(details.token_data.expires_in),
+            user_session_id=user_session.id,
+        )
+
+        safe_set_in_session_cache(
             cache_key=cache_key,
-            cache_value=UserSessionCacheValue(
-                auth_provider=details.auth_provider,
-                cookie_config=details.cookie_config,
-                # TODO: this value should come from the user_session
-                expires_at=get_expiration_date_in_seconds(
-                    details.token_data.expires_in
-                ),
-                user_session_id=user_session.id,
-            ),
+            cache_value=cache_value,
         )
     except Exception as e:
         logger.debug(e)
         raise e
 
     logger.log_debug_centered(" upsert_user_session: END ", fill_char="=")
-    # TODO: this feels messy...
-    return cache_details or user_session
+    return cache_value
 
 
 def safe_set_in_session_cache(
     *,
     cache_key: str,
     cache_value: UserSessionCacheValue,
-):
+) -> UserSessionCacheValue | None:
     logger.debug(f"{'-' * 24} safe_set_in_session_cache")
     logger.info(
         f"Updating value for key '{cache_key}' in session cache with expiration TTL of '{TTL_SECONDS}'"
