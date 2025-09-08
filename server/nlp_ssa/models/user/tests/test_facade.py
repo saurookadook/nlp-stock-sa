@@ -1,5 +1,6 @@
 import arrow
 import pytest
+import secrets
 from uuid import UUID, uuid4
 
 from models.analysis_view.factories import AnalysisViewFactory
@@ -7,6 +8,7 @@ from models.sentiment_analysis.factories import SentimentAnalysisFactory
 from models.stock.factories import StockFactory
 from models.user import User, UserFacade
 from models.user.factories import UserFactory
+from models.user_session.factories import UserSessionFactory
 
 
 @pytest.fixture()
@@ -41,6 +43,27 @@ def test_get_one_by_username(mock_db_session, user_facade):
 def test_get_one_by_username_no_result(user_facade):
     with pytest.raises(UserFacade.NoResultFound):
         user_facade.get_one_by_username(username="does-not-exist")
+
+
+def test_get_one_by_session_id(mock_db_session, user_facade):
+    test_user = UserFactory()
+    mock_db_session.commit()
+
+    test_cache_key = f"{test_user.username}:{secrets.token_urlsafe(17)}"
+    test_user_session = UserSessionFactory(
+        cache_key=test_cache_key,
+        user_id=test_user.id,
+    )
+    mock_db_session.commit()
+
+    result = user_facade.get_one_by_session_id(test_user_session.id)
+
+    assert result == User.model_validate(test_user)
+
+
+def test_get_one_by_session_id_no_result(user_facade):
+    with pytest.raises(UserFacade.NoResultFound):
+        user_facade.get_one_by_session_id("42e6ccde-8336-425c-948d-ca91f33d3fd5")
 
 
 def test_get_analysis_views_by_quote_stock_symbol_singular_result(

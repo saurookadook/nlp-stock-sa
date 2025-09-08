@@ -8,6 +8,7 @@ from uuid import UUID
 
 from models.user import UserDB
 from models.user.user import User
+from models.user_session import UserSessionDB
 
 
 class UserFacade:
@@ -32,6 +33,18 @@ class UserFacade:
         try:
             user = self.db_session.execute(
                 select(UserDB).where(UserDB.username == username)
+            ).scalar_one()
+        except NoResultFound:
+            raise UserFacade.NoResultFound
+
+        return User.model_validate(user)
+
+    def get_one_by_session_id(self, user_session_id: UUID | str) -> User:
+        try:
+            user = self.db_session.execute(
+                select(UserDB)
+                .join(UserSessionDB, UserSessionDB.user_id == UserDB.id)
+                .where(UserSessionDB.id == user_session_id)
             ).scalar_one()
         except NoResultFound:
             raise UserFacade.NoResultFound
