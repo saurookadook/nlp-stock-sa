@@ -84,6 +84,7 @@ class BloombergSpider(scrapy.Spider):
         soup = BeautifulSoup(response.body, "html.parser")
         cleaned_text = self.clean(soup.get_text())
         item = ScraperItem()
-        item["Sentence"] = cleaned_text
-        item["GroupId"] = self.group_id
+        # item["record_id"] = str(article_data_record.id) if article_data_record else "SKIPPED"
+        item["sentence"] = cleaned_text if cleaned_text is not None else ""
+        item["source_group_id"] = self.group_id if self.group_id is not None else ""
         yield item

@@ -120,12 +120,14 @@ class CNBCNewsSpider(BaseSpider):
 
         # inspect(article_content)
 
+        article_data_record = None
+        source_group_id = uuid.uuid4()
+
         try:
             raw_text, cleaned_text = self.get_raw_and_cleaned_text(
                 "\n".join(article_content)
             )
             metadata = self._get_article_metadata(response, source_url)
-            source_group_id = uuid.uuid4()
 
             article_data_record = self.article_data_facade.create_or_update(
                 payload=dict(
@@ -161,8 +163,11 @@ class CNBCNewsSpider(BaseSpider):
             self._handle_parse_method_exception(logger, source_url, e)
 
         item = ScraperItem()
-        item["Sentence"] = cleaned_text if cleaned_text is not None else ""
-        item["GroupId"] = source_group_id if source_group_id is not None else ""
+        item["record_id"] = (
+            str(article_data_record.id) if article_data_record else "SKIPPED"
+        )
+        item["sentence"] = cleaned_text if cleaned_text is not None else ""
+        item["source_group_id"] = source_group_id if source_group_id is not None else ""
 
         yield item
 

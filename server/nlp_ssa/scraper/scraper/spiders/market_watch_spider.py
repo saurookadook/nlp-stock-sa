@@ -108,6 +108,8 @@ class MarketWatchSpider(BaseSpider):
 
         raw_text, cleaned_text = self.get_cleaned_text(main_content)
         metadata = self._get_article_metadata(response)
+
+        article_data_record = None
         source_group_id = uuid.uuid4()
 
         try:
@@ -145,8 +147,11 @@ class MarketWatchSpider(BaseSpider):
             self._handle_parse_method_exception(logger, source_url, e)
 
         item = ScraperItem()
-        item["Sentence"] = cleaned_text
-        item["GroupId"] = source_group_id
+        item["record_id"] = (
+            str(article_data_record.id) if article_data_record else "SKIPPED"
+        )
+        item["sentence"] = cleaned_text if cleaned_text is not None else ""
+        item["source_group_id"] = source_group_id if source_group_id is not None else ""
 
         yield item
 
