@@ -34,15 +34,6 @@ class YahooNewsSpider(BaseSpider):
     }
 
     def start_requests(self):
-        # all_article_data = select(ArticleDataDB).where(ArticleDataDB.title == "")
-
-        # for ad in db_session.scalars(all_article_data):
-        #     yield scrapy_splash.SplashRequest(
-        #         url=ad.source_url,
-        #         callback=self.update_metadata_from_page,
-        #         cb_kwargs=dict(current_ad=ad, stock_slug=ad.quote_stock_symbol),
-        #     )
-
         stock_symbol_slugs = db_session.execute(
             select(StockDB.quote_stock_symbol)
         ).all()
@@ -50,7 +41,7 @@ class YahooNewsSpider(BaseSpider):
         self.stock_slugs.extend([result[0] for result in stock_symbol_slugs])
 
         url_configs = [
-            dict(url=f"https://finance.yahoo.com/quote/{slug}/news", stock_slug=slug)
+            dict(url=f"{self.base_url}/quote/{slug}/news", stock_slug=slug)
             for slug in self.stock_slugs
         ]
         inspect(url_configs)
@@ -163,48 +154,6 @@ class YahooNewsSpider(BaseSpider):
         item["record_id"] = str(article_data_record.id)
         item["sentence"] = cleaned_text
         item["source_group_id"] = source_group_id
-
-        yield item
-
-    # NOTE: can potentially remove this
-    def update_metadata_from_page(self, response, current_ad, stock_slug):
-        article_content = response.css(self.selectors["article_content"]).get()
-        if not article_content:
-            return
-
-        metadata = self._get_article_metadata(response)
-
-        try:
-            article_data_record = self.article_data_facade.create_or_update(
-                payload=dict(
-                    id=current_ad.id,
-                    quote_stock_symbol=stock_slug,
-                    source_url=response.url,
-                    author=metadata["author"],
-                    last_updated_date=(
-                        ""
-                        if not metadata["last_updated_date"]
-                        else arrow.get(metadata["last_updated_date"]).to("utc")
-                    ),
-                    published_date=(
-                        ""
-                        if not metadata["published_date"]
-                        else arrow.get(metadata["published_date"]).to("utc")
-                    ),
-                    title=metadata["title"],
-                )
-            )
-            db_session.commit()
-        except Exception as e:
-            logger.error(e, file=sys.stderr)
-
-        item = ScraperItem()
-        item["record_id"] = str(current_ad.id)
-        self._debug_logger(
-            header_text="NewsSpider.update_metadata_from_page",
-            variables=[f"{key}: {metadata[key]} " for key in metadata.keys()],
-            width=240,
-        )
 
         yield item
 

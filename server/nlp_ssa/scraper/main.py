@@ -17,7 +17,7 @@ def main():
         # BloombergSpider,
         CNBCNewsSpider,
         MarketWatchSpider,
-        # YahooNewsSpider,
+        YahooNewsSpider,
     ]
 
     for spider in spiders:
