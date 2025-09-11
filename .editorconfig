@@ -9,6 +9,9 @@ insert_final_newline = true
 [*.{js,jsx,ts,tsx,py}]
 charset = utf-8
 
-[*.{js,json,jsonc,jsx,mjs,ts,tsx,py}]
+[*.{ts,tsx}]
+indent_size = 2
+
+[*.{js,json,jsonc,jsx,mjs,py}]
 indent_size = 4
 indent_style = space
