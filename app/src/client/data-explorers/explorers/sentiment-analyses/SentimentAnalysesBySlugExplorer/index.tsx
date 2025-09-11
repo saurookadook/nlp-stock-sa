@@ -17,6 +17,7 @@ import {
 import { DataExplorersStore } from '@nlpssa-app-types/common/main';
 import { MultiSeriesLineGraph, NoDataMessage } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
+import { ArticleDataBySlugExplorer } from 'client/data-explorers/explorers';
 import { fetchSentimentAnalysesByStockSlug } from 'client/data-explorers/store/actions';
 import { StyledFlex, StyledTd } from './styled';
 
@@ -68,11 +69,11 @@ function SentimentAnalysesBySlugExplorer() {
     state,
   });
   return (
-    <StyledFlex alignSelf="start" minWidth="80%">
+    <StyledFlex alignSelf="start" minWidth="80%" paddingX="4rem" rowGap="2rem">
       <Heading>Sentiment Analysis for {params.stockSlug}</Heading>
 
       {(sentimentAnalysesBySlug || {}).sentimentAnalyses != null ? (
-        <StyledFlex>
+        <StyledFlex columnGap="2rem" flexDirection="row">
           <StyledFlex
             justifyContent="center" // force formatting
             minHeight="30rem"
@@ -146,6 +147,8 @@ function SentimentAnalysesBySlugExplorer() {
       ) : (
         <NoDataMessage />
       )}
+
+      <ArticleDataBySlugExplorer dataListOnly={true} />
     </StyledFlex>
   );
 }

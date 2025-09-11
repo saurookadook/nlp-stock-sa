@@ -4,8 +4,8 @@ import styled from '@emotion/styled';
 import { strokeColorByPolarity } from 'client/common/components/MultiSeriesLineGraph/constants';
 
 const StyledFlex = styled(Flex)`
-  align-items: center;
-  flex-direction: column;
+  align-items: ${(props) => props.alignItems || 'center'};
+  flex-direction: ${(props) => props.flexDirection || 'column'};
 
   & .sentiment-analyses-wrapper {
     & tbody tr {
