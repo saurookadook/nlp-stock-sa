@@ -39,7 +39,6 @@ isDbReady() {
     echo "======================================================================================"
     echo ""
     while dbIsNotReady; do
-    # while ! pg_isready -h database >/dev/null 2>&1; do
         echo "Waiting for database to be ready..."
         echo "Container ID: $(getDatabaseContainerID)"
         echo "Database Host: $(getDatabaseHost)"
@@ -48,8 +47,9 @@ isDbReady() {
 }
 
 dbExists() {
-    # TODO: fix this... it doesn't work as expected
-    [ "$(psql $PSQL_CONNECTION -l | grep $DATABASE_NAME | wc -l)" -ne 0 ]
+    # Q: Is this a common practice for predicate functions in bash? Or is there some other common practice?
+    psql $PSQL_CONNECTION -l | grep "\b$DATABASE_NAME\b" | wc -l > /dev/null 2>&1;
+    return $?
 }
 
 dropDatabase() {
@@ -104,7 +104,8 @@ createTestDatabase() {
 initDatabase() {
     isDbReady
 
-    if [[ $* == "-d" || ! $(dbExists) ]]; then
+    # `$(dbExists)` returns number of results so 0 results === DB does not exist/can't be found
+    if [[ $* == "-d" || $(dbExists) -ne 0 ]]; then
         echo ""
         echo "======================================================================================"
         echo "Creating $DATABASE_NAME database..."
@@ -123,7 +124,7 @@ initDatabase() {
 initTestDatabase() {
     isDbReady
 
-    if [[ $* == "-d" || ! $(dbExists) ]]; then
+    if [[ $* == "-d" || $(dbExists) -ne 0 ]]; then
         echo ""
         echo "======================================================================================"
         echo "Creating $TEST_DATABASE_NAME database..."
@@ -142,7 +143,7 @@ initTestDatabase() {
 seedDatabase() {
     isDbReady
 
-    if [[ ! $(dbExists) ]]; then
+    if [[ $(dbExists) -ne 0 ]]; then
         docker compose run --rm server-scripts nlp_ssa/scripts/db/seeding/seed_db.py
     fi
 }
@@ -150,7 +151,7 @@ seedDatabase() {
 seedStocks() {
     isDbReady
 
-    if [[ ! $(dbExists) ]]; then
+    if [[ $(dbExists) -ne 0 ]]; then
         docker compose run --rm server-scripts nlp_ssa/scripts/db/seeding/seed_stocks.py
     fi
 }
@@ -248,6 +249,17 @@ scriptController() {
                 echo "======================================================================================"
                 echo ""
                 seedDatabase
+            fi
+        elif [ "$2" == "testing" ]; then
+            echo ""
+            echo "======================================================================================"
+            echo "testing..."
+            echo "======================================================================================"
+            echo ""
+            if [[ $(dbExists) -ne 0 ]]; then
+                echo "dbExists? FALSE"
+            else
+                echo "dbExists? TRUE"
             fi
         fi
     elif [ "$1" == "frontend" ]; then
