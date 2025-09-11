@@ -8,34 +8,42 @@ import { BaseStateContext, BaseDispatchContext } from 'client/common/store/conte
 import { usePrevious } from 'client/common/utils';
 import { fetchArticleDataByStockSlug } from 'client/data-explorers/store/actions';
 
-function ArticleDataBySlugExplorer() {
-    const state = useContext(BaseStateContext);
-    const dispatch = useContext(BaseDispatchContext);
-    const params = useParams();
-    const previousStockSlug = usePrevious(params.stockSlug);
+function ArticleDataBySlugExplorer({ dataListOnly = false }) {
+  const state = useContext(BaseStateContext);
+  const dispatch = useContext(BaseDispatchContext);
+  const params = useParams();
+  const previousStockSlug = usePrevious(params.stockSlug);
 
-    const { articleDataBySlug } = state as DataExplorersStore;
+  const { articleDataBySlug } = state as DataExplorersStore;
 
-    useEffect(() => {
-        if (articleDataBySlug == null || (previousStockSlug != null && previousStockSlug === params.stockSlug)) {
-            fetchArticleDataByStockSlug({ dispatch, stockSlug: params.stockSlug });
-        }
-    }, [params.stockSlug]);
+  useEffect(() => {
+    if (
+      articleDataBySlug == null ||
+      (previousStockSlug != null && previousStockSlug === params.stockSlug)
+    ) {
+      fetchArticleDataByStockSlug({ dispatch, stockSlug: params.stockSlug });
+    }
+  }, [params.stockSlug]);
 
-    console.log('data-explorers.article-data - ArticleDataBySlugExplorer', { state });
-    return (
-        <Flex className="article-data-list-wrapper" alignSelf="stretch" flexDirection="column">
-            {articleDataBySlug != null ? (
-                <StockArticleDataGroup
-                    articleData={articleDataBySlug.articleData}
-                    quoteStockSymbol={articleDataBySlug.quoteStockSymbol}
-                    routerDomAware={true}
-                />
-            ) : (
-                <NoDataMessage />
-            )}
-        </Flex>
-    );
+  console.log('data-explorers.article-data - ArticleDataBySlugExplorer', { state });
+  return (
+    <Flex
+      className="article-data-list-wrapper"
+      alignSelf="stretch"
+      flexDirection="column"
+    >
+      {articleDataBySlug != null ? (
+        <StockArticleDataGroup
+          articleData={articleDataBySlug.articleData}
+          dataListOnly={dataListOnly}
+          quoteStockSymbol={articleDataBySlug.quoteStockSymbol}
+          routerDomAware={true}
+        />
+      ) : (
+        <NoDataMessage />
+      )}
+    </Flex>
+  );
 }
 
 export default ArticleDataBySlugExplorer;
