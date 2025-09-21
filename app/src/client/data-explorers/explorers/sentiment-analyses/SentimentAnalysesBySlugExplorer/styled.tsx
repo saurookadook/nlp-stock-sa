@@ -8,12 +8,32 @@ const StyledFlex = styled(Flex)`
   flex-direction: ${(props) => props.flexDirection || 'column'};
 
   & .sentiment-analyses-wrapper {
-    & tbody tr {
-      /* background-color: #e0e0e0; */
-      /* background-color: rgb(224 224 224 / 0.5); */
-      /* background-color: #939393; */
-      /* background-color: #777777; */
-      background-color: #6b6b6b; /* I think this one is the best? */
+    & tbody {
+      font-size: 0.875rem;
+      /* & tr,
+      & td {
+
+      } */
+
+      & tr {
+        /* background-color: #e0e0e0; */
+        /* background-color: rgb(224 224 224 / 0.5); */
+        /* background-color: #939393; */
+        /* background-color: #777777; */
+        background-color: #6b6b6b; /* I think this one is the best? */
+
+        & th {
+          background: ${(props) => (props.theme as any).colors?.gray?.[800]};
+        }
+
+        & th,
+        & td {
+          padding-inline-start: var(--chakra-space-3);
+          padding-inline-start: var(--chakra-space-3);
+          padding-top: var(--chakra-space-2);
+          padding-bottom: var(--chakra-space-2);
+        }
+      }
     }
 
     & tr,

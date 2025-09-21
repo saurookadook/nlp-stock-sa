@@ -14,12 +14,35 @@ import {
   TableContainer,
 } from '@chakra-ui/react';
 
-import { DataExplorersStore } from '@nlpssa-app-types/common/main';
+import { DataExplorersStore, SentimentEnum } from '@nlpssa-app-types/common/main';
 import { MultiSeriesLineGraph, NoDataMessage } from 'client/common/components';
 import { BaseStateContext, BaseDispatchContext } from 'client/common/store/contexts';
-import { ArticleDataBySlugExplorer } from 'client/data-explorers/explorers';
+import ArticleDataBySlugExplorer from 'client/data-explorers/explorers/article-data/ArticleDataBySlugExplorer';
 import { fetchSentimentAnalysesByStockSlug } from 'client/data-explorers/store/actions';
 import { StyledFlex, StyledTd } from './styled';
+
+type Results = {
+  sentiments: {
+    colLabel: string;
+    data: SentimentEnum[];
+  };
+  compoundScores: {
+    colLabel: string;
+    data: number[];
+  };
+  posScores: {
+    colLabel: string;
+    data: number[];
+  };
+  neuScores: {
+    colLabel: string;
+    data: number[];
+  };
+  negScores: {
+    colLabel: string;
+    data: number[];
+  };
+};
 
 function SentimentAnalysesBySlugExplorer() {
   const state = useContext(BaseStateContext);
@@ -47,6 +70,41 @@ function SentimentAnalysesBySlugExplorer() {
     return sortedColumns;
   }, [sentimentAnalysesBySlug]);
 
+  const tableData = useMemo(() => {
+    const results: Results = {
+      sentiments: {
+        colLabel: 'Sentiment',
+        data: [],
+      },
+      compoundScores: {
+        colLabel: 'Score',
+        data: [],
+      },
+      posScores: {
+        colLabel: 'Positive (pos)',
+        data: [],
+      },
+      neuScores: {
+        colLabel: 'Neutral (neu)',
+        data: [],
+      },
+      negScores: {
+        colLabel: 'Negative (neg)',
+        data: [],
+      },
+    };
+
+    return sentimentAnalysesBySlug.sentimentAnalyses.reduce((acc, cur) => {
+      acc.sentiments.data.push(cur.sentiment);
+      acc.compoundScores.data.push(cur.score);
+      acc.posScores.data.push(cur.output.pos);
+      acc.neuScores.data.push(cur.output.neu);
+      acc.negScores.data.push(cur.output.neg);
+
+      return acc;
+    }, results);
+  }, [sentimentAnalysesBySlug]);
+
   useEffect(() => {
     console.log({
       component: 'SentimentAnalysesBySlugExplorer',
@@ -67,6 +125,7 @@ function SentimentAnalysesBySlugExplorer() {
   console.log('data-explorers.sentiment-analyses - SentimentAnalysesBySlugExplorer', {
     scoresColumns,
     state,
+    tableData,
   });
   return (
     <StyledFlex alignSelf="start" minWidth="80%" paddingX="4rem" rowGap="2rem">
@@ -104,12 +163,36 @@ function SentimentAnalysesBySlugExplorer() {
             <Table variant="striped" colorScheme="teal">
               <TableCaption>Imperial to metric conversion factors</TableCaption>
 
-              <Thead>
+              {/* <Thead>
                 <TableHeadersRow />
-              </Thead>
+              </Thead> */}
 
               <Tbody>
-                {sentimentAnalysesBySlug.sentimentAnalyses.map((sentimentAnalysis) => {
+                {Object.keys(tableData).map((key, i) => {
+                  const { colLabel, data } = tableData[key];
+
+                  return (
+                    <Tr key={`${key}-row`}>
+                      <Th>{colLabel}</Th>
+
+                      {data.map((value, j) => {
+                        return (
+                          <Td
+                            key={`${key}-${i}-${j}-${value}`}
+                            data-row-key={key}
+                            data-row-cell-value={value}
+                          >
+                            <pre>
+                              <code>{value}</code>
+                            </pre>
+                          </Td>
+                        );
+                      })}
+                    </Tr>
+                  );
+                })}
+
+                {/* {sentimentAnalysesBySlug.sentimentAnalyses.map((sentimentAnalysis) => {
                   return (
                     <Tr
                       key={`sa-tr-${sentimentAnalysis.id}`}
@@ -122,7 +205,7 @@ function SentimentAnalysesBySlugExplorer() {
 
                         return (
                           <StyledTd
-                            key={polarityKey}
+                            key={`${sentimentAnalysis.id}-${polarityKey}`}
                             data-polarity-key={polarityKey}
                             data-polarity-value={polarityValue}
                             textAlign="left"
@@ -135,12 +218,12 @@ function SentimentAnalysesBySlugExplorer() {
                       })}
                     </Tr>
                   );
-                })}
+                })} */}
               </Tbody>
 
-              <Tfoot>
+              {/* <Tfoot>
                 <TableHeadersRow />
-              </Tfoot>
+              </Tfoot> */}
             </Table>
           </TableContainer>
         </StyledFlex>
