@@ -7,7 +7,12 @@ import {
   withRouter,
 } from 'storybook-addon-remix-react-router';
 
-import { SentimentAnalysesDataEntry } from '@nlpssa-app-types/common/main';
+import {
+  ArticleDataEntry,
+  GroupedArticleData,
+  SASourceData,
+  SentimentAnalysesDataEntry,
+} from '@nlpssa-app-types/common/main';
 import {
   getStoryArticleData,
   getSentimentAnalysesDataBySlug,
@@ -67,15 +72,54 @@ const filterNullSourcesAndSortData = (data: SentimentAnalysesDataEntry[]) =>
       return aField == bField ? 0 : Number(aField > bField) - Number(aField < bField);
     });
 
+function transformedKeyCaseMap(sourceData: SASourceData): ArticleDataEntry {
+  return {
+    createdAt: sourceData.created_at,
+    updatedAt: sourceData.updated_at,
+    id: sourceData.id,
+    quoteStockSymbol: sourceData.quote_stock_symbol,
+    sourceGroupId: sourceData.source_group_id,
+    sourceUrl: sourceData.source_url,
+    source: sourceData.polymorphic_source,
+    author: sourceData.author,
+    lastUpdatedDate: sourceData.last_updated_date?.toLocaleString(),
+    publishedDate: sourceData.published_date?.toLocaleString(),
+    rawContent: sourceData.raw_content,
+    sentenceTokens: sourceData.sentence_tokens,
+    thumbnailImageUrl: sourceData.thumbnail_image_url,
+    title: sourceData.title,
+  };
+}
+
 function renderStory() {
   const params = useParams();
   console.log({ params });
 
-  const _articleDataBySlug = articleData!.find(
-    (data) => data.quoteStockSymbol === params.stockSlug,
-  );
   const _sentimentAnalysesDataBySlug =
     sentimentAnalysesDataBySlug[params.stockSlug as string];
+
+  const _articleDataBySlug =
+    articleData!.find((data) => data.quoteStockSymbol === params.stockSlug) ??
+    _sentimentAnalysesDataBySlug.sentimentAnalyses.reduce(
+      (acc, cur) => {
+        if (cur.source?.data != null) {
+          acc.articleData.push(transformedKeyCaseMap(cur.source?.data));
+        }
+
+        return acc;
+      },
+      { articleData: [], quoteStockSymbol: params.stockSlug } as GroupedArticleData,
+    );
+
+  console.log({
+    articleDataBySlug: _articleDataBySlug,
+    sentimentAnalysesBySlug: {
+      quoteStockSymbol: _sentimentAnalysesDataBySlug.quoteStockSymbol,
+      sentimentAnalyses: filterNullSourcesAndSortData(
+        _sentimentAnalysesDataBySlug.sentimentAnalyses,
+      ),
+    },
+  });
 
   return (
     <AppStateProvider
